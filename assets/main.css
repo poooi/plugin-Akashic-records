@@ -1,0 +1,32 @@
+*, body, h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
+  font-family: "Ubuntu", "Helvetica Neue", "Helvetica", "Arial", "Heiti SC", "WenQuanYi Micro Hei", "Microsoft YaHei", sans-serif;
+}
+body {
+  font-size: 13px;
+}
+
+#Akashic .show-grid {
+	padding: 10px;
+}
+
+akashic-records nav ul {
+  display: flex;
+}
+akashic-records nav ul li {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+akashic-records nav ul li a {
+  text-align: center;
+}
+
+akashic-records .container {
+	width: 100%; !important
+}
+
+#akashic-records-settings {
+  margin-top: 10px;
+  margin-bottom: 15px;
+}

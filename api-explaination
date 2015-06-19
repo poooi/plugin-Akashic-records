@@ -1,0 +1,80 @@
+时间  		-- getTime
+海域		-- api_quest_name
+地图点		
+出击/进击
+战况
+敌舰队   	-- api_enemy_info
+				-- api_deck_name
+捞
+打破情况
+旗舰
+旗舰2
+MVP
+MVP2
+
+/kcsapi/api_req_sortie/battleresult 
+:Object
+	- api_enemy_info :Object
+		- api_deck_name :String		// 敌主力舰队
+	- api_get_ship :Object
+		- api_ship_name: String		// 捞的船
+	- api_get_ship_exp: Array[7]	// 本场战斗获取经验
+		- 0: -1
+		- 1: 		//第一个
+		……
+	- api_lost_flag :Array[7] 		// 怀疑是沉船标记
+	- api_quest_name :String 		// 镇守府正面海域
+	- api_ship_id :Array[7]			// 对面船的类型
+	- api_win-rank :String			// 战果（什么胜利）
+
+
+--------------------------------------------------
+
+时间
+结果
+类型
+燃
+弹
+钢
+铝
+物品？
+
+/kcsapi/api_req_mission/result
+:Object
+	- api_quest_name :String		// 远征类型
+	- api_get_metrial :Array[4]		// 收获
+		-	// 燃
+		-	// 弹
+		-	// 钢
+		-	// 铝
+
+
+    |<<前のページ
+        1234次のページ>>|
+
+2014年02月17日
+/kcsapi/api_get_member/kdock
+/kcsapi/api_get_member/kdock
+
+データ構造
+　svdata={"api_result":1,api_result_msg":"成功",api_data":[{...},{...},{...},{...}]}
+
+api_data詳細
+
+
+api_member_id 	整数 	提督のID
+api_id 	整数 	建造ドックナンバー(1,2,3,4)
+api_state 	整数 	ドックの状態
+[-1]未解放
+[0]空き
+[2]建造中
+[3]建造完了
+api_created_ship_id 	整数 	建造した艦のID
+api_complete_time 	整数 	建造完了時間(epoch time)
+api_complete_time_str 	文字列 	建造完了時間
+format:yyyy-mm-dd hh:mm:ss
+api_item1 	整数 	投入した燃料量
+api_item2 	整数 	投入した弾薬量
+api_item3 	整数 	投入した鋼材量
+api_item4 	整数 	投入したボーキサイト量
+api_item5 	整数 	投入した開発資材量
