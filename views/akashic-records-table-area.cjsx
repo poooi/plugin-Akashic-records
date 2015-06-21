@@ -1,5 +1,6 @@
-{React, ReactBootstrap} = window
+{React, ReactBootstrap, path, ROOT} = window
 {Grid, Row, Col, Table, ButtonGroup, DropdownButton, MenuItem, Input, Pager, PageItem} = ReactBootstrap
+{log, warn, error} = require path.join(ROOT, 'lib/utils')
 
 AkashicRecordsTableTbodyItem = React.createClass
   render: ->
@@ -7,7 +8,10 @@ AkashicRecordsTableTbodyItem = React.createClass
       <td>{@props.index}</td>
       {
         for item,index in @props.data
-          <td>{item}</td> if @props.rowChooseChecked[index+1] 
+          if index is 0 and @props.rowChooseChecked[1]
+            <td>{(new Date(item)).toString()}</td>
+          else
+            <td>{item}</td> if @props.rowChooseChecked[index+1] 
       }
     </tr>
 
@@ -16,55 +20,49 @@ AkashicRecordsTableArea = React.createClass
     tableTab: ['NO', 
     '时间', '海域', '地图点', '出击', '战况', '敌舰队', 
     '捞', '大破情况', '旗舰', '旗舰（第二舰队）', 'MVP', 'MVP(第二舰队）']
-    data: [['2015-05-15 20:35:03', 'testmap 1', 'test point 1', '出击' ,'完全胜利', '敌侦查主力舰队', 
-    '', '', 'aaa', 'dsaf', '苍龙改二(LV.86)', '苍龙改改'],
-    ['2015-05-15 20:35:04', 'testmap 1', 'test point 1', '出击' ,'完全胜利', '敌侦查主力舰队', 
-    '', '', 'aaa', 'dsaf', '苍龙改二(LV.86)', '苍龙改改'],  
-    ['2015-05-15 20:35:03', 'testmap 1', 'test point 1', '出击' ,'完全胜利', '敌侦查主力舰队', 
-    '', '', 'aaa', 'dsaf', '苍龙改二(LV.86)', '苍龙改改'], 
-    ['2015-05-15 20:35:03', 'testmap 1', 'test point 1', '出击' ,'完全胜利', '敌侦查主力舰队', 
-    '', '', 'aaa', 'dsaf', '苍龙改二(LV.86)', '苍龙改改'], 
-    ['2015-05-15 20:35:03', 'testmap 1', 'test point 1', '出击' ,'完全胜利', '敌侦查主力舰队', 
-    '', '', 'aaa', 'dsaf', '苍龙改二(LV.86)', '苍龙改改'], 
-    ['2015-05-15 20:35:03', 'testmap 1', 'test point 1', '出击' ,'完全胜利', '敌侦查主力舰队', 
-    '', '', 'aaa', 'dsaf', '苍龙改二(LV.86)', '苍龙改改'], 
-    ['2015-05-15 20:35:03', 'testmap 1', 'test point 1', '出击' ,'完全胜利', '敌侦查主力舰队', 
-    '', '', 'aaa', 'dsaf', '苍龙改二(LV.86)', '苍龙改改'], 
-    ['2015-05-15 20:35:03', 'testmap 1', 'test point 1', '出击' ,'完全胜利', '敌侦查主力舰队', 
-    '', '', 'aaa', 'dsaf', '苍龙改二(LV.86)', '苍龙改改'], 
-    ['2015-05-15 20:35:21', 'testmap 2', 'test point 2', '进击' ,'S胜利', '敌侦查舰队', 
-    'aaa', '', 'sss', 'dsaf', '苍龙改二(LV.88)', '苍龙改改']]
     dataShow: []
     showAmount: 10
     filterKey: ''
     pageIndex: 1
-  rowGetter: (rowIndex)->
-    rowData = []
-    {data} = @state
-    for item, index in data[rowIndex]
-      rowData.push item if @props.rowChooseChecked[index+1]
-    rowData
-  componentWillMount: ->
-    @setState 
-      dataShow: @state.data
-      filterKey: ''
-  _filterBy: (keyWord)->
+  _filter: (rawData, keyWord)->
     {rowChooseChecked} = @props
     if keyWord?
-      dataShow = @state.data.filter (row)->
+      rawData.filter (row)->
         match = false
         for item, index in row
+          continue if index is 0
           if rowChooseChecked[index+1]
             if item.toLowerCase().trim().indexOf(keyWord.toLowerCase().trim()) >= 0
               match = true
         match
-    else dataShow = @state.data
+    else rawData
+  _filterBy: (keyWord)->
+    dataShow = @_filter @props.data
     @setState 
       dataShow: dataShow
       filterKey: keyWord
   handleKeyWordChange: ->
     keyWord = @refs.input.getValue()
     @_filterBy keyWord
+  componentWillMount: ->
+    log "componentWillMount"
+    @setState 
+      dataShow: @props.data
+      filterKey: ''
+  componentWillReceiveProps: (nextProps)->
+    dataShow = @_filter nextProps.data, @filterKey
+    @setState
+      dataShow: dataShow
+    log "componentWillReceiveProps"
+    @handleKeyWordChange
+  shouldComponentUpdate: ->
+    log "shouldComponentUpdate"
+    true
+  componentWillUpdate: ->
+    log "componentWillUpdate"
+    true
+  componentDidUpdate: ->
+    log "componentDidUpdate "
   handleShowAmountSelect: (selectedKey)->
     @setState
       showAmount: selectedKey

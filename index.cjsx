@@ -14,7 +14,6 @@ initialAkashicRecordsWindow = ->
       detach: true
 initialAkashicRecordsWindow()
 
-
 module.exports =
   name: 'Akashic'
   priority: 10

@@ -22,7 +22,7 @@ AttackLog = React.createClass
   render: ->
     <div>
       <AkashicRecordsCheckboxArea tableTab={@props.tableTab} filterRules={@filterRules}/>
-      <AkashicRecordsTableArea rowChooseChecked={@state.rowChooseChecked} />
+      <AkashicRecordsTableArea data={@props.data} rowChooseChecked={@state.rowChooseChecked} />
     </div>
 
 module.exports = AttackLog
