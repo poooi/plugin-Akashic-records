@@ -89,16 +89,20 @@ resolveResponses = ->
       when '/kcsapi/api_start2'
         window.$ships = []
         window.$ships[ship.api_id] = ship for ship in body.api_mst_ship
-        window.$shipTypes = []
-        window.$shipTypes[stype.api_id] = stype for stype in body.api_mst_stype
+        window.$shiptypes = []
+        window.$shiptypes[stype.api_id] = stype for stype in body.api_mst_stype
         window.$slotitems = []
         window.$slotitems[slotitem.api_id] = slotitem for slotitem in body.api_mst_slotitem
+        window.$slotitemtypes = []
+        window.$slotitemtypes[slotitemtype.api_id] = slotitemtype for slotitemtype in body.api_mst_slotitem_equiptype
         window.$mapareas = []
         window.$mapareas[maparea.api_id] = maparea for maparea in body.api_mst_maparea
         window.$maps = []
         window.$maps[map.api_id] = map for map in body.api_mst_mapinfo
         window.$missions = []
         window.$missions[mission.api_id] = mission for mission in body.api_mst_mission
+        window.$useitems = []
+        window.$useitems[useitem.api_id] = useitem for useitem in body.api_mst_useitem
       # User datas prefixed by _
       when '/kcsapi/api_get_member/basic'
         window._teitokuLv = body.api_level
@@ -109,6 +113,7 @@ resolveResponses = ->
         window._decks = Object.clone body.api_deck_port
         window._ships = {}
         _ships[ship.api_id] = extendShip ship for ship in body.api_ship
+        window._teitokuLv = body.api_basic.api_level
       when '/kcsapi/api_get_member/slot_item'
         window._slotitems = {}
         _slotitems[item.api_id] = extendSlotitem item for item in body

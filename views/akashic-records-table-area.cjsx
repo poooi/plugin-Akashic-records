@@ -17,13 +17,10 @@ AkashicRecordsTableTbodyItem = React.createClass
 
 AkashicRecordsTableArea = React.createClass
   getInitialState: ->
-    tableTab: ['NO', 
-    '时间', '海域', '地图点', '出击', '战况', '敌舰队', 
-    '捞', '大破情况', '旗舰', '旗舰（第二舰队）', 'MVP', 'MVP(第二舰队）']
     dataShow: []
     showAmount: 10
     filterKey: ''
-    pageIndex: 1
+    pageIndex: 0
   _filter: (rawData, keyWord)->
     {rowChooseChecked} = @props
     if keyWord?
@@ -37,7 +34,7 @@ AkashicRecordsTableArea = React.createClass
         match
     else rawData
   _filterBy: (keyWord)->
-    dataShow = @_filter @props.data
+    dataShow = @_filter @props.data, keyWord
     @setState 
       dataShow: dataShow
       filterKey: keyWord
@@ -46,31 +43,38 @@ AkashicRecordsTableArea = React.createClass
     @_filterBy keyWord
   componentWillMount: ->
     log "componentWillMount"
+    if @props.data.length > 0
+      pageIndex = 1
+    else pageIndex = 0
     @setState 
       dataShow: @props.data
       filterKey: ''
+      pageIndex: pageIndex
   componentWillReceiveProps: (nextProps)->
     dataShow = @_filter nextProps.data, @filterKey
+    {pageIndex} = @state
+    if pageIndex < 1
+      pageIndex = 1
+    if pageIndex > Math.ceil(dataShow.length/@state.showAmount)
+      pageIndex = Math.ceil(dataShow.length/@state.showAmount)
+    console.log "this point"
     @setState
       dataShow: dataShow
-    log "componentWillReceiveProps"
-    @handleKeyWordChange
-  shouldComponentUpdate: ->
-    log "shouldComponentUpdate"
-    true
-  componentWillUpdate: ->
-    log "componentWillUpdate"
-    true
-  componentDidUpdate: ->
-    log "componentDidUpdate "
+      pageIndex: pageIndex
   handleShowAmountSelect: (selectedKey)->
+    {pageIndex} = @state    
+    if pageIndex < 0
+      pageIndex = 1
+    if pageIndex > Math.ceil(@state.dataShow.length/selectedKey)
+      pageIndex = Math.ceil(@state.dataShow.length/selectedKey)
     @setState
       showAmount: selectedKey
+      pageIndex: pageIndex
   handleShowPageSelect: (selectedKey)->
     if selectedKey is 0
-      selectedKey = @state.pageIndex-1
+      selectedKey = 1
     else if selectedKey is -1
-      selectedKey = @state.pageIndex+1
+      selectedKey = Math.ceil(@state.dataShow.length/@state.showAmount)
     if selectedKey < 1
       selectedKey = selectedKey+1
     else if selectedKey > (Math.ceil(@state.dataShow.length/@state.showAmount))
@@ -96,9 +100,9 @@ AkashicRecordsTableArea = React.createClass
             <ButtonGroup justified>
               <DropdownButton eventKey={4} title={"第#{@state.pageIndex}页"} block>
               {
-                num = 40
-                for index in [1..num]
-                  <MenuItem eventKey={index} onSelect={@handleShowPageSelect}>第{index}页</MenuItem>
+                if @state.dataShow.length isnt 0
+                  for index in [1..Math.ceil(@state.dataShow.length/@state.showAmount)]
+                    <MenuItem eventKey={index} onSelect={@handleShowPageSelect}>第{index}页</MenuItem>
               } 
               </DropdownButton>
             </ButtonGroup>
@@ -119,20 +123,20 @@ AkashicRecordsTableArea = React.createClass
               <thead>
                 <tr>
                   {
-                    for tab, index in @state.tableTab
+                    for tab, index in @props.tableTab
                       <th>{tab}</th> if @props.rowChooseChecked[index]
                   }
                 </tr>
               </thead>
               <tbody>
-                {
-                  for item, index in @state.dataShow
-                    <AkashicRecordsTableTbodyItem 
-                      key = {index}
-                      index = {index+1};
-                      data={item} 
-                      rowChooseChecked={@props.rowChooseChecked}
-                    />
+                { if @state.pageIndex > 0
+                    for item, index in @state.dataShow.slice((@state.pageIndex-1)*@state.showAmount, @state.pageIndex*@state.showAmount)
+                      <AkashicRecordsTableTbodyItem 
+                        key = {index}
+                        index = {(@state.pageIndex-1)*@state.showAmount+index+1};
+                        data={item} 
+                        rowChooseChecked={@props.rowChooseChecked}
+                      />
                 }
               </tbody>
             </Table>
@@ -140,13 +144,21 @@ AkashicRecordsTableArea = React.createClass
         </Row>
         <Row> 
           <Pager activeKey={0}>
-            <PageItem previous eventKey={0} onSelect={@handleShowPageSelect}>&larr; Previous Page</PageItem>
-            <PageItem eventKey={1} onSelect={@handleShowPageSelect}>1</PageItem>
-            <PageItem eventKey={2} onSelect={@handleShowPageSelect}>2</PageItem>
-            <PageItem eventKey={3} onSelect={@handleShowPageSelect}>3</PageItem>
-            <PageItem eventKey={4} onSelect={@handleShowPageSelect}>4</PageItem>
-            <PageItem eventKey={5} onSelect={@handleShowPageSelect}>5</PageItem>
-            <PageItem next eventKey={-1} onSelect={@handleShowPageSelect}>Next Page &rarr;</PageItem>
+            <PageItem previous eventKey={0} onSelect={@handleShowPageSelect}>&larr; First Page</PageItem>
+            {
+              if @state.pageIndex < 5
+                for i in [1..5]
+                  break if i > Math.ceil(@state.dataShow.length/@state.showAmount) 
+                  <PageItem eventKey={i} onSelect={@handleShowPageSelect}>{i}</PageItem>
+              else if @state.pageIndex > (Math.ceil(@state.dataShow.length/@state.showAmount)-2)
+                for i in [Math.ceil(@state.dataShow.length/@state.showAmount)-4..Math.ceil(@state.dataShow.length/@state.showAmount)]
+                  continue if i<1
+                  <PageItem eventKey={i} onSelect={@handleShowPageSelect}>{i}</PageItem>
+              else 
+                for i in [@state.pageIndex-2..@state.pageIndex+2]
+                  <PageItem eventKey={i} onSelect={@handleShowPageSelect}>{i}</PageItem>
+            }
+            <PageItem next eventKey={-1} onSelect={@handleShowPageSelect}>Last Page &rarr;</PageItem>
           </Pager>
         </Row>
 

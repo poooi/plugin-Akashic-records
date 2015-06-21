@@ -30,3 +30,10 @@ akashic-records .container {
   margin-top: 10px;
   margin-bottom: 15px;
 }
+
+#myChart {
+  width: 100% !important; 
+  min-height: 350px !important;
+  height: 100% !important;
+  margin: 15px;
+}

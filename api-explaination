@@ -23,10 +23,10 @@
 	59, "給糧艦「伊良湖」"
 	62, "菱餅"
 
-大破情况
-旗舰
-旗舰2
-MVP
+大破情况	-- calculate
+旗舰 		-- first ship in deck
+旗舰2		
+MVP 		-- (battleresult.)api_mvp
 MVP2
 
 /kcsapi/api_req_map/start & /kcsapi/api_req_map/next
@@ -57,14 +57,18 @@ MVP2
 
 --------------------------------------------------
 
-时间
-结果
-类型
-燃
+时间			-- getTime
+类型			-- (api_req_mission/result).api_quest_name
+结果			-- (api_req_mission/result.).api_clear_result
+					0: 失败, 1: 成功, 2: 大成功
+燃				-- (api_req_mission/result).api_get_metrial
 弹
 钢
 铝
-物品？
+物品1			-- api_useitem_flag & api_get_item1/2
+物品数量
+物品2
+物品数量			
 
 /kcsapi/api_req_mission/result
 :Object
@@ -74,34 +78,83 @@ MVP2
 		-	// 弹
 		-	// 钢
 		-	// 铝
+	-- api_useitem_flag: Array[2]
+		-- : int
+		-- : int
+	-- api_get_item1/2 :Object
+		-- api_useitem_id :int 	//种类 <=0? flag
+		-- api_useitem_count :int  //数量
+	--
 
 
-    |<<前のページ
-        1234次のページ>>|
+---------------------------------------------------------------
+时间
+结果
+装备
+类别
+燃弹钢铝
+秘书舰
+司令部
 
-2014年02月17日
+/kcsapi/api_req_kousyou/createitem
+:Object
+	- api_create_flag :int 			//是否成功 0-失败
+成功：
+	- api_slot_item :Object
+		- api_id :int
+		- api_slotitem_id: int 		//装备类型id
+	- api_type3 :int 				//装备类别
+失败：
+	- api_fdata :String		// "int1, int2" int2为装备类型id
+
+post :Object
+	- api_item1 :String 	//燃
+	- api_item2 :String 	//弹
+	- api_item3 :String 	//钢
+	- api_item4 :String 	//铝
+
+-----------------------------------------------------------------
+时间
+种类
+船只
+舰种
+燃弹钢铝
+资材
+空渠数
+秘书舰
+司令部Lv
+
+/kcsapi/api_get_member/createship
+:Object
+	- api_result :int 			//1 成功
+post :Object
+	- api_highspeed :String		//数字，是否高速
+	- api_item1 :String  		//燃
+	- api_item2 :String  		//弹
+	- api_item3 :String  		//钢
+	- api_item4 :String  		//铝
+	- api_item5 :String			//资材
+	- api_kdock_id :String 		//渠序号，从1开始
+	- api_large_flag :String 	//大建标识， 0/1
+
 /kcsapi/api_get_member/kdock
-/kcsapi/api_get_member/kdock
-
-データ構造
-　svdata={"api_result":1,api_result_msg":"成功",api_data":[{...},{...},{...},{...}]}
-
-api_data詳細
+:Array[4]
+	- api_created_ship_id :int 	//舰船类型id
+	
 
 
-api_member_id 	整数 	提督のID
-api_id 	整数 	建造ドックナンバー(1,2,3,4)
-api_state 	整数 	ドックの状態
-[-1]未解放
-[0]空き
-[2]建造中
-[3]建造完了
-api_created_ship_id 	整数 	建造した艦のID
-api_complete_time 	整数 	建造完了時間(epoch time)
-api_complete_time_str 	文字列 	建造完了時間
-format:yyyy-mm-dd hh:mm:ss
-api_item1 	整数 	投入した燃料量
-api_item2 	整数 	投入した弾薬量
-api_item3 	整数 	投入した鋼材量
-api_item4 	整数 	投入したボーキサイト量
-api_item5 	整数 	投入した開発資材量
+  createShipFlag: false   #注意！之后要用config处理关于建造过程中猫的问题！
+  largeFlag: false
+  material: []
+  kdockId: 0
+
+----------------------------------------
+燃弹钢铝
+高速建造
+高速修复
+开发资材
+螺丝
+
+/kcsapi/api_port/port
+:Object
+	- api_material :Array[8] 	//燃弹钢铝高速建造高速修复开发资材螺丝
