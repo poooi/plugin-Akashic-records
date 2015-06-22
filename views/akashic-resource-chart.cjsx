@@ -6,11 +6,13 @@ Chart = require '../assets/Chart'
 toDateLabel = (datetime) ->
   date = new Date(datetime)
   "#{date.getFullYear()}/#{date.getMonth()}/#{date.getDate()}-#{date.getHours()}"
+
 AkashicResourceChart = React.createClass
   getInitialState: ->
     rowChooseChecked: [true, true, true, true, true, true, true, true, true, true, true, true,
                       true, true]
   resourceChart: null
+  dataLength: 0
   data:
     labels: [],
     datasets: [
@@ -103,6 +105,7 @@ AkashicResourceChart = React.createClass
       Chart.defaults.global.responsive = true
       @resourceChart = new Chart(ctx).Line(@data)
       _data = @props.data
+      @dataLength = _data.length
       _data.reverse()
       for log in _data
         @resourceChart.addData(log[1..9], toDateLabel(log[0]))
@@ -113,9 +116,10 @@ AkashicResourceChart = React.createClass
     console.log "in shouldComponentUpdate"
     if @resourceChart is null
       true
-    else if nextProps.data.length > @props.data.length
-      for i in [nextProps.data.length-@props.data.length-1..0]
+    else if nextProps.data.length > @dataLength
+      for i in [nextProps.data.length-@dataLength-1..0]
         @resourceChart.addData(nextProps.data[i][1..9], toDateLabel(nextProps.data[i][0]))
+      @dataLength = nextProps.data.length
       @resourceChart.update
       console.log "map data update"
       false

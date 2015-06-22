@@ -9,13 +9,16 @@ AttackLog = React.createClass
     rowChooseChecked: [true, true, true, true, true, true, true, true, true, true, true, true,
                       true, true]
   dataLength: 0
+  rowChooseChecked: [true, true, true, true, true, true, true, true, true, true, true, true,
+                      true, true]
   filterRules: (checked) ->
     @setState
       rowChooseChecked: checked
   shouldComponentUpdate: (nextProps, nextState)->
     refreshFlag = false
-    for item, i in @state.rowChooseChecked
+    for item, i in @rowChooseChecked
       if item isnt nextState.rowChooseChecked[i]
+        @rowChooseChecked[i] = nextState.rowChooseChecked[i]
         refreshFlag = true
     if nextProps.data.length isnt @dataLength
       refreshFlag = true
