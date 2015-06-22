@@ -21,7 +21,7 @@ AkashicResourceLog = React.createClass
     <div>
     <TabbedArea activeKey={@state.selectedKey} animation={false} onSelect={@handleSelectTab}>
       <TabPane eventKey={0} tab='图' ><AkashicResourceChart data={@props.data} mapShowFlag={@state.mapShowFlag and @props.mapShowFlag}/></TabPane>
-      <TabPane eventKey={1} tab='表' >todo</TabPane>
+      <TabPane eventKey={1} tab='表' ><h2>TODO</h2></TabPane>
     </TabbedArea>
     </div>
 
