@@ -35,5 +35,8 @@ akashic-records .container {
   width: 100% !important; 
   min-height: 350px !important;
   height: 100% !important;
-  margin: 15px;
+  padding-left: 7x;
+  padding-right: 18px;
+  padding-top: 10px;
+  padding-bottom: 12px;
 }

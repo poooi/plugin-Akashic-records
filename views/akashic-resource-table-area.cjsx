@@ -2,6 +2,8 @@
 {Grid, Row, Col, Table, ButtonGroup, DropdownButton, MenuItem, Input, Pager, PageItem} = ReactBootstrap
 {log, warn, error} = require path.join(ROOT, 'lib/utils')
 
+# can change Pager to Pagination
+
 dateToString = (date)->
   month = date.getMonth()
   if month < 10
@@ -20,7 +22,7 @@ dateToString = (date)->
     second = "0#{second}"
   "#{date.getFullYear()}/#{month}/#{day} #{hour}:#{minute}:#{second}"
 
-AkashicRecordsTableTbodyItem = React.createClass
+AkashicResourceTableTbodyItem = React.createClass
   render: ->
     <tr>
       <td>{@props.index}</td>
@@ -29,16 +31,42 @@ AkashicRecordsTableTbodyItem = React.createClass
           if index is 0 and @props.rowChooseChecked[1]
             <td>{dateToString(new Date(item))}</td>
           else
-            <td>{item}</td> if @props.rowChooseChecked[index+1] 
+            if @props.rowChooseChecked[index+1]
+              if @props.lastFlag
+                <td>{item}</td> 
+              else
+                flag = ""
+                diff = item - @props.nextdata[index]
+                if diff > @props.nextdata[index]
+                  diff = "+#{diff}"
+                <td>{"#{item}(#{diff})"}</td> 
       }
     </tr>
 
-AkashicRecordsTableArea = React.createClass
+dateToDateString = (datetime)->
+  date = new Date(datetime)
+  "#{date.getFullYear()}#{date.getMonth()}#{date.getDate()}"
+
+AkashicResourceTableArea = React.createClass
   getInitialState: ->
     dataShow: []
     showAmount: 10
     filterKey: ''
     pageIndex: 0
+    showScale: "小时"
+  dataAsScale: []
+  filterAsScale: (data, showScale)->
+    if showScale is "小时"
+      data
+    else 
+      dateString = ""
+      data.filter (dataitem)->
+        tmp = dateToDateString dataitem[0]
+        if tmp isnt dateString
+          dateString = tmp
+          true
+        else
+          false
   _filter: (rawData, keyWord)->
     {rowChooseChecked} = @props
     if keyWord?
@@ -53,7 +81,7 @@ AkashicRecordsTableArea = React.createClass
         match
     else rawData
   _filterBy: (keyWord)->
-    dataShow = @_filter @props.data, keyWord
+    dataShow = @_filter @dataAsScale, keyWord
     @setState 
       dataShow: dataShow
       filterKey: keyWord
@@ -66,11 +94,13 @@ AkashicRecordsTableArea = React.createClass
       pageIndex = 1
     else pageIndex = 0
     @setState 
-      dataShow: @props.data
+      dataAsScale: @props.data
+      dataShow: []
       filterKey: ''
       pageIndex: pageIndex
   componentWillReceiveProps: (nextProps)->
-    dataShow = @_filter nextProps.data, @filterKey
+    @dataAsScale = @filterAsScale(nextProps.data, @state.showScale)
+    dataShow = @_filter @dataAsScale, @filterKey
     {pageIndex} = @state
     if pageIndex < 1
       pageIndex = 1
@@ -100,10 +130,28 @@ AkashicRecordsTableArea = React.createClass
       selectedKey = Math.ceil(@state.dataShow.length/@state.showAmount)
     @setState
       pageIndex: selectedKey
+  handleShowScaleSelect: (selectedKey)->
+    showScale = "小时"
+    if selectedKey isnt 0
+      showScale = "天"
+    @dataAsScale = @filterAsScale @props.data, showScale
+    dataShow = @_filter @dataAsScale, @filterKey
+    @setState
+      showScale: showScale
+      dataShow: dataShow
+
   render: ->
     <div>
       <Grid>
         <Row>
+          <Col xs={3}>
+            <ButtonGroup justified>
+              <DropdownButton center eventKey={4} title={"显示#{@state.showScale}显示"} block>
+                <MenuItem center eventKey=0 onSelect={@handleShowScaleSelect}>{"按小时显示"}</MenuItem>
+                <MenuItem eventKey=1 onSelect={@handleShowScaleSelect}>{"按天显示"}</MenuItem>
+              </DropdownButton>
+            </ButtonGroup>
+          </Col>
           <Col xs={3}>
             <ButtonGroup justified>
               <DropdownButton center eventKey={4} title={"显示#{@state.showAmount}条"} block>
@@ -126,7 +174,7 @@ AkashicRecordsTableArea = React.createClass
               </DropdownButton>
             </ButtonGroup>
           </Col>
-          <Col xs={6}>
+          <Col xs={3}>
             <Input
               type='text'
               value={@state.filterKey}
@@ -148,15 +196,24 @@ AkashicRecordsTableArea = React.createClass
                 </tr>
               </thead>
               <tbody>
-                { if @state.pageIndex > 0
-                    for item, index in @state.dataShow.slice((@state.pageIndex-1)*@state.showAmount, @state.pageIndex*@state.showAmount)
-                      <AkashicRecordsTableTbodyItem 
-                        key = {index}
-                        index = {(@state.pageIndex-1)*@state.showAmount+index+1};
-                        data={item} 
-                        rowChooseChecked={@props.rowChooseChecked}
-                      />
-                }
+              {
+                if @state.pageIndex > 0
+                  for item, index in @state.dataShow.slice((@state.pageIndex-1)*@state.showAmount, @state.pageIndex*@state.showAmount)
+                    if ((@state.pageIndex-1)*@state.showAmount+index+1) < @state.dataShow.length
+                      lastFlag = false
+                      nextItem = @state.dataShow[(@state.pageIndex-1)*@state.showAmount+index+1]
+                    else
+                      lastFlag = true
+                      nextItem = []
+                    <AkashicResourceTableTbodyItem 
+                      key = {index}
+                      index = {(@state.pageIndex-1)*@state.showAmount+index+1};
+                      data={item} 
+                      nextdata={nextItem}
+                      lastFlag={lastFlag}
+                      rowChooseChecked={@props.rowChooseChecked}
+                    />
+              }
               </tbody>
             </Table>
           </Col>
@@ -184,4 +241,4 @@ AkashicRecordsTableArea = React.createClass
       </Grid>
     </div>
 
-module.exports = AkashicRecordsTableArea
+module.exports = AkashicResourceTableArea
