@@ -496,7 +496,7 @@ AkashicRecordsArea = React.createClass
       <TabPane eventKey={2} tab='建造' ><AkashicLog data={@state.createShipData} tableTab={createShipTableTab}/></TabPane>
       <TabPane eventKey={3} tab='开发' ><AkashicLog data={@state.createItemData} tableTab={createItemTableTab}/></TabPane>
       <TabPane eventKey={4} tab='资源统计' ><AkashicResourceLog data={@state.resourceData} mapShowFlag={@state.mapShowFlag}/></TabPane>
-      <TabPane eventKey={5} tab='高级' ><AkashicAdvancedModule /></TabPane>
+      <TabPane eventKey={5} tab='TODO list' ><AkashicAdvancedModule /></TabPane>
     </TabbedArea>
 
 React.render <AkashicRecordsArea />, $('akashic-records')

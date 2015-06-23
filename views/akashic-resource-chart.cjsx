@@ -7,6 +7,9 @@ Chart = require '../assets/Chart'
 toDateLabel = (datetime) ->
   date = new Date(datetime)
   "#{date.getFullYear()}/#{date.getMonth()}/#{date.getDate()}-#{date.getHours()}"
+toDateString = (datetime)->
+  date = new Date(datetime)
+  "#{date.getFullYear()}/#{date.getMonth()}/#{date.getDate()}"
 
 AkashicResourceChart = React.createClass
   getInitialState: ->
@@ -14,7 +17,11 @@ AkashicResourceChart = React.createClass
                       true, true]
     showScale: "天"
     showRange: "最近一周"
+  showAsDay: true
+  showRange: 7
+  showScaleChange: false
   resourceChart: null
+  wholeDataLength: 0
   dataLength: 0
   data:
     labels: [],
@@ -100,6 +107,22 @@ AkashicResourceChart = React.createClass
         data: []
       }
     ]
+  dataFilter: (data)->
+    dateString = ""
+    showAsDay = @showAsDay
+    dayBegin = (new Date()).getTime() - 86400000 * @showRange
+    data.filter (item)->
+      if item[0] <= dayBegin
+        false
+      else if showAsDay
+        tmp = toDateString item[0]
+        if tmp isnt dateString
+          dateString = tmp
+          true
+        else
+          false
+      else
+        true
   componentDidMount: ->
     console.log "map init"
   componentDidUpdate: ->
@@ -107,51 +130,98 @@ AkashicResourceChart = React.createClass
       ctx = document.getElementById("myChart").getContext("2d")
       Chart.defaults.global.responsive = true
       @resourceChart = new Chart(ctx).Line(@data)
-      _data = JSON.parse JSON.stringify @props.data
+      _data = @dataFilter @props.data
       @dataLength = _data.length
+      @wholeDataLength = @props.data.length
       _data.reverse()
+      @resourceChart.options.animation = false
       for log in _data
         @resourceChart.addData(log[1..9], toDateLabel(log[0]))
-      @resourceChart.update
+      @resourceChart.options.animation = true
       console.log "map create"
     console.log "map update"
   shouldComponentUpdate: (nextProps, nextState)->
     console.log "in shouldComponentUpdate"
     if @resourceChart is null
       true
-    else if nextProps.data.length > @dataLength
-      for i in [nextProps.data.length-@dataLength-1..0]
-        @resourceChart.addData(nextProps.data[i][1..9], toDateLabel(nextProps.data[i][0]))
-      @dataLength = nextProps.data.length
-      @resourceChart.update
+    else if nextState.showRange isnt @state.showRange or nextState.showScale isnt @state.showScale
+      _data = @dataFilter @props.data
+      _data.reverse()
+      @resourceChart.options.animation = false
+      for item in [0..@dataLength-1]
+        @resourceChart.removeData()
+      for log in _data
+        @resourceChart.addData(log[1..9], toDateLabel(log[0]))
+      @resourceChart.options.animation = true
+      @dataLength = _data.length
+      @wholeDataLength =  @props.data.length
+      false
+    else if nextProps.data.length > @wholeDataLength
+      if @wholeDataLength > 0
+        dateString = toDateString nextProps.data[nextProps.data.length-@wholeDataLength][0]
+      else 
+        dateString = ""
+      for i in [nextProps.data.length-@wholeDataLength-1..0]
+        if not @showAsDay
+          @resourceChart.addData(nextProps.data[i][1..9], toDateLabel(nextProps.data[i][0]))
+        else
+          tmp = toDateString nextProps.data[i][0]
+          if dateString isnt tmp
+            dateString = tmp
+            @resourceChart.addData(nextProps.data[i][1..9], toDateLabel(nextProps.data[i][0]))
+      @dataLength = @dataLength + nextProps.data.length - @wholeDataLength
+      @wholeDataLength = nextProps.data.length
       console.log "map data update"
       false
     else 
       false
   handleShowScaleSelect: (selectKey)->
-
+    showScale = "天"
+    if selectKey is 0
+      showScale = "小时"
+      @showAsDay = false
+    else
+      @showAsDay = true
+    if showScale isnt @state.showScale
+      showScaleChange = true
+    @setState
+      showScale: showScale
   handleShowRangeSelect: (selectKey)->
-
+    @showRange = selectKey
+    showRange = "最近一周"
+    switch selectKey
+      when 1
+        showRange = "最近一天"
+      when 30
+        showRange = "最近一月"
+      when 90
+        showRange = "最近三月"
+      when 9999
+        showRange = "显示全部"
+    if showRange isnt @state.showRange
+      showScaleChange = true
+    @setState
+      showRange: showRange
   render: ->
     <Grid>
       <Row>
         <Col xs={2}>
           <ButtonGroup justified>
-            <DropdownButton center eventKey={4} title={"按#{@state.showScale}显示"} block>
-              <MenuItem center eventKey=0 onSelect={@handleShowScaleSelect}>{"按小时显示"}</MenuItem>
-              <MenuItem eventKey=1 onSelect={@handleShowScaleSelect}>{"按天显示"}</MenuItem>
+            <DropdownButton center eventKey={4} title={"时间粒度"} block>
+              <MenuItem center eventKey={0} onSelect={@handleShowScaleSelect}>{"按小时显示"}</MenuItem>
+              <MenuItem eventKey={1} onSelect={@handleShowScaleSelect}>{"按天显示"}</MenuItem>
             </DropdownButton>
           </ButtonGroup>
         </Col>
         <Col xs={2}>
           <ButtonGroup justified>
-            <DropdownButton center eventKey={4} title={"#{@state.showRange}"} block>
-              <MenuItem center eventKey=0 onSelect={@handleShowRangeSelect}>{"最近一天"}</MenuItem>
-              <MenuItem eventKey=1 onSelect={@handleShowRangeSelect}>{"最近一周"}</MenuItem>
-              <MenuItem eventKey=2 onSelect={@handleShowRangeSelect}>{"最近一月"}</MenuItem>
-              <MenuItem eventKey=3 onSelect={@handleShowRangeSelect}>{"最近三月"}</MenuItem>
+            <DropdownButton center eventKey={4} title={"时间范围"} block>
+              <MenuItem center eventKey={1} onSelect={@handleShowRangeSelect}>{"最近一天"}</MenuItem>
+              <MenuItem eventKey={7} onSelect={@handleShowRangeSelect}>{"最近一周"}</MenuItem>
+              <MenuItem eventKey={30} onSelect={@handleShowRangeSelect}>{"最近一月"}</MenuItem>
+              <MenuItem eventKey={90} onSelect={@handleShowRangeSelect}>{"最近三月"}</MenuItem>
               <MenuItem divider />
-              <MenuItem eventKey=4 onSelect={@handleShowRangeSelect}>{"全部显示"}</MenuItem>
+              <MenuItem eventKey={9999} onSelect={@handleShowRangeSelect}>{"全部显示"}</MenuItem>
             </DropdownButton>
           </ButtonGroup>
         </Col>

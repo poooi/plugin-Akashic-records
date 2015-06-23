@@ -45,7 +45,7 @@ AkashicResourceTableTbodyItem = React.createClass
 
 dateToDateString = (datetime)->
   date = new Date(datetime)
-  "#{date.getFullYear()}#{date.getMonth()}#{date.getDate()}"
+  "#{date.getFullYear()}/#{date.getMonth()}/#{date.getDate()}"
 
 AkashicResourceTableArea = React.createClass
   getInitialState: ->

@@ -13,10 +13,9 @@ AttackLog = React.createClass
       </ul>
       <h3>资源走势图</h3>
       <ul>
-        <li>时间粒度与范围选择</li>
         <li>走势内容选择</li>
       </ul>
-      <h3>高级功能</h3>
+      <h3>其他功能</h3>
       <ul>
         <li>数据导入导出</li>
         <li>航海日志数据导入</li>
