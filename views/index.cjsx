@@ -410,7 +410,7 @@ AkashicRecordsArea = React.createClass
           dataItem.push "失败"
           itemId = parseInt(body.api_fdata.split(",")[1])
           dataItem.push $slotitems[itemId].api_name
-          dataItem.push $slotitemtypes[$slotitems[itemId].api_type[3]].api_name
+          dataItem.push $slotitemtypes[$slotitems[itemId].api_type[2]].api_name
         else
           dataItem.push "成功"
           dataItem.push $slotitems[body.api_slot_item.api_slotitem_id].api_name
