@@ -22,50 +22,5 @@ module.exports =
   author: 'W.G.'
   link: 'http://weibo.com/jenningswu'
   version: '0.6.1'
-  reactClass: React.createClass
-    getInitialState: ->
-      content: 'Hello, world!'
-    handleClick: ->
-      akashicRecordsWindow.show()
-    render: ->
-      <div>
-        <link rel="stylesheet" href={join(relative(ROOT, __dirname), 'assets', 'main.css')} />
-        <Grid>
-          <Row className='show-grid'>
-            <Col xs={6}>
-              <Button bsStyle='danger' onClick={@handleClick} style={width: '100%'}>
-                出击记录
-              </Button>
-            </Col>
-            <Col xs={6}>
-              <Button bsStyle='danger' onClick={@handleClick} style={width: '100%'}>
-                远征统计
-              </Button>
-            </Col>
-          </Row>
-
-          <Row className='show-grid'>
-            <Col xs={6}>
-              <Button bsStyle='info' onClick={@handleClick} style={width: '100%'}>
-                开发记录
-              </Button>
-            </Col>
-            <Col xs={6}>
-              <Button bsStyle='info' onClick={@handleClick} style={width: '100%'}>
-                建造记录
-              </Button>
-            </Col>
-          </Row>
-
-          <Row className='show-grid'>
-            <Col xs={12}>
-              <Button bsStyle='success' onClick={@handleClick} style={width: '100%'}>
-                资源走势
-              </Button>
-            </Col>
-          </Row>
-        </Grid>
-      </div> 
   handleClick: ->
     akashicRecordsWindow.show()
-
