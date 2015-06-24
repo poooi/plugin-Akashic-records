@@ -17,7 +17,7 @@ initialAkashicRecordsWindow()
 module.exports =
   name: 'Akashic'
   priority: 10
-  displayName: [<FontAwesome key={0} name='book' />, ' 航海日志(测试版)']
+  displayName: [<FontAwesome key={0} name='book' />, ' 航海日志']
   description: '日志（测试版）'
   author: 'W.G.'
   link: 'http://weibo.com/jenningswu'
