@@ -18,9 +18,7 @@ AkashicRecordsCheckboxArea = React.createClass
           for checkedVal, index in @props.tableTab
             continue if !index
             <Col key={index} xs={2}>
-              <input type='checkbox' value={index} onChange={@handleClickCheckbox.bind(@, index)} checked={@state.rowChooseChecked[index]} style={{verticalAlign: 'middle';}}>
-                {checkedVal}
-              </input>
+              <Input type='checkbox' value={index} onChange={@handleClickCheckbox.bind(@, index)} checked={@state.rowChooseChecked[index]} style={verticalAlign: 'middle'} label={checkedVal} />
             </Col>
         }
         </Row>
