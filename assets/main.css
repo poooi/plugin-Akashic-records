@@ -39,3 +39,11 @@ akashic-records .container {
   padding-top: 10px;
   padding-bottom: 12px;
 }
+
+.col-xs-2 .form-group {
+  margin-bottom: 0px;
+}
+.col-xs-2 .form-group .checkbox {
+  margin-top: 0px;
+  margin-bottom: 0px;
+}
