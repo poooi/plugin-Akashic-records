@@ -5,7 +5,7 @@
 # can change Pager to Pagination
 
 dateToString = (date)->
-  month = date.getMonth()
+  month = date.getMonth() + 1
   if month < 10
     month = "0#{month}"
   day = date.getDate()
