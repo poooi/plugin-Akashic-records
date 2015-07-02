@@ -6,10 +6,10 @@ Chart = require '../assets/Chart'
 
 toDateLabel = (datetime) ->
   date = new Date(datetime)
-  "#{date.getFullYear()}/#{date.getMonth()}/#{date.getDate()}-#{date.getHours()}"
+  "#{date.getFullYear()}/#{date.getMonth() + 1}/#{date.getDate()}-#{date.getHours()}"
 toDateString = (datetime)->
   date = new Date(datetime)
-  "#{date.getFullYear()}/#{date.getMonth()}/#{date.getDate()}"
+  "#{date.getFullYear()}/#{date.getMonth() + 1}/#{date.getDate()}"
 
 AkashicResourceChart = React.createClass
   getInitialState: ->
