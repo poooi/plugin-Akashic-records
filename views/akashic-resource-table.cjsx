@@ -6,7 +6,7 @@ AkashicResourceTableArea = require './akashic-resource-table-area'
 
 dateToDateString = (datetime)->
   date = new Date(datetime)
-  "#{date.getFullYear()}#{date.getMonth()}#{date.getDate()}"
+  "#{date.getFullYear()}#{date.getMonth() + 1}#{date.getDate()}"
 AkashicResourceTable = React.createClass
   getInitialState: ->
     rowChooseChecked: [true, true, true, true, true, true, true, true, true, true, true, true,
