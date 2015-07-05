@@ -64,7 +64,7 @@ judgeDanger = (afterHp, maxHp, _deck, _ships) ->
   for hp, i in afterHp
     if hp / maxHp[i] < 0.250001
       if dangerFlag
-        dangerInfo = "#{dangerInfo}, "
+        dangerInfo = "#{dangerInfo} & "
       dangerInfo = "#{dangerInfo}#{_ships[_deck.api_ship[i]].api_name}"
       dangerFlag = true
   log "战斗结束后剩余HP：#{JSON.stringify afterHp}"
