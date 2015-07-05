@@ -26,9 +26,6 @@ AkashicResourceTable = React.createClass
     if nextProps.data.length isnt @dataLength
       refreshFlag = true
       @dataLength = nextProps.data.length
-    if refreshFlag
-      console.log "should update log"
-    else console.log "should not update log"
     refreshFlag
   render: ->
     <div>

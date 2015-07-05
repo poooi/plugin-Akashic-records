@@ -76,7 +76,6 @@ AkashicRecordsTableArea = React.createClass
       pageIndex = 1
     if pageIndex > Math.ceil(dataShow.length/@state.showAmount)
       pageIndex = Math.ceil(dataShow.length/@state.showAmount)
-    console.log "this point"
     @setState
       dataShow: dataShow
       pageIndex: pageIndex

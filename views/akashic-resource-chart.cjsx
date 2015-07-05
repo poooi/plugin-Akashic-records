@@ -139,7 +139,6 @@ AkashicResourceChart = React.createClass
         @resourceChart.addData(log[1..9], toDateLabel(log[0]))
       @resourceChart.options.animation = true
       console.log "map create"
-    console.log "map update"
   shouldComponentUpdate: (nextProps, nextState)->
     console.log "in shouldComponentUpdate"
     if @resourceChart is null
@@ -171,7 +170,6 @@ AkashicResourceChart = React.createClass
             @resourceChart.addData(nextProps.data[i][1..9], toDateLabel(nextProps.data[i][0]))
       @dataLength = @dataLength + nextProps.data.length - @wholeDataLength
       @wholeDataLength = nextProps.data.length
-      console.log "map data update"
       false
     else 
       false
