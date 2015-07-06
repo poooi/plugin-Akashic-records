@@ -499,11 +499,11 @@ AkashicRecordsArea = React.createClass
         selectedKey: selectedKey
   render: ->
     <TabbedArea activeKey={@state.selectedKey} animation={false} onSelect={@handleSelectTab}>
-      <TabPane eventKey={0} tab='出击' ><AkashicLog data={@state.attackData} tableTab={attackTableTab}/></TabPane>
-      <TabPane eventKey={1} tab='远征' ><AkashicLog data={@state.missionData} tableTab={missionTableTab}/></TabPane>
-      <TabPane eventKey={2} tab='建造' ><AkashicLog data={@state.createShipData} tableTab={createShipTableTab}/></TabPane>
-      <TabPane eventKey={3} tab='开发' ><AkashicLog data={@state.createItemData} tableTab={createItemTableTab}/></TabPane>
-      <TabPane eventKey={4} tab='资源统计' ><AkashicResourceLog data={@state.resourceData} mapShowFlag={@state.mapShowFlag}/></TabPane>
+      <TabPane eventKey={0} tab='出击' ><AkashicLog data={@state.attackData} tableTab={attackTableTab} contentType={'attack'}/></TabPane>
+      <TabPane eventKey={1} tab='远征' ><AkashicLog data={@state.missionData} tableTab={missionTableTab} contentType={'mission'}/></TabPane>
+      <TabPane eventKey={2} tab='建造' ><AkashicLog data={@state.createShipData} tableTab={createShipTableTab} contentType={'createShip'}/></TabPane>
+      <TabPane eventKey={3} tab='开发' ><AkashicLog data={@state.createItemData} tableTab={createItemTableTab} contentType={'createItem'}/></TabPane>
+      <TabPane eventKey={4} tab='资源统计' ><AkashicResourceLog data={@state.resourceData} mapShowFlag={@state.mapShowFlag} contentType={'resource'}/></TabPane>
       <TabPane eventKey={5} tab='TODO list' ><AkashicAdvancedModule /></TabPane>
     </TabbedArea>
 

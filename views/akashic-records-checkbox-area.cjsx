@@ -1,15 +1,19 @@
-{React, ReactBootstrap, jQuery} = window
+{React, ReactBootstrap, jQuery, config} = window
 {Panel, Button, Col, Input, Grid, Row} = ReactBootstrap
 
 AkashicRecordsCheckboxArea = React.createClass
   getInitialState: ->
     rowChooseChecked: [true, true, true, true, true, true, true, true, true, true, true, true,
                       true, true]
+  componentWillMount: ->
+    @setState
+      rowChooseChecked: @props.rowChooseChecked
   handleClickCheckbox: (index) ->
     {rowChooseChecked} = @state
     rowChooseChecked[index] = !rowChooseChecked[index]
     @setState {rowChooseChecked}
     @props.filterRules(rowChooseChecked)
+    config.set "plugin.Akashic.#{@props.contentType}.checkbox", JSON.stringify rowChooseChecked
   render: ->
     <div id='akashic-records-settings'>
       <Grid id='akashic-records-filter'>

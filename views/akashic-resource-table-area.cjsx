@@ -93,11 +93,15 @@ AkashicResourceTableArea = React.createClass
     if @props.data.length > 0
       activePage = 1
     else activePage = 0
+    showAmount = config.get "plugin.Akashic.resource.table.showAmount", 10
+    showScale = config.get "plugin.Akashic.resource.table.showScale", "天"
     @setState 
       dataAsScale: @props.data
       dataShow: []
       filterKey: ''
       activePage: activePage
+      showAmount: showAmount
+      showScale: showScale
   componentWillReceiveProps: (nextProps)->
     @dataAsScale = @filterAsScale(nextProps.data, @state.showScale)
     dataShow = @_filter @dataAsScale, @filterKey
@@ -115,6 +119,7 @@ AkashicResourceTableArea = React.createClass
       activePage = 1
     if activePage > Math.ceil(@state.dataShow.length/selectedKey)
       activePage = Math.ceil(@state.dataShow.length/selectedKey)
+    config.set "plugin.Akashic.resource.table.showAmount", selectedKey
     @setState
       showAmount: selectedKey
       activePage: activePage
@@ -141,6 +146,7 @@ AkashicResourceTableArea = React.createClass
     dataShow = @_filter @dataAsScale, @filterKey
     if activePage > Math.ceil(dataShow.length/@state.showAmount)
       activePage = Math.ceil(dataShow.length/@state.showAmount)
+    config.set "plugin.Akashic.resource.table.showScale", showScale
     @setState
       showScale: showScale
       dataShow: dataShow

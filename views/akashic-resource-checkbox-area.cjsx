@@ -5,11 +5,15 @@ AkashicResourceCheckboxArea = React.createClass
   getInitialState: ->
     rowChooseChecked: [true, true, true, true, true, true, true, true, true, true, true, true,
                       true, true]
+  componentWillMount: ->
+    @setState
+      rowChooseChecked: @props.rowChooseChecked
   handleClickCheckbox: (index) ->
     {rowChooseChecked} = @state
     rowChooseChecked[index] = !rowChooseChecked[index]
     @setState {rowChooseChecked}
     @props.filterRules(rowChooseChecked)
+    config.set "plugin.Akashic.resource.table.checkbox", JSON.stringify rowChooseChecked
   render: ->
     <div id='akashic-records-settings'>
       <Grid id='akashic-records-filter'>

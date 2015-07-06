@@ -1,4 +1,4 @@
-{React, ReactBootstrap, path, ROOT} = window
+{React, ReactBootstrap, path, ROOT, config} = window
 {Grid, Row, Col, Table, ButtonGroup, DropdownButton, MenuItem, Input, Pagination} = ReactBootstrap
 {log, warn, error} = require path.join(ROOT, 'lib/utils')
 
@@ -65,10 +65,12 @@ AkashicRecordsTableArea = React.createClass
     if @props.data.length > 0
       activePage = 1
     else activePage = 0
+    showAmount = config.get "plugin.Akashic.#{@props.contentType}.showAmount", 10
     @setState 
       dataShow: @props.data
       filterKey: ''
       activePage: activePage
+      showAmount: showAmount
   componentWillReceiveProps: (nextProps)->
     dataShow = @_filter nextProps.data, @filterKey
     {activePage} = @state
@@ -85,6 +87,7 @@ AkashicRecordsTableArea = React.createClass
       activePage = 1
     if activePage > Math.ceil(@state.dataShow.length/selectedKey)
       activePage = Math.ceil(@state.dataShow.length/selectedKey)
+    config.set "plugin.Akashic.#{@props.contentType}.showAmount", selectedKey
     @setState
       showAmount: selectedKey
       activePage: activePage

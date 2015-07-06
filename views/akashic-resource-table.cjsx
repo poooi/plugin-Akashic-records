@@ -11,9 +11,14 @@ AkashicResourceTable = React.createClass
   getInitialState: ->
     rowChooseChecked: [true, true, true, true, true, true, true, true, true, true, true, true,
                       true, true]
-  dataLength: 0
   rowChooseChecked: [true, true, true, true, true, true, true, true, true, true, true, true,
                       true, true]
+  dataLength: 0
+  componentWillMount: ->
+    @rowChooseChecked = JSON.parse config.get "plugin.Akashic.resource.table.checkbox", JSON.stringify @state.rowChooseChecked
+    rowChooseChecked = JSON.parse JSON.stringify @rowChooseChecked
+    @setState
+      rowChooseChecked: rowChooseChecked
   filterRules: (checked) ->
     @setState
       rowChooseChecked: checked
@@ -29,7 +34,7 @@ AkashicResourceTable = React.createClass
     refreshFlag
   render: ->
     <div>
-      <AkashicResourceCheckboxArea tableTab={@props.tableTab} filterRules={@filterRules}/>
+      <AkashicResourceCheckboxArea tableTab={@props.tableTab} filterRules={@filterRules} rowChooseChecked={@state.rowChooseChecked}/>
       <AkashicResourceTableArea tableTab={@props.tableTab} data={@props.data} rowChooseChecked={@state.rowChooseChecked} />
     </div>
 

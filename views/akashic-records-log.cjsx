@@ -8,9 +8,14 @@ AttackLog = React.createClass
   getInitialState: ->
     rowChooseChecked: [true, true, true, true, true, true, true, true, true, true, true, true,
                       true, true]
-  dataLength: 0
   rowChooseChecked: [true, true, true, true, true, true, true, true, true, true, true, true,
                       true, true]
+  dataLength: 0
+  componentWillMount: ->
+    @rowChooseChecked = JSON.parse config.get "plugin.Akashic.#{@props.contentType}.checkbox", JSON.stringify @state.rowChooseChecked
+    rowChooseChecked = JSON.parse JSON.stringify @rowChooseChecked
+    @setState
+      rowChooseChecked: rowChooseChecked
   filterRules: (checked) ->
     @setState
       rowChooseChecked: checked
@@ -26,8 +31,8 @@ AttackLog = React.createClass
     refreshFlag
   render: ->
     <div>
-      <AkashicRecordsCheckboxArea tableTab={@props.tableTab} filterRules={@filterRules}/>
-      <AkashicRecordsTableArea tableTab={@props.tableTab} data={@props.data} rowChooseChecked={@state.rowChooseChecked} />
+      <AkashicRecordsCheckboxArea tableTab={@props.tableTab} filterRules={@filterRules} contentType={@props.contentType} rowChooseChecked={@state.rowChooseChecked}/>
+      <AkashicRecordsTableArea tableTab={@props.tableTab} data={@props.data} rowChooseChecked={@state.rowChooseChecked} contentType={@props.contentType}/>
     </div>
 
 module.exports = AttackLog
