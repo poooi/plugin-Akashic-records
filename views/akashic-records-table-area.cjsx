@@ -1,5 +1,5 @@
 {React, ReactBootstrap, path, ROOT} = window
-{Grid, Row, Col, Table, ButtonGroup, DropdownButton, MenuItem, Input, Pager, PageItem} = ReactBootstrap
+{Grid, Row, Col, Table, ButtonGroup, DropdownButton, MenuItem, Input, Pagination} = ReactBootstrap
 {log, warn, error} = require path.join(ROOT, 'lib/utils')
 
 dateToString = (date)->
@@ -38,7 +38,7 @@ AkashicRecordsTableArea = React.createClass
     dataShow: []
     showAmount: 10
     filterKey: ''
-    pageIndex: 0
+    activePage: 0
   _filter: (rawData, keyWord)->
     {rowChooseChecked} = @props
     if keyWord?
@@ -63,42 +63,37 @@ AkashicRecordsTableArea = React.createClass
   componentWillMount: ->
     log "componentWillMount"
     if @props.data.length > 0
-      pageIndex = 1
-    else pageIndex = 0
+      activePage = 1
+    else activePage = 0
     @setState 
       dataShow: @props.data
       filterKey: ''
-      pageIndex: pageIndex
+      activePage: activePage
   componentWillReceiveProps: (nextProps)->
     dataShow = @_filter nextProps.data, @filterKey
-    {pageIndex} = @state
-    if pageIndex < 1
-      pageIndex = 1
-    if pageIndex > Math.ceil(dataShow.length/@state.showAmount)
-      pageIndex = Math.ceil(dataShow.length/@state.showAmount)
+    {activePage} = @state
+    if activePage < 1
+      activePage = 1
+    if activePage > Math.ceil(dataShow.length/@state.showAmount)
+      activePage = Math.ceil(dataShow.length/@state.showAmount)
     @setState
       dataShow: dataShow
-      pageIndex: pageIndex
+      activePage: activePage
   handleShowAmountSelect: (selectedKey)->
-    {pageIndex} = @state    
-    if pageIndex < 0
-      pageIndex = 1
-    if pageIndex > Math.ceil(@state.dataShow.length/selectedKey)
-      pageIndex = Math.ceil(@state.dataShow.length/selectedKey)
+    {activePage} = @state    
+    if activePage < 0
+      activePage = 1
+    if activePage > Math.ceil(@state.dataShow.length/selectedKey)
+      activePage = Math.ceil(@state.dataShow.length/selectedKey)
     @setState
       showAmount: selectedKey
-      pageIndex: pageIndex
+      activePage: activePage
   handleShowPageSelect: (selectedKey)->
-    if selectedKey is 0
-      selectedKey = 1
-    else if selectedKey is -1
-      selectedKey = Math.ceil(@state.dataShow.length/@state.showAmount)
-    if selectedKey < 1
-      selectedKey = selectedKey+1
-    else if selectedKey > (Math.ceil(@state.dataShow.length/@state.showAmount))
-      selectedKey = Math.ceil(@state.dataShow.length/@state.showAmount)
     @setState
-      pageIndex: selectedKey
+      activePage: selectedKey
+  handlePaginationSelect: (event, selectedEvent)->
+    @setState
+      activePage: selectedEvent.eventKey
   render: ->
     <div>
       <Grid>
@@ -116,7 +111,7 @@ AkashicRecordsTableArea = React.createClass
           </Col>
           <Col xs={3}>
             <ButtonGroup justified>
-              <DropdownButton eventKey={4} title={"第#{@state.pageIndex}页"} block>
+              <DropdownButton eventKey={4} title={"第#{@state.activePage}页"} block>
               {
                 if @state.dataShow.length isnt 0
                   for index in [1..Math.ceil(@state.dataShow.length/@state.showAmount)]
@@ -147,11 +142,11 @@ AkashicRecordsTableArea = React.createClass
                 </tr>
               </thead>
               <tbody>
-                { if @state.pageIndex > 0
-                    for item, index in @state.dataShow.slice((@state.pageIndex-1)*@state.showAmount, @state.pageIndex*@state.showAmount)
+                { if @state.activePage > 0
+                    for item, index in @state.dataShow.slice((@state.activePage-1)*@state.showAmount, @state.activePage*@state.showAmount)
                       <AkashicRecordsTableTbodyItem 
                         key = {index}
-                        index = {(@state.pageIndex-1)*@state.showAmount+index+1};
+                        index = {(@state.activePage-1)*@state.showAmount+index+1};
                         data={item} 
                         rowChooseChecked={@props.rowChooseChecked}
                       />
@@ -161,25 +156,20 @@ AkashicRecordsTableArea = React.createClass
           </Col>
         </Row>
         <Row> 
-          <Pager activeKey={0}>
-            <PageItem previous eventKey={0} onSelect={@handleShowPageSelect}>&larr; First Page</PageItem>
-            {
-              if @state.pageIndex < 5
-                for i in [1..5]
-                  break if i > Math.ceil(@state.dataShow.length/@state.showAmount) 
-                  <PageItem eventKey={i} onSelect={@handleShowPageSelect}>{i}</PageItem>
-              else if @state.pageIndex > (Math.ceil(@state.dataShow.length/@state.showAmount)-2)
-                for i in [Math.ceil(@state.dataShow.length/@state.showAmount)-4..Math.ceil(@state.dataShow.length/@state.showAmount)]
-                  continue if i<1
-                  <PageItem eventKey={i} onSelect={@handleShowPageSelect}>{i}</PageItem>
-              else 
-                for i in [@state.pageIndex-2..@state.pageIndex+2]
-                  <PageItem eventKey={i} onSelect={@handleShowPageSelect}>{i}</PageItem>
-            }
-            <PageItem next eventKey={-1} onSelect={@handleShowPageSelect}>Last Page &rarr;</PageItem>
-          </Pager>
+          <Col xs={12}>
+            <Pagination className='akashic-table-pagination'
+              prev={false}
+              next={false}
+              first={true}
+              last={true}
+              ellipsis={true}
+              items={Math.ceil(@state.dataShow.length/@state.showAmount)}
+              maxButtons={if Math.ceil(@state.dataShow.length/@state.showAmount)>5 then 5 else Math.ceil(@state.dataShow.length/@state.showAmount)}
+              activePage={@state.activePage}
+              onSelect={@handlePaginationSelect}
+            />
+          </Col>
         </Row>
-
       </Grid>
     </div>
 

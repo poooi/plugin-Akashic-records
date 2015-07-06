@@ -210,7 +210,14 @@ AkashicRecordsArea = React.createClass
   saveLog: (type, log) ->
     fs.ensureDirSync(path.join(APPDATA_PATH, 'akashic-records', @nickNameId.toString(), type))
     if type is "attack"
-      fs.appendFile(path.join(APPDATA_PATH, 'akashic-records', @nickNameId.toString(), type, "#{(new Date(log[0])).toLocaleDateString().replace(/[^0-9]/g, "")}"), "#{log.join(',')}\n", 'utf8', (err)->
+      year = date.getFullYear()
+      month = date.getMonth() + 1
+      if month < 10
+        month = "0#{month}"
+      day = date.getDate()
+      if day < 10
+        day = "0#{day}"
+      fs.appendFile(path.join(APPDATA_PATH, 'akashic-records', @nickNameId.toString(), type, "#{year}#{month}#{day}"), "#{log.join(',')}\n", 'utf8', (err)->
         error "Write attack-log file error!" if err)
     else 
       fs.appendFile(path.join(APPDATA_PATH, 'akashic-records', @nickNameId.toString(), type, "data"), "#{log.join(',')}\n", 'utf8', (err)->
