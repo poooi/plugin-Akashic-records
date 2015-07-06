@@ -210,6 +210,7 @@ AkashicRecordsArea = React.createClass
   saveLog: (type, log) ->
     fs.ensureDirSync(path.join(APPDATA_PATH, 'akashic-records', @nickNameId.toString(), type))
     if type is "attack"
+      date = new Date(log[0])
       year = date.getFullYear()
       month = date.getMonth() + 1
       if month < 10
