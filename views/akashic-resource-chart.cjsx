@@ -140,7 +140,6 @@ AkashicResourceChart = React.createClass
       @resourceChart.options.animation = true
       console.log "map create"
   shouldComponentUpdate: (nextProps, nextState)->
-    console.log "in shouldComponentUpdate"
     if @resourceChart is null
       true
     else if nextState.showRange isnt @state.showRange or nextState.showScale isnt @state.showScale
