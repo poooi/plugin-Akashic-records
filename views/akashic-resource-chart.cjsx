@@ -1,12 +1,26 @@
 path = require 'path-extra'
-{React, ReactBootstrap, $} = window
+{React, ReactBootstrap, $, err} = window
 {Grid, Row, Col, ButtonGroup, DropdownButton, MenuItem} = ReactBootstrap
+{error} = require path.join(ROOT, 'lib/utils')
 
-Chart = require '../assets/Chart'
+require '../assets/echarts-all'
 
 toDateLabel = (datetime) ->
   date = new Date(datetime)
-  "#{date.getFullYear()}/#{date.getMonth() + 1}/#{date.getDate()}-#{date.getHours()}"
+  month = date.getMonth()+1
+  if month < 10
+    month = "0#{month}"
+  day = date.getDate()
+  if day < 10
+    day = "0#{day}"
+  hour = date.getHours()
+  if hour < 10
+    hour = "0#{hour}"
+  minute = date.getMinutes()
+  if minute < 10
+    minute = "0#{minute}"
+  "#{date.getFullYear()}-#{month}-#{day} #{hour}:#{minute}"
+  
 toDateString = (datetime)->
   date = new Date(datetime)
   "#{date.getFullYear()}/#{date.getMonth() + 1}/#{date.getDate()}"
@@ -15,106 +29,17 @@ AkashicResourceChart = React.createClass
   getInitialState: ->
     rowChooseChecked: [true, true, true, true, true, true, true, true, true, true, true, true,
                       true, true]
-    showScale: "天"
-    showRange: "最近一周"
   showAsDay: true
-  showRange: 7
-  showScaleChange: false
-  resourceChart: null
+  showAllSymbol: false
+  resourceChart: 0
   wholeDataLength: 0
   dataLength: 0
-  data:
-    labels: [],
-    datasets: [
-      {
-        label: "燃",
-        fillColor: "rgba(27,154,25,0.2)",
-        strokeColor: "rgba(27,154,25,1)",
-        pointColor: "rgba(27,154,25,1)",
-        pointStrokeColor: "#fff",
-        pointHighlightFill: "#fff",
-        pointHighlightStroke: "rgba(27,154,25,1)",
-        data: []
-      },
-      {
-        label: "弹",
-        fillColor: "rgba(102,57,16,0.2)",
-        strokeColor: "rgba(102,57,16,1)",
-        pointColor: "rgba(102,57,16,1)",
-        pointStrokeColor: "#fff",
-        pointHighlightFill: "#fff",
-        pointHighlightStroke: "rgba(102,57,16,1)",
-        data: []
-      },
-      {
-        label: "钢",
-        fillColor: "rgba(145,145,145,0.2)",
-        strokeColor: "rgba(145,145,145,1)",
-        pointColor: "rgba(145,145,145,1)",
-        pointStrokeColor: "#fff",
-        pointHighlightFill: "#fff",
-        pointHighlightStroke: "rgba(145,145,145,1)",
-        data: []
-      },
-      {
-        label: "铝",
-        fillColor: "rgba(179,124,80,0.2)",
-        strokeColor: "rgba(179,124,80,1)",
-        pointColor: "rgba(179,124,80,1)",
-        pointStrokeColor: "#fff",
-        pointHighlightFill: "#fff",
-        pointHighlightStroke: "rgba(179,124,80,1)",
-        data: []
-      },
-      {
-        label: "高速建造",
-        fillColor: "rgba(251,138,0,0.2)",
-        strokeColor: "rgba(251,138,0,1)",
-        pointColor: "rgba(251,138,0,1)",
-        pointStrokeColor: "#fff",
-        pointHighlightFill: "#fff",
-        pointHighlightStroke: "rgba(251,138,0,1)",
-        data: []
-      },
-      {
-        label: "高速修复",
-        fillColor: "rgba(50,236,161,0.2)",
-        strokeColor: "rgba(50,236,161,1)",
-        pointColor: "rgba(50,236,161,1)",
-        pointStrokeColor: "#fff",
-        pointHighlightFill: "#fff",
-        pointHighlightStroke: "rgba(50,236,161,1)",
-        data: []
-      },
-      {
-        label: "资材",
-        fillColor: "rgba(65,155,169,0.2)",
-        strokeColor: "rgba(65,155,169,1)",
-        pointColor: "rgba(65,155,169,1)",
-        pointStrokeColor: "#fff",
-        pointHighlightFill: "#fff",
-        pointHighlightStroke: "rgba(65,155,169,1)",
-        data: []
-      },
-      {
-        label: "螺丝",
-        fillColor: "rgba(170,170,170,0.2)",
-        strokeColor: "rgba(170,170,170,1)",
-        pointColor: "rgba(170,170,170,1)",
-        pointStrokeColor: "#fff",
-        pointHighlightFill: "#fff",
-        pointHighlightStroke: "rgba(170,170,170,1)",
-        data: []
-      }
-    ]
+  showData: []
   dataFilter: (data)->
     dateString = ""
     showAsDay = @showAsDay
-    dayBegin = (new Date()).getTime() - 86400000 * @showRange
     data.filter (item)->
-      if item[0] <= dayBegin
-        false
-      else if showAsDay
+      if showAsDay
         tmp = toDateString item[0]
         if tmp isnt dateString
           dateString = tmp
@@ -123,107 +48,269 @@ AkashicResourceChart = React.createClass
           false
       else
         true
+  getEChartsOption: ->
+    option = 
+      tooltip:
+        trigger: "item"
+        show: true
+        formatter : (params) ->
+          dateTime = params.value[0]
+          dateString = toDateLabel params.value[0]
+          series = @getSeries()
+          index = -1
+          logdata = [dateTime]
+          for item in series
+            data = item.data
+            if index is -1
+              if data[params.value[2]]?[0] is logdata[0]
+                index = params.value[2]
+              else
+                findFlag = false
+                for item, i in data
+                  if item[0] is logdata[0]
+                    findFlag = true
+                    index = i
+                    break
+                if not findFlag
+                  error "can't find matched data! in ECharts's tooltip formatter()"
+            logdata.push data[index][1]
+            if logdata[0] isnt data[index][0]
+              error "data error! in ECharts's tooltip formatter()"
+          showString = "#{dateString}<br/>燃: #{logdata[1]}<br/>弹: #{logdata[2]}<br/>钢: #{logdata[3]}<br/>铝: #{logdata[4]}<br/>高速建造: #{logdata[5]}<br/>高速修复: #{logdata[6]}<br/>资材: #{logdata[7]}<br/>螺丝: #{logdata[8]}"
+      legend: 
+        data:['燃', '弹', '钢', '铝', '高速建造', '高速修复', '资材', '螺丝']
+      toolbox:
+        show: true
+        feature:
+          dataView: 
+            show: false
+            readOnly: true
+          restore:
+            show: true
+          saveAsImage:
+            show: true
+          showScale: ((showAsDay)->
+            if showAsDay
+              title = '切换到按小时显示'
+              icon = './assets/echarts-day.png'
+            else 
+              title = '切换到按天显示'
+              icon = './assets/echarts-hour.png'
+            showScale = 
+              show: true
+              title: title
+              icon: icon
+              onclick: ()->
+                event = new CustomEvent 'plugin.Akashic.resource.chart.changeShowScale',
+                  bubbles: true
+                  cancelable: true
+                window.dispatchEvent event
+            )(@showAsDay)
+          showType: ((showAllSymbol)->
+            if showAllSymbol
+              title = '隐藏每个节点'
+              icon = './assets/echarts-with-node.png'
+            else
+              title = '显示每个节点'
+              icon = './assets/echarts-no-node.png'
+            showType = 
+              show: true
+              title: title
+              icon: icon
+              onclick: ()->
+                event = new CustomEvent 'plugin.Akashic.resource.chart.changeShowNode',
+                  bubbles: true
+                  cancelable: true
+                window.dispatchEvent event
+            )(@showAllSymbol)
+      dataZoom:
+        show: true
+        realtime: true
+      xAxis: [
+        type : 'time'
+        splitNumber:10]
+      yAxis: [{type: 'value'},{type: 'value'}]
+      series:[
+        {name:"燃"
+        type:"line"
+        yAxisIndex: 0
+        itemStyle:
+          normal:
+            color: "#1b9d19"
+        showAllSymbol: @showAllSymbol
+        data:( (showData)->
+          data = []
+          for logitem, index in showData
+            data.push [logitem[0], logitem[1], index]
+          data
+          )(@showData)},
+        {name:"弹"
+        type:"line"
+        yAxisIndex: 0
+        itemStyle:
+          normal:
+            color: "#663910"
+        showAllSymbol: @showAllSymbol
+        data:( (showData)->
+          data = []
+          for logitem, index in showData
+            data.push [logitem[0], logitem[2], index]
+          data
+          )(@showData)},
+        {name:"钢"
+        type:"line"
+        yAxisIndex: 0
+        itemStyle:
+          normal:
+            color: "#919191"
+        showAllSymbol: @showAllSymbol
+        data:( (showData)->
+          data = []
+          for logitem, index in showData
+            data.push [logitem[0], logitem[3], index]
+          data
+          )(@showData)},
+        {name:"铝"
+        type:"line"
+        yAxisIndex: 0
+        itemStyle:
+          normal:
+            color: "#b37c50"
+        showAllSymbol: @showAllSymbol
+        data:( (showData)->
+          data = []
+          for logitem, index in showData
+            data.push [logitem[0], logitem[4], index]
+          data
+          )(@showData)},
+        {name:"高速建造"
+        type:"line"
+        yAxisIndex: 1
+        itemStyle:
+          normal:
+            color: "#fb8a00"
+        showAllSymbol: @showAllSymbol
+        data:( (showData)->
+          data = []
+          for logitem, index in showData
+            data.push [logitem[0], logitem[5], index]
+          data
+          )(@showData)},
+        {name:"高速修复"
+        type:"line"
+        yAxisIndex: 1
+        itemStyle:
+          normal:
+            color: "#32eca1"
+        showAllSymbol: @showAllSymbol
+        data:( (showData)->
+          data = []
+          for logitem, index in showData
+            data.push [logitem[0], logitem[6], index]
+          data
+          )(@showData)},
+        {name:"资材"
+        type:"line"
+        yAxisIndex: 1
+        itemStyle:
+          normal:
+            color: "#419ba9"
+        showAllSymbol: @showAllSymbol
+        data:( (showData)->
+          data = []
+          for logitem, index in showData
+            data.push [logitem[0], logitem[7], index]
+          data
+          )(@showData)},
+        {name:"螺丝"
+        type:"line"
+        yAxisIndex: 1
+        itemStyle:
+          normal:
+            color: "#aaaaaa"
+        showAllSymbol: @showAllSymbol
+        data:( (showData)->
+          data = []
+          for logitem, index in showData
+            data.push [logitem[0], logitem[8], index]
+          data
+          )(@showData)}]
+
+  renderChart: ->
+    console.log "in renderChart"
+    node = @refs.chart.getDOMNode()
+    @resourceChart = @resourceChart || echarts.init node
+    option = @getEChartsOption()
+    @resourceChart.setOption option
   componentDidMount: ->
     console.log "map init"
+    window.addEventListener 'plugin.Akashic.resource.chart.changeShowScale', @handleShowScaleChange
+    window.addEventListener 'plugin.Akashic.resource.chart.changeShowNode', @handleShowNodeChange
   componentDidUpdate: ->
-    if @resourceChart is null and @props.mapShowFlag
-      ctx = document.getElementById("myChart").getContext("2d")
-      Chart.defaults.global.responsive = true
-      @resourceChart = new Chart(ctx).Line(@data)
-      _data = @dataFilter @props.data
-      @dataLength = _data.length
+    if  @resourceChart is 0 and @props.mapShowFlag
+      @showData = @dataFilter @props.data
+      @dataLength = @showData.length
+      @showData.reverse()
       @wholeDataLength = @props.data.length
-      _data.reverse()
-      @resourceChart.options.animation = false
-      for log in _data
-        @resourceChart.addData(log[1..9], toDateLabel(log[0]))
-      @resourceChart.options.animation = true
-      console.log "map create"
+      @renderChart()
+    console.log "map create"
   shouldComponentUpdate: (nextProps, nextState)->
-    if @resourceChart is null
+    if @resourceChart is 0
       true
-    else if nextState.showRange isnt @state.showRange or nextState.showScale isnt @state.showScale
-      _data = @dataFilter @props.data
-      _data.reverse()
-      @resourceChart.options.animation = false
-      for item in [0..@dataLength-1]
-        @resourceChart.removeData()
-      for log in _data
-        @resourceChart.addData(log[1..9], toDateLabel(log[0]))
-      @resourceChart.options.animation = true
-      @dataLength = _data.length
-      @wholeDataLength =  @props.data.length
-      false
     else if nextProps.data.length > @wholeDataLength
       if @wholeDataLength > 0
         dateString = toDateString nextProps.data[nextProps.data.length-@wholeDataLength][0]
       else 
         dateString = ""
-      for i in [nextProps.data.length-@wholeDataLength-1..0]
+      if @resourceChart.getSeries()?
         if not @showAsDay
-          @resourceChart.addData(nextProps.data[i][1..9], toDateLabel(nextProps.data[i][0]))
+          for i in [nextProps.data.length-@wholeDataLength-1..0]
+            @showData.push nextProps.data[i]
+            dataitem = []
+            for item, j in nextProps.data[i]
+              continue if j is 0
+              dataitem.push [j-1, [nextProps.data[i][0], item, @showData.length-1], false, true, '']
+            @resourceChart.addData dataitem
         else
-          tmp = toDateString nextProps.data[i][0]
-          if dateString isnt tmp
-            dateString = tmp
-            @resourceChart.addData(nextProps.data[i][1..9], toDateLabel(nextProps.data[i][0]))
-      @dataLength = @dataLength + nextProps.data.length - @wholeDataLength
+          for i in [nextProps.data.length-@wholeDataLength-1..0]
+            tmp = toDateString nextProps.data[i][0]
+            if dateString isnt tmp
+              dateString = tmp
+              @showData.push nextProps.data[i]
+              dataitem = []
+              for item, j in nextProps.data[i]
+                continue if j is 0
+                dataitem.push [j-1, [nextProps.data[i][0], item, @showData.length-1], false, true, '']
+              @resourceChart.addData dataitem
+      else
+        @showData = @dataFilter nextProps.data
+        @dataLength = @showData.length
+        @showData.reverse()
+        if @showData.length isnt 0
+          @resourceChart.hideLoading()
+          @resourceChart.setOption @getEChartsOption(), true
+      @dataLength = @showData.length
       @wholeDataLength = nextProps.data.length
       false
     else 
       false
-  handleShowScaleSelect: (selectKey)->
-    showScale = "天"
-    if selectKey is 0
-      showScale = "小时"
-      @showAsDay = false
-    else
-      @showAsDay = true
-    if showScale isnt @state.showScale
-      showScaleChange = true
-    @setState
-      showScale: showScale
-  handleShowRangeSelect: (selectKey)->
-    @showRange = selectKey
-    showRange = "最近一周"
-    switch selectKey
-      when 1
-        showRange = "最近一天"
-      when 30
-        showRange = "最近一月"
-      when 90
-        showRange = "最近三月"
-      when 9999
-        showRange = "显示全部"
-    if showRange isnt @state.showRange
-      showScaleChange = true
-    @setState
-      showRange: showRange
+  handleShowScaleChange: ->
+    @showAsDay = not @showAsDay
+    @showData = @dataFilter @props.data
+    @dataLength = @showData.length
+    @showData.reverse()
+    if @showData.length isnt 0
+      if not @resourceChart.getSeries()? 
+        @resourceChart.hideLoading()
+      @resourceChart.setOption @getEChartsOption(), true
+  handleShowNodeChange: ->
+    @showAllSymbol = not @showAllSymbol
+    @resourceChart.setOption @getEChartsOption(), true
   render: ->
     <Grid>
       <Row>
-        <Col xs={2}>
-          <ButtonGroup justified>
-            <DropdownButton center eventKey={4} title={"时间粒度"} block>
-              <MenuItem center eventKey={0} onSelect={@handleShowScaleSelect}>{"按小时显示"}</MenuItem>
-              <MenuItem eventKey={1} onSelect={@handleShowScaleSelect}>{"按天显示"}</MenuItem>
-            </DropdownButton>
-          </ButtonGroup>
-        </Col>
-        <Col xs={2}>
-          <ButtonGroup justified>
-            <DropdownButton center eventKey={4} title={"时间范围"} block>
-              <MenuItem center eventKey={1} onSelect={@handleShowRangeSelect}>{"最近一天"}</MenuItem>
-              <MenuItem eventKey={7} onSelect={@handleShowRangeSelect}>{"最近一周"}</MenuItem>
-              <MenuItem eventKey={30} onSelect={@handleShowRangeSelect}>{"最近一月"}</MenuItem>
-              <MenuItem eventKey={90} onSelect={@handleShowRangeSelect}>{"最近三月"}</MenuItem>
-              <MenuItem divider />
-              <MenuItem eventKey={9999} onSelect={@handleShowRangeSelect}>{"全部显示"}</MenuItem>
-            </DropdownButton>
-          </ButtonGroup>
-        </Col>
         <Col xs={12}>
-           <canvas id="myChart" width={400} height={250}></canvas>
+           <div id="ECharts" style={height: "500px"} ref="chart"></div>
         </Col>
       </Row>
     </Grid>
