@@ -82,9 +82,15 @@ AkashicResourceTableArea = React.createClass
     else rawData
   _filterBy: (keyWord)->
     dataShow = @_filter @dataAsScale, keyWord
+    {activePage} = @state
+    if activePage < 1
+      activePage = 1
+    if activePage > Math.ceil(dataShow.length/@state.showAmount)
+      activePage = Math.ceil(dataShow.length/@state.showAmount)
     @setState 
       dataShow: dataShow
       filterKey: keyWord
+      activePage: activePage
   handleKeyWordChange: ->
     keyWord = @refs.input.getValue()
     @_filterBy keyWord
