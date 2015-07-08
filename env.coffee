@@ -43,7 +43,7 @@ window.resolveTime = (seconds) ->
 window.config = remote.require './lib/config'
 window.proxy = remote.require './lib/proxy'
 
-theme = config.get 'poi.theme', '__default__'
+window.theme = config.get 'poi.theme', '__default__'
 if theme == '__default__'
   $('#bootstrap-css')?.setAttribute 'href', "file://#{ROOT}/components/bootstrap/dist/css/bootstrap.css"
 else

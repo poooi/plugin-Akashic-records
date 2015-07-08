@@ -67,7 +67,6 @@ AkashicRecordsTableArea = React.createClass
     keyWord = @refs.input.getValue()
     @_filterBy keyWord
   componentWillMount: ->
-    log "componentWillMount"
     if @props.data.length > 0
       activePage = 1
     else activePage = 0

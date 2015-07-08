@@ -1,9 +1,11 @@
 path = require 'path-extra'
-{React, ReactBootstrap, $, err} = window
+{React, ReactBootstrap, $, err, config, ROOT} = window
 {Grid, Row, Col, ButtonGroup, DropdownButton, MenuItem} = ReactBootstrap
 {error} = require path.join(ROOT, 'lib/utils')
 
 require '../assets/echarts-all'
+dark = require '../assets/themes/dark'
+macarons = require '../assets/themes/macarons'
 
 toDateLabel = (datetime) ->
   date = new Date(datetime)
@@ -31,10 +33,15 @@ AkashicResourceChart = React.createClass
                       true, true]
   showAsDay: true
   showAllSymbol: false
+  sleepMode: false
   resourceChart: 0
   wholeDataLength: 0
   dataLength: 0
   showData: []
+  componentWillMount: ->
+    @showAsDay = config.get "plugin.Akashic.resource.chart.showAsDay", true
+    @showAllSymbol = config.get "plugin.Akashic.resource.chart.showAllSymbol", false
+    @sleepMode = config.get "plugin.Akashic.resource.chart.sleepMode", true
   dataFilter: (data)->
     dateString = ""
     showAsDay = @showAsDay
@@ -91,10 +98,10 @@ AkashicResourceChart = React.createClass
             show: true
           showScale: ((showAsDay)->
             if showAsDay
-              title = '切换到按小时显示'
+              title = '按天显示'
               icon = './assets/echarts-day.png'
             else 
-              title = '切换到按天显示'
+              title = '按小时显示'
               icon = './assets/echarts-hour.png'
             showScale = 
               show: true
@@ -108,10 +115,10 @@ AkashicResourceChart = React.createClass
             )(@showAsDay)
           showType: ((showAllSymbol)->
             if showAllSymbol
-              title = '隐藏每个节点'
+              title = '显示节点'
               icon = './assets/echarts-with-node.png'
             else
-              title = '显示每个节点'
+              title = '隐藏节点'
               icon = './assets/echarts-no-node.png'
             showType = 
               show: true
@@ -123,13 +130,68 @@ AkashicResourceChart = React.createClass
                   cancelable: true
                 window.dispatchEvent event
             )(@showAllSymbol)
+          themeMode: ((sleepMode)->
+            if sleepMode
+              title = '睡眠模式'
+              icon = './assets/echarts-moon.png'
+            else
+              title = '日光模式'
+              icon = './assets/echarts-sun.png'
+            showType = 
+              show: true
+              title: title
+              icon: icon
+              onclick: ()->
+                event = new CustomEvent 'plugin.Akashic.resource.chart.changeThemeMode',
+                  bubbles: true
+                  cancelable: true
+                window.dispatchEvent event
+            )(@sleepMode)
       dataZoom:
         show: true
         realtime: true
-      xAxis: [
-        type : 'time'
-        splitNumber:10]
-      yAxis: [{type: 'value'},{type: 'value'}]
+      xAxis: ((sleepMode)->
+        xAxis = []
+        if sleepMode
+          labelColor = '#ddd'
+          splitColor = '#505050'
+        else
+          labelColor = '#333'
+          splitColor = '#eee'
+        item = 
+          type: 'time'
+          splitNumber: 10
+          axisLabel:
+            textStyle:
+              color: labelColor
+          splitLine:
+            lineStyle:
+              color: splitColor
+        xAxis.push item
+        xAxis)(@sleepMode)
+      yAxis: ((sleepMode)->
+        yAxis = []
+        if sleepMode
+          labelColor = '#ddd'
+          splitColor = '#505050'
+        else
+          labelColor = '#333'
+          splitColor = '#eee'
+        item = 
+          type: 'value'
+          axisLine:
+            lineStyle:
+              color: '#eee'
+              width: 0
+          axisLabel:
+            textStyle:
+              color: labelColor
+          splitLine:
+            lineStyle:
+              color: splitColor
+        yAxis.push item
+        yAxis.push JSON.parse JSON.stringify item
+        yAxis)(@sleepMode)
       series:[
         {name:"燃"
         type:"line"
@@ -237,15 +299,18 @@ AkashicResourceChart = React.createClass
           )(@showData)}]
 
   renderChart: ->
-    console.log "in renderChart"
     node = @refs.chart.getDOMNode()
-    @resourceChart = @resourceChart || echarts.init node
+    if @sleepMode
+      theme = dark
+    else
+      theme = macarons
+    @resourceChart = @resourceChart || echarts.init node, theme
     option = @getEChartsOption()
     @resourceChart.setOption option
   componentDidMount: ->
-    console.log "map init"
     window.addEventListener 'plugin.Akashic.resource.chart.changeShowScale', @handleShowScaleChange
     window.addEventListener 'plugin.Akashic.resource.chart.changeShowNode', @handleShowNodeChange
+    window.addEventListener 'plugin.Akashic.resource.chart.changeThemeMode', @handleThemeModeChange
   componentDidUpdate: ->
     if  @resourceChart is 0 and @props.mapShowFlag
       @showData = @dataFilter @props.data
@@ -253,7 +318,6 @@ AkashicResourceChart = React.createClass
       @showData.reverse()
       @wholeDataLength = @props.data.length
       @renderChart()
-    console.log "map create"
   shouldComponentUpdate: (nextProps, nextState)->
     if @resourceChart is 0
       true
@@ -303,9 +367,19 @@ AkashicResourceChart = React.createClass
       if not @resourceChart.getSeries()? 
         @resourceChart.hideLoading()
       @resourceChart.setOption @getEChartsOption(), true
+    config.set "plugin.Akashic.resource.chart.showAsDay", @showAsDay
   handleShowNodeChange: ->
     @showAllSymbol = not @showAllSymbol
     @resourceChart.setOption @getEChartsOption(), true
+    config.set "plugin.Akashic.resource.chart.showAllSymbol", @showAllSymbol
+  handleThemeModeChange: ->
+    @sleepMode = not @sleepMode
+    if @sleepMode
+      @resourceChart.setTheme dark
+    else 
+      @resourceChart.setTheme macarons
+    @resourceChart.setOption @getEChartsOption(), true
+    config.set "plugin.Akashic.resource.chart.sleepMode", @sleepMode
   render: ->
     <Grid>
       <Row>

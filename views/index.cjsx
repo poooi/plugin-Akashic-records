@@ -357,7 +357,7 @@ AkashicRecordsArea = React.createClass
         dataItem.push "#{@_ships[@_deck.api_ship[body.api_mvp-1]].api_name}(Lv.#{@_ships[@_deck.api_ship[body.api_mvp-1]].api_lv})", ''
         {attackData} = @state
         attackData.unshift dataItem
-        log "save and show new data"
+        # log "save and show new data"
         @saveAttackLog dataItem
         @setState attackData
 
