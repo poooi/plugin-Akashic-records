@@ -30,8 +30,8 @@ AttackLog = React.createClass
   getInitialState: ->
     typeChoosed: '出击'
     codeType: '选择文件编码格式'
-  componentWillMount: ->
-    console.log "test"
+  # componentWillMount: ->
+  #   console.log "test"
   handleSetType: ->
     @setState
       typeChoosed: @refs.type.getValue()
