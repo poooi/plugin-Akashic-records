@@ -162,6 +162,12 @@ AkashicRecordsArea = React.createClass
     for datalog in datalogs
       data = data.concat datalog
     data.reverse()
+    data.sort (a, b)->
+      if isNaN a[0]
+        a[0] = (Date(a[0])).getTime()
+      if isNaN b[0]
+        b[0] = (Date(b[0])).getTime()
+      return b[0] - a[0]
   getLogFromFile: (id, type) ->
     switch type
       when 0
@@ -244,6 +250,7 @@ AkashicRecordsArea = React.createClass
     switch urlpath
       when '/kcsapi/api_get_member/basic'
         @nickNameId = body.api_nickname_id
+        window.nickNameId = @nickNameId
         @getAttackData @nickNameId
         @getMissionData @nickNameId
         @getCreateItemData @nickNameId
@@ -504,7 +511,14 @@ AkashicRecordsArea = React.createClass
       <TabPane eventKey={2} tab='建造' ><AkashicLog data={@state.createShipData} tableTab={createShipTableTab} contentType={'createShip'}/></TabPane>
       <TabPane eventKey={3} tab='开发' ><AkashicLog data={@state.createItemData} tableTab={createItemTableTab} contentType={'createItem'}/></TabPane>
       <TabPane eventKey={4} tab='资源统计' ><AkashicResourceLog data={@state.resourceData} mapShowFlag={@state.mapShowFlag} contentType={'resource'}/></TabPane>
-      <TabPane eventKey={5} tab='TODO list' ><AkashicAdvancedModule /></TabPane>
+      <TabPane eventKey={5} tab='高级' >
+        <AkashicAdvancedModule 
+          attackData={@state.attackData}
+          missionData={@state.missionData}
+          createItemData={@state.createItemData}
+          createShipData={@state.createShipData}
+          resourceData={@state.resourceData}/>
+      </TabPane>
     </TabbedArea>
 
 React.render <AkashicRecordsArea />, $('akashic-records')

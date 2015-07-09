@@ -95,7 +95,7 @@ AkashicResourceChart = React.createClass
           restore:
             show: true
           saveAsImage:
-            show: true
+            show: false
           showScale: ((showAsDay)->
             if showAsDay
               title = '按天显示'
