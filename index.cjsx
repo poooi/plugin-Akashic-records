@@ -18,9 +18,9 @@ module.exports =
   name: 'Akashic'
   priority: 10
   displayName: [<FontAwesome key={0} name='book' />, ' 航海日志']
-  description: '日志（测试版）'
+  description: '日志'
   author: 'W.G.'
-  link: 'http://weibo.com/jenningswu'
-  version: '0.6.1'
+  link: 'https://github.com/JenningsWu'
+  version: '1.0.0'
   handleClick: ->
     window.akashicRecordsWindow.show()

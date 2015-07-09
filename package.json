@@ -1,6 +1,6 @@
 {
   "name": "akashic-records",
-  "version": "0.9.0",
+  "version": "1.0.0",
   "description": "logbook plugin for poi",
   "main": "index.js",
   "scripts": {
