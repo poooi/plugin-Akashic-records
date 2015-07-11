@@ -1,5 +1,6 @@
-{React, ReactBootstrap, path, ROOT, config} = window
+{React, ReactBootstrap, ROOT, config} = window
 {Grid, Row, Col, Table, ButtonGroup, DropdownButton, MenuItem, Input, Pagination} = ReactBootstrap
+path = require 'path-extra'
 {log, warn, error} = require path.join(ROOT, 'lib/utils')
 
 dateToString = (date)->

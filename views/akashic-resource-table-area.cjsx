@@ -1,8 +1,8 @@
-{React, ReactBootstrap, path, ROOT} = window
+path = require 'path-extra'
+
+{React, ReactBootstrap, ROOT} = window
 {Grid, Row, Col, Table, ButtonGroup, DropdownButton, MenuItem, Input, Pagination} = ReactBootstrap
 {log, warn, error} = require path.join(ROOT, 'lib/utils')
-
-# can change Pager to Pagination
 
 dateToString = (date)->
   month = date.getMonth() + 1

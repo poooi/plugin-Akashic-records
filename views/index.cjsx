@@ -1,7 +1,10 @@
 fs = require 'fs-extra'
 glob = require 'glob'
-{React, ReactBootstrap, $, path, ROOT, APPDATA_PATH} = window
+{React, ReactBootstrap, $, ROOT, APPDATA_PATH} = window
 {TabbedArea, TabPane} = ReactBootstrap
+
+path = require 'path-extra'
+
 {log, warn, error} = require path.join(ROOT, 'lib/utils')
 # AkashicRecordTab = require './item-info-table-area'
 # AkashicRecordContent = require './item-info-checkbox-area'
@@ -67,7 +70,7 @@ judgeDanger = (afterHp, maxHp, _deck, _ships) ->
         dangerInfo = "#{dangerInfo} & "
       dangerInfo = "#{dangerInfo}#{_ships[_deck.api_ship[i]].api_name}"
       dangerFlag = true
-  log "战斗结束后剩余HP：#{JSON.stringify afterHp}"
+  console.log "战斗结束后剩余HP：#{JSON.stringify afterHp}" if process.env.DEBUG?
   [dangerFlag, dangerInfo]
 
 timeToBString = (time) ->
@@ -134,7 +137,6 @@ AkashicRecordsArea = React.createClass
   $ships: []
   $shiptypes: []
   $slotitems: []
-  $slotitemtypes: []
   timeString: ""
 
   # 建造
@@ -173,25 +175,25 @@ AkashicRecordsArea = React.createClass
       when 0
         {attackData} = @state
         attackData = @getDataAccordingToNameId id, "attack"
-        log "get attackData from file"
+        console.log "get attackData from file" if process.env.DEBUG?
         @setState 
           attackData: attackData
       when 1
         {missionData} = @state
         missionData = @getDataAccordingToNameId id, "mission"
-        log "get missionData from file"
+        console.log "get missionData from file" if process.env.DEBUG?
         @setState 
           missionData: missionData
       when 2
         {createItemData} = @state
         createItemData = @getDataAccordingToNameId id, "createitem"
-        log "get createItemData from file"
+        console.log "get createItemData from file" if process.env.DEBUG?
         @setState 
           createItemData: createItemData
       when 3
         {createShipData} = @state
         createShipData = @getDataAccordingToNameId id, "createship"
-        log "get createShipData from file"
+        console.log "get createShipData from file" if process.env.DEBUG?
         @setState 
           createShipData: createShipData
       when 4
@@ -249,8 +251,7 @@ AkashicRecordsArea = React.createClass
     urlpath = e.detail.path
     switch urlpath
       when '/kcsapi/api_get_member/basic'
-        @nickNameId = body.api_nickname_id
-        window.nickNameId = @nickNameId
+        @nickNameId = window._nickNameId
         @getAttackData @nickNameId
         @getMissionData @nickNameId
         @getCreateItemData @nickNameId
@@ -417,7 +418,7 @@ AkashicRecordsArea = React.createClass
 
       # 开发
       when '/kcsapi/api_req_kousyou/createitem'
-        {$slotitems, $slotitemtypes} = window
+        {$slotitems, $slotitemTypes} = window
         dataItem = []
         nowDate = new Date()
         dataItem.push nowDate.getTime()
@@ -425,11 +426,11 @@ AkashicRecordsArea = React.createClass
           dataItem.push "失败"
           itemId = parseInt(body.api_fdata.split(",")[1])
           dataItem.push $slotitems[itemId].api_name
-          dataItem.push $slotitemtypes[$slotitems[itemId].api_type[2]].api_name
+          dataItem.push $slotitemTypes[$slotitems[itemId].api_type[2]].api_name
         else
           dataItem.push "成功"
           dataItem.push $slotitems[body.api_slot_item.api_slotitem_id].api_name
-          dataItem.push $slotitemtypes[body.api_type3].api_name
+          dataItem.push $slotitemTypes[body.api_type3].api_name
         dataItem.push postBody.api_item1, postBody.api_item2, postBody.api_item3, postBody.api_item4
         @_ships = window._ships
         @_decks = window._decks
@@ -452,7 +453,7 @@ AkashicRecordsArea = React.createClass
           @_ships = window._ships
           @_decks = window._decks
           @$ships = window.$ships
-          @$shiptypes = window.$shiptypes
+          @$shiptypes = window.$shipTypes
           apiData = body[@kdockId-1]
           dataItem = []
           nowDate = new Date()

@@ -89,12 +89,12 @@ resolveResponses = ->
       when '/kcsapi/api_start2'
         window.$ships = []
         window.$ships[ship.api_id] = ship for ship in body.api_mst_ship
-        window.$shiptypes = []
-        window.$shiptypes[stype.api_id] = stype for stype in body.api_mst_stype
+        window.$shipTypes = []
+        window.$shipTypes[stype.api_id] = stype for stype in body.api_mst_stype
         window.$slotitems = []
         window.$slotitems[slotitem.api_id] = slotitem for slotitem in body.api_mst_slotitem
-        window.$slotitemtypes = []
-        window.$slotitemtypes[slotitemtype.api_id] = slotitemtype for slotitemtype in body.api_mst_slotitem_equiptype
+        window.$slotitemTypes = []
+        window.$slotitemTypes[slotitemtype.api_id] = slotitemtype for slotitemtype in body.api_mst_slotitem_equiptype
         window.$mapareas = []
         window.$mapareas[maparea.api_id] = maparea for maparea in body.api_mst_maparea
         window.$maps = []

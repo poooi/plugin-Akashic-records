@@ -45,7 +45,7 @@ AttackLog = React.createClass
       title: '提醒'
       message: message
   saveLogHandle: ->
-    {nickNameId} = window
+    nickNameId = window._nickNameId
     if nickNameId and nickNameId isnt 0
       switch @state.typeChoosed
         when '出击'
