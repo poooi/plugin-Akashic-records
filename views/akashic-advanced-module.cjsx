@@ -84,7 +84,7 @@ AttackLog = React.createClass
     else
       @showMessage '未找到相应的提督！是不是还没登录？'
   importLogHandle: ->
-    # dialog.showOpenDialog 
+    # dialog.showOpenDialog
     #   title: "导入#{@state.typeChoosed}记录"
     #   properties: ['openFile']
     # , (filename)->
@@ -106,14 +106,14 @@ AttackLog = React.createClass
                 <option key={1} value={'远征'}>远征</option>
                 <option key={2} value={'建造'}>建造</option>
                 <option key={3} value={'开发'}>开发</option>
-                <option key={4} value={'资源'}>出击</option>
+                <option key={4} value={'资源'}>资源</option>
             </Input>
           </Col>
           <Col xs={3}>
             <Input type="select" ref="codeType" value={@state.codeType} onChange={@handleSetCode}>
                 <option key={0} value={'选择文件编码格式'}>文件编码格式</option>
-                <option key={1} value={'utf8'}>utf8(mac等用户)</option>
-                <option key={2} value={'GBK'}>GBK(windows用户)</option>
+                <option key={1} value={'utf8'}>UTF-8(Linux, OSX用户)</option>
+                <option key={2} value={'GBK'}>GBK(Windows用户)</option>
             </Input>
           </Col>
           <Col xs={3}>
@@ -148,6 +148,6 @@ AttackLog = React.createClass
         </Row>
       </Grid>
     </div>
-    
+
 
 module.exports = AttackLog
