@@ -2,6 +2,7 @@
   font-family: "Ubuntu", "Helvetica Neue", "Helvetica", "Arial", "Heiti SC", "WenQuanYi Micro Hei", "Microsoft YaHei", sans-serif;
 }
 body {
+  margin: 15px;
   font-size: 13px;
 }
 
@@ -24,6 +25,7 @@ akashic-records nav ul li a {
 
 akashic-records .container {
 	width: 100%; !important
+  padding-top: 5px;
 }
 
 #akashic-records-settings {
@@ -49,7 +51,7 @@ akashic-records .container {
 }
 
 .akashic-table-pagination {
-  
+
 }
 
 #ECharts {
