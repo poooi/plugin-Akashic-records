@@ -1,6 +1,6 @@
 var dark = {
     // 全图默认背景
-    backgroundColor: '#1b1b1b',
+    // backgroundColor: '#1b1b1b',
 
     // 默认色板
     color: [
