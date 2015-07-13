@@ -29,15 +29,11 @@ toDateLabel = (datetime) ->
 AttackLog = React.createClass
   getInitialState: ->
     typeChoosed: '出击'
-    codeType: '选择文件编码格式'
   # componentWillMount: ->
   #   console.log "test"
   handleSetType: ->
     @setState
       typeChoosed: @refs.type.getValue()
-  handleSetCode: ->
-    @setState
-      codeType: @refs.codeType.getValue()
   showMessage: (message)->
     dialog.showMessageBox
       type: 'info'
@@ -66,21 +62,22 @@ AttackLog = React.createClass
         else
           @showMessage '发生错误！请报告开发者'
           return
-      if @state.codeType isnt 'utf8' and @state.codeType isnt 'GBK'
-        @showMessage '请选择编码格式'
-      else
-        filename = dialog.showSaveDialog
-          title: "保存#{@state.typeChoosed}记录"
-          defaultPath: "#{nickNameId}-#{logType}.csv"
-        if filename?
-          saveData = "#{@props.tableTab[logType].slice(1).join(',')}\n"
-          for item in data
-            saveData = "#{saveData}#{toDateLabel item[0]},#{item.slice(1).join(',')}\n"
-          if @state.codeType is 'GBK'
-            saveData = iconv.encode saveData, 'GBK'
-          fs.writeFile filename, saveData, (err)->
-            if err
-              console.log "err! Save data error"
+      if process.platform is 'win32'
+        codeType = 'GBK'
+      else 
+        codeType = 'utf8'
+      filename = dialog.showSaveDialog
+        title: "保存#{@state.typeChoosed}记录"
+        defaultPath: "#{nickNameId}-#{logType}.csv"
+      if filename?
+        saveData = "#{@props.tableTab[logType].slice(1).join(',')}\n"
+        for item in data
+          saveData = "#{saveData}#{toDateLabel item[0]},#{item.slice(1).join(',')}\n"
+        if codeType is 'GBK'
+          saveData = iconv.encode saveData, 'GBK'
+        fs.writeFile filename, saveData, (err)->
+          if err
+            console.log "err! Save data error"
     else
       @showMessage '未找到相应的提督！是不是还没登录？'
   importLogHandle: ->
@@ -100,7 +97,7 @@ AttackLog = React.createClass
           </Col>
         </Row>
         <Row>
-          <Col xs={3}>
+          <Col xs={4}>
             <Input type="select" ref="type" value={@state.typeChoosed} onChange={@handleSetType}>
                 <option key={0} value={'出击'}>出击</option>
                 <option key={1} value={'远征'}>远征</option>
@@ -109,17 +106,10 @@ AttackLog = React.createClass
                 <option key={4} value={'资源'}>资源</option>
             </Input>
           </Col>
-          <Col xs={3}>
-            <Input type="select" ref="codeType" value={@state.codeType} onChange={@handleSetCode}>
-                <option key={0} value={'选择文件编码格式'}>文件编码格式</option>
-                <option key={1} value={'utf8'}>UTF-8(Linux, OSX用户)</option>
-                <option key={2} value={'GBK'}>GBK(Windows用户)</option>
-            </Input>
-          </Col>
-          <Col xs={3}>
+          <Col xs={4}>
              <Button bsStyle='primary' style={width: '100%'} onClick={@saveLogHandle}>导出</Button>
           </Col>
-          <Col xs={3}>
+          <Col xs={4}>
              <Button bsStyle='primary' style={width: '100%'} onClick={@importLogHandle}>导入</Button>
           </Col>
         </Row>
