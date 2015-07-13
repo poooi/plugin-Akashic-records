@@ -42,6 +42,11 @@ AkashicResourceChart = React.createClass
     @showAsDay = config.get "plugin.Akashic.resource.chart.showAsDay", true
     @showAllSymbol = config.get "plugin.Akashic.resource.chart.showAllSymbol", false
     @sleepMode = config.get "plugin.Akashic.resource.chart.sleepMode", true
+    window.onresize = ()=>
+      document.getElementById('ECharts').style.height = "#{window.remote.getCurrentWindow().getBounds().height - 150}px"
+      if @resourceChart isnt 0
+        @resourceChart.resize()
+      true
   dataFilter: (data)->
     dateString = ""
     showAsDay = @showAsDay
