@@ -55,10 +55,10 @@ AttackLog = React.createClass
           logType = 'mission'
           data = @props.missionData
         when '建造'
-          logType = 'createitem'
+          logType = 'createItem'
           data = @props.createItemData
         when '开发'
-          logType = 'createship'
+          logType = 'createShip'
           data = @props.createShipData
         when '资源'
           logType = 'resource'
@@ -73,7 +73,7 @@ AttackLog = React.createClass
           title: "保存#{@state.typeChoosed}记录"
           defaultPath: "#{nickNameId}-#{logType}.csv"
         if filename?
-          saveData = ""
+          saveData = "#{@props.tableTab[logType].slice(1).join(',')}\n"
           for item in data
             saveData = "#{saveData}#{toDateLabel item[0]},#{item.slice(1).join(',')}\n"
           if @state.codeType is 'GBK'

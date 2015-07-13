@@ -86,6 +86,9 @@ createItemTableTab = ['No.', '时间', '结果', '开发装备', '类别',
 createShipTableTab = ['No.', '时间', '种类', '船只', '舰种', 
     '燃', '弹', '钢', '铝', '资材', '空渠数', '秘书舰', '司令部Lv']
 
+resourceTableTab = ['No.', '时间', '燃料', '弹药', '钢材', '铝材', 
+  '高速建造', '高速修复', '开发资材', '改修螺丝']
+
 getUseItem: (id)->
   switch id
     when 10
@@ -511,9 +514,16 @@ AkashicRecordsArea = React.createClass
       <TabPane eventKey={1} tab='远征' ><AkashicLog data={@state.missionData} tableTab={missionTableTab} contentType={'mission'}/></TabPane>
       <TabPane eventKey={2} tab='建造' ><AkashicLog data={@state.createShipData} tableTab={createShipTableTab} contentType={'createShip'}/></TabPane>
       <TabPane eventKey={3} tab='开发' ><AkashicLog data={@state.createItemData} tableTab={createItemTableTab} contentType={'createItem'}/></TabPane>
-      <TabPane eventKey={4} tab='资源统计' ><AkashicResourceLog data={@state.resourceData} mapShowFlag={@state.mapShowFlag} contentType={'resource'}/></TabPane>
+      <TabPane eventKey={4} tab='资源统计' ><AkashicResourceLog data={@state.resourceData} tableTab={resourceTableTab} mapShowFlag={@state.mapShowFlag} contentType={'resource'}/></TabPane>
       <TabPane eventKey={5} tab='高级' >
-        <AkashicAdvancedModule 
+        <AkashicAdvancedModule
+          tableTab={
+            'attack': attackTableTab
+            'mission': missionTableTab
+            'createItem': createItemTableTab
+            'createShip': createShipTableTab
+            'resource': resourceTableTab
+          } 
           attackData={@state.attackData}
           missionData={@state.missionData}
           createItemData={@state.createItemData}
