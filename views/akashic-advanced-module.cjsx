@@ -51,11 +51,11 @@ AttackLog = React.createClass
           logType = 'mission'
           data = @props.missionData
         when '建造'
-          logType = 'createItem'
-          data = @props.createItemData
-        when '开发'
           logType = 'createShip'
           data = @props.createShipData
+        when '开发'
+          logType = 'createItem'
+          data = @props.createItemData
         when '资源'
           logType = 'resource'
           data = @props.resourceData
