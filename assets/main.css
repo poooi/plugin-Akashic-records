@@ -49,7 +49,11 @@ akashic-records .container {
 }
 
 .akashic-table-pagination {
-  
+  width: -webkit-fit-content;
+  width: fit-content;
+  margin-left: auto;
+  margin-right: auto;
+  display: flex;
 }
 
 #ECharts {
