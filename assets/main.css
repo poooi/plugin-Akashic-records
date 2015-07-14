@@ -56,6 +56,15 @@ akashic-records .container {
   display: flex;
 }
 
+#question-btn {
+  padding: 0 5px;
+  background-color: transparent;
+}
+
+.advancedmodule .title {
+  margin-bottom: 4px
+}
+
 #ECharts {
   margin-top: 15px;
 }

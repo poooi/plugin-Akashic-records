@@ -169,9 +169,9 @@ AkashicRecordsArea = React.createClass
     data.reverse()
     data.sort (a, b)->
       if isNaN a[0]
-        a[0] = (Date(a[0])).getTime()
+        a[0] = (new Date(a[0])).getTime()
       if isNaN b[0]
-        b[0] = (Date(b[0])).getTime()
+        b[0] = (new Date(b[0])).getTime()
       return b[0] - a[0]
   getLogFromFile: (id, type) ->
     switch type
