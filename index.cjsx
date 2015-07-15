@@ -18,7 +18,7 @@ if config.get('plugin.Akashic.enable', true)
 module.exports =
   name: 'Akashic'
   priority: 10
-  displayName: [<FontAwesome key={0} name='book' />, ' 航海日志']
+  displayName: <span><FontAwesome key={0} name='book' /> 航海日志</span>
   description: '日志'
   author: 'W.G.'
   link: 'https://github.com/JenningsWu'
