@@ -107,7 +107,7 @@ resolveFile = (fileContent, tableTab)->
           return []
         retData = []
         retData.push (new Date(logItem[1].replace(/-/g, "/"))).getTime()
-        tmpArray = logItem[3].match(/:\d+[-\d+]?/g)
+        tmpArray = logItem[3].match(/:\d+(-\d+)?/g)
         retData.push "#{logItem[2]}(#{tmpArray[0].substring(1)})"
         if logItem[4] is "ボス"
           tmp = "Boss点"
