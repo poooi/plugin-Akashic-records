@@ -12,7 +12,8 @@ initialAkashicRecordsWindow = ->
   if process.env.DEBUG?
     window.akashicRecordsWindow.openDevTools
       detach: true
-initialAkashicRecordsWindow()
+if config.get('plugin.Akashic.enable', true)
+  initialAkashicRecordsWindow()
 
 module.exports =
   name: 'Akashic'
