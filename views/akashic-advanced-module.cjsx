@@ -23,7 +23,26 @@ duplicateRemoval = (arr) ->
     tmp = "#{tmpDate.getFullYear()}/#{tmpDate.getMonth()}/#{tmpDate.getDate()}/#{tmpDate.getHours()}/#{tmpDate.getMinutes()}/#{tmpDate.getSeconds()}"
     if tmp is @lastTmp
       flag = false
-    @lastTmp = tmp
+    else
+      @lastTmp = tmp
+    flag
+
+duplicateResourceRemoval = (arr) ->
+  arr.sort (a, b)->
+    if isNaN a[0]
+      a[0] = (new Date(a[0])).getTime()
+    if isNaN b[0]
+      b[0] = (new Date(b[0])).getTime()
+    b[0] - a[0]
+  @lastTmp = 0
+  arr.filter (log) =>
+    flag = true
+    tmpDate = new Date(log[0])
+    tmp = "#{tmpDate.getFullYear()}/#{tmpDate.getMonth()}/#{tmpDate.getDate()}/#{tmpDate.getHours()}"
+    if tmp is @lastTmp
+      flag = false
+    else
+      @lastTmp = tmp
     flag
 
 toDateLabel = (datetime) ->
@@ -206,26 +225,26 @@ resolveFile = (fileContent, tableTab)->
         retData
       data = data.filter (log) ->
         log.length is 10
-    # 需要去重
-    # when "日付,直前のイベント,燃料,弾薬,鋼材,ボーキ,高速修復材,高速建造材,開発資材,改修資材"
-    #   logType = "createItem"
-    #   data = logs.slice(1).map (logItem) ->
-    #     logItem = logItem.split ','
-    #     if logItem.length isnt 10
-    #       return []
-    #     retData = []
-    #     retData.push (new Date(logItem[0].replace(/-/g, "/"))).getTime()
-    #     retData.push logItem[2]
-    #     retData.push logItem[3]
-    #     retData.push logItem[4]
-    #     retData.push logItem[5]
-    #     retData.push logItem[7]
-    #     retData.push logItem[6]
-    #     retData.push logItem[8]
-    #     retData.push logItem[9]
-    #     retData
-    #   data = data.filter (log) ->
-    #     log.length is 8
+    
+    when "日付,直前のイベント,燃料,弾薬,鋼材,ボーキ,高速修復材,高速建造材,開発資材,改修資材"
+      logType = "resource"
+      data = logs.slice(1).map (logItem) ->
+        logItem = logItem.split ','
+        if logItem.length isnt 10
+          return []
+        retData = []
+        retData.push (new Date(logItem[0].replace(/-/g, "/"))).getTime()
+        retData.push logItem[2]
+        retData.push logItem[3]
+        retData.push logItem[4]
+        retData.push logItem[5]
+        retData.push logItem[7]
+        retData.push logItem[6]
+        retData.push logItem[8]
+        retData.push logItem[9]
+        retData
+      data = data.filter (log) ->
+        log.length is 8
     else
       e = new Error()
       e.message = "不支持的编码或文件格式！"
@@ -335,7 +354,10 @@ AttackLog = React.createClass
           oldData = duplicateRemoval oldData
           oldLength = oldData.length
           newData = oldData.concat data
-          newData = duplicateRemoval newData
+          if logType is "resource"
+            newData = duplicateResourceRemoval newData
+          else
+            newData = duplicateRemoval newData
           newLength = newData.length
           fs.emptyDirSync path.join(APPDATA_PATH, 'akashic-records', "tmp")
           saveData = ""
