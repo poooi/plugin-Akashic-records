@@ -37,7 +37,7 @@ AkashicResourceTableTbodyItem = React.createClass
               else
                 flag = ""
                 diff = item - @props.nextdata[index]
-                if diff > @props.nextdata[index]
+                if diff > 0
                   diff = "+#{diff}"
                 <td>{"#{item}(#{diff})"}</td> 
       }
