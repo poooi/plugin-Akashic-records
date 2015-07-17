@@ -244,7 +244,7 @@ resolveFile = (fileContent, tableTab)->
         retData.push logItem[9]
         retData
       data = data.filter (log) ->
-        log.length is 8
+        log.length is 9
     else
       e = new Error()
       e.message = "不支持的编码或文件格式！"
