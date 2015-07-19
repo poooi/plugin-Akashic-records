@@ -72,3 +72,35 @@ akashic-records .container {
 akashic-records .advancedmodule {
   padding-top: 5px;
 }
+
+td.table-search{
+  padding-left: 0px !important;
+  padding-right: 1px !important;
+}
+
+.form-group.search-area{
+  margin: 0px;
+}
+
+.form-group.search-area{
+  margin: 0px;
+}
+
+.form-group.search-area input.form-control{
+  height: 24px;
+  padding-top: 1px;
+  padding-bottom: 1px;
+  padding-left: 1px;
+  padding-right: 3px;
+  font-size: 13px;
+}
+
+akashic-records table td {
+  white-space: nowrap !important;
+}
+
+@media (max-width: 720px) {
+  akashic-records table td {
+    white-space: normal !important;
+  }
+}

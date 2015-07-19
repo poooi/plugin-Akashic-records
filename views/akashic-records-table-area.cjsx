@@ -146,7 +146,19 @@ AkashicRecordsTableArea = React.createClass
                 <tr>
                   {
                     for tab, index in @props.tableTab
-                      <th>{tab}</th> if @props.rowChooseChecked[index]
+                      if index is 0
+                        <th>No.</th>
+                      else
+                        <th className="table-search">
+                          <Input
+                            type='text'
+                            value={@state.filterKey}
+                            label={"#{@props.tableTab[index]}"}
+                            placeholder={"#{@props.tableTab[index]}"}
+                            ref="input#{index}"
+                            groupClassName='search-area'
+                            onChange={@handleKeyWordChange} />
+                        </th> if @props.rowChooseChecked[index]
                   }
                 </tr>
               </thead>
