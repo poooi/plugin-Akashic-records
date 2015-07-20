@@ -528,8 +528,14 @@ AkashicRecordsArea = React.createClass
   componentDidMount: ->
     window.addEventListener 'game.response', @handleResponse
   componentWillMount: ->
+    @nickNameId = '132778983'
     if @nickNameId isnt 0
-      @getDataAccordingToNameId @nickNameId
+      @getAttackData @nickNameId
+      @getMissionData @nickNameId
+      @getCreateItemData @nickNameId
+      @getCreateShipData @nickNameId
+      @getResourceData @nickNameId
+
   handleSelectTab: (selectedKey)->
     if selectedKey is 4
       @setState

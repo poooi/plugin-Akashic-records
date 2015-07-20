@@ -99,6 +99,10 @@ akashic-records table td {
   white-space: nowrap !important;
 }
 
+akashic-records table td.enable-auto-newline {
+  white-space: normal !important;
+}
+
 akashic-records .divider h5{
   -webkit-user-select: none;
 }

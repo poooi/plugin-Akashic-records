@@ -4,21 +4,15 @@ Divider = require './divider'
 
 AkashicRecordsCheckboxArea = React.createClass
   getInitialState: ->
-    rowChooseChecked: [true, true, true, true, true, true, true, true, true, true, true, true,
-                      true, true]
     topPaneShow: true
-  componentWillMount: ->
-    @setState
-      rowChooseChecked: @props.rowChooseChecked
   handlePaneShow: ->
     {topPaneShow} = @state
     topPaneShow = not topPaneShow
     @setState {topPaneShow}
   handleClickCheckbox: (index) ->
-    {rowChooseChecked} = @state
+    {rowChooseChecked} = @props
     rowChooseChecked[index] = !rowChooseChecked[index]
-    @setState {rowChooseChecked}
-    @props.filterRules rowChooseChecked
+    @props.tabFilterRules rowChooseChecked
     config.set "plugin.Akashic.#{@props.contentType}.checkbox", JSON.stringify rowChooseChecked
   handleShowAmountSelect: (selectedKey)->
     @props.showRules selectedKey, @props.activePage
@@ -41,7 +35,7 @@ AkashicRecordsCheckboxArea = React.createClass
           for checkedVal, index in @props.tableTab
             continue if !index
             <Col key={index} xs={2}>
-              <Input type='checkbox' value={index} onChange={@handleClickCheckbox.bind(@, index)} checked={@state.rowChooseChecked[index]} style={verticalAlign: 'middle'} label={checkedVal} />
+              <Input type='checkbox' value={index} onChange={@handleClickCheckbox.bind(@, index)} checked={@props.rowChooseChecked[index]} style={verticalAlign: 'middle'} label={checkedVal} />
             </Col>
         }
         </Row>
