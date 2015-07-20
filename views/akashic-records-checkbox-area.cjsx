@@ -55,8 +55,8 @@ AkashicRecordsCheckboxArea = React.createClass
             <ButtonGroup justified>
               <DropdownButton eventKey={4} title={"第#{@props.activePage}页"} block>
               {
-                if @state.dataShowLength isnt 0
-                  for index in [1..Math.ceil(@state.dataShowLength/@props.showAmount)]
+                if @props.dataShowLength isnt 0
+                  for index in [1..Math.ceil(@props.dataShowLength/@props.showAmount)]
                     <MenuItem eventKey={index} onSelect={@handleShowPageSelect}>第{index}页</MenuItem>
               } 
               </DropdownButton>
@@ -65,7 +65,7 @@ AkashicRecordsCheckboxArea = React.createClass
           <Col xs={6}>
             <Input
               type='text'
-              value={@state.filterKey}
+              value=''
               placeholder='关键词'
               hasFeedback
               ref='input'

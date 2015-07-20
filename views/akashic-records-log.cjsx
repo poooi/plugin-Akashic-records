@@ -110,6 +110,7 @@ AkashicLog = React.createClass
       @setState
         activePage: activePage
         dataShow: dataShow
+        showRulesVersion: @state.showRulesVersion + 1
 
   componentWillMount: ->
     {activePage} = @state
@@ -178,8 +179,8 @@ AkashicLog = React.createClass
         rowChooseChecked={@state.rowChooseChecked} 
         filterKeys={@state.filterKeys}
         filterRules={@filterRules}
-        paginationItems={Math.ceil(@state.dataAfterFilterLength/@props.showAmount)} 
-        paginationMaxButtons={if Math.ceil(@state.dataAfterFilterLength/@props.showAmount)>5 then 5 else Math.ceil(@state.dataAfterFilterLength/@props.showAmount)} 
+        paginationItems={Math.ceil(@state.dataAfterFilterLength/@state.showAmount)} 
+        paginationMaxButtons={if Math.ceil(@state.dataAfterFilterLength/@state.showAmount)>5 then 5 else Math.ceil(@state.dataAfterFilterLength/@state.showAmount)} 
         activePage={@state.activePage} 
         showAmount={@state.showAmount}
         handlePageChange={@handlePageChange}/>
