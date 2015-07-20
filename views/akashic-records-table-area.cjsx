@@ -67,78 +67,21 @@ AkashicRecordsTableArea = React.createClass
   handleKeyWordChange: ->
     keyWord = @refs.input.getValue()
     @_filterBy keyWord
-  componentWillMount: ->
-    if @props.data.length > 0
-      activePage = 1
-    else activePage = 0
-    showAmount = config.get "plugin.Akashic.#{@props.contentType}.showAmount", 10
-    @setState 
-      dataShow: @props.data
-      filterKey: ''
-      activePage: activePage
-      showAmount: showAmount
-  componentWillReceiveProps: (nextProps)->
-    dataShow = @_filter nextProps.data, @filterKey
-    {activePage} = @state
-    if activePage < 1
-      activePage = 1
-    if activePage > Math.ceil(dataShow.length/@state.showAmount)
-      activePage = Math.ceil(dataShow.length/@state.showAmount)
-    @setState
-      dataShow: dataShow
-      activePage: activePage
-  handleShowAmountSelect: (selectedKey)->
-    {activePage} = @state    
-    if activePage < 0
-      activePage = 1
-    if activePage > Math.ceil(@state.dataShow.length/selectedKey)
-      activePage = Math.ceil(@state.dataShow.length/selectedKey)
-    config.set "plugin.Akashic.#{@props.contentType}.showAmount", selectedKey
-    @setState
-      showAmount: selectedKey
-      activePage: activePage
-  handleShowPageSelect: (selectedKey)->
-    @setState
-      activePage: selectedKey
+  # componentWillReceiveProps: (nextProps)->
+  #   dataShow = @_filter nextProps.data, @filterKey
+  #   {activePage} = @state
+  #   if activePage < 1
+  #     activePage = 1
+  #   if activePage > Math.ceil(dataShow.length/@state.showAmount)
+  #     activePage = Math.ceil(dataShow.length/@state.showAmount)
+  #   @setState
+  #     dataShow: dataShow
+  #     activePage: activePage
   handlePaginationSelect: (event, selectedEvent)->
-    @setState
-      activePage: selectedEvent.eventKey
+    @props.handlePageChange selectedEvent.eventKey
   render: ->
     <div>
       <Grid>
-        <Row>
-          <Col xs={3}>
-            <ButtonGroup justified>
-              <DropdownButton center eventKey={4} title={"显示#{@state.showAmount}条"} block>
-                <MenuItem center eventKey=10 onSelect={@handleShowAmountSelect}>{"显示10条"}</MenuItem>
-                <MenuItem eventKey=20 onSelect={@handleShowAmountSelect}>{"显示20条"}</MenuItem>
-                <MenuItem eventKey=50 onSelect={@handleShowAmountSelect}>{"显示50条"}</MenuItem>
-                <MenuItem divider />
-                <MenuItem eventKey=999999 onSelect={@handleShowAmountSelect}>{"显示全部"}</MenuItem>
-              </DropdownButton>
-            </ButtonGroup>
-          </Col>
-          <Col xs={3}>
-            <ButtonGroup justified>
-              <DropdownButton eventKey={4} title={"第#{@state.activePage}页"} block>
-              {
-                if @state.dataShow.length isnt 0
-                  for index in [1..Math.ceil(@state.dataShow.length/@state.showAmount)]
-                    <MenuItem eventKey={index} onSelect={@handleShowPageSelect}>第{index}页</MenuItem>
-              } 
-              </DropdownButton>
-            </ButtonGroup>
-          </Col>
-          <Col xs={6}>
-            <Input
-              type='text'
-              value={@state.filterKey}
-              placeholder='关键词'
-              hasFeedback
-              ref='input'
-              onChange={@handleKeyWordChange} />
-          </Col>
-        </Row>
         <Row>
           <Col xs={12}>
             <Table striped bordered condensed hover Responsive>
@@ -163,14 +106,14 @@ AkashicRecordsTableArea = React.createClass
                 </tr>
               </thead>
               <tbody>
-                { if @state.activePage > 0
-                    for item, index in @state.dataShow.slice((@state.activePage-1)*@state.showAmount, @state.activePage*@state.showAmount)
-                      <AkashicRecordsTableTbodyItem 
-                        key = {index}
-                        index = {(@state.activePage-1)*@state.showAmount+index+1};
-                        data={item} 
-                        rowChooseChecked={@props.rowChooseChecked}
-                      />
+                {
+                  for item, index in @props.data
+                    <AkashicRecordsTableTbodyItem 
+                      key = {item[0]}
+                      index = {(@props.activePage-1)*@props.showAmount+index+1};
+                      data={item} 
+                      rowChooseChecked={@props.rowChooseChecked}
+                    />
                 }
               </tbody>
             </Table>
@@ -184,9 +127,9 @@ AkashicRecordsTableArea = React.createClass
               first={true}
               last={true}
               ellipsis={true}
-              items={Math.ceil(@state.dataShow.length/@state.showAmount)}
-              maxButtons={if Math.ceil(@state.dataShow.length/@state.showAmount)>5 then 5 else Math.ceil(@state.dataShow.length/@state.showAmount)}
-              activePage={@state.activePage}
+              items={@props.paginationItems}
+              maxButtons={@props.paginationMaxButtons}
+              activePage={@props.activePage}
               onSelect={@handlePaginationSelect}
             />
           </Col>

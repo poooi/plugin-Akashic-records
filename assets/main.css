@@ -99,6 +99,24 @@ akashic-records table td {
   white-space: nowrap !important;
 }
 
+akashic-records .divider h5{
+  -webkit-user-select: none;
+}
+
+akashic-records .divider h5{
+  margin-bottom: 0px;
+}
+
+akashic-records .divider hr{
+  margin-top: 10px;
+  margin-bottom: 14px;
+}
+
+akashic-records .akashic-records-filter .btn {
+    padding-top: 3px;
+    padding-bottom: 3px;
+}
+
 @media (max-width: 720px) {
   akashic-records table td {
     white-space: normal !important;
