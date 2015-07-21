@@ -89,26 +89,85 @@ AkashicRecordsTableArea = React.createClass
       <Grid>
         <Row>
           <Col xs={12}>
-            <Table striped bordered condensed hover Responsive>
+            <Table striped bordered condensed hover>
               <thead>
-                <tr>
+              {
+                if @props.configChecked[2]
+                  <tr>
+                    {
+                      showLabel = false
+                      for filterKey, index in @props.filterKeys
+                        if filterKey isnt ''
+                          showLabel = true
+                      for tab, index in @props.tableTab
+                        if index is 0
+                          <th>No.</th>
+                        else
+                          <th className="table-search">
+                            <Input
+                              type='text'
+                              value={@props.filterKeys[index]}
+                              label={if showLabel then @props.tableTab[index] else ''}
+                              placeholder={@props.tableTab[index]}
+                              ref="input#{index}"
+                              groupClassName='search-area'
+                              onChange={@handleKeyWordChange} />
+                          </th> if @props.rowChooseChecked[index]
+                    }
+                  </tr>
+                else if @props.configChecked[0] and @props.configChecked[1]
+                  <tr>
+                    {
+                      showLabel = false
+                      for filterKey, index in @props.filterKeys
+                        if filterKey isnt ''
+                          showLabel = true
+                      for tab, index in @props.tableTab
+                        if index is 0
+                          <th>No.</th>
+                        else
+                          <th className="table-search">
+                            <Input
+                              type='text'
+                              value={@props.filterKeys[index]}
+                              label={@props.tableTab[index]}
+                              placeholder={@props.tableTab[index]}
+                              ref="input#{index}"
+                              groupClassName='search-area'
+                              onChange={@handleKeyWordChange} />
+                          </th> if @props.rowChooseChecked[index]
+                    }
+                  </tr>
+                else if @props.configChecked[0]
+                  <tr>
                   {
                     for tab, index in @props.tableTab
-                      if index is 0
-                        <th>No.</th>
-                      else
-                        <th className="table-search">
-                          <Input
-                            type='text'
-                            value={@props.filterKeys[index]}
-                            label={@props.tableTab[index]}}
-                            placeholder={@props.tableTab[index]}
-                            ref="input#{index}"
-                            groupClassName='search-area'
-                            onChange={@handleKeyWordChange} />
-                        </th> if @props.rowChooseChecked[index]
+                      <th>{@props.tableTab[index]}</th> if @props.rowChooseChecked[index]
                   }
-                </tr>
+                  </tr>
+                else if @props.configChecked[1]
+                  <tr>
+                    {
+                      showLabel = false
+                      for filterKey, index in @props.filterKeys
+                        if filterKey isnt ''
+                          showLabel = true
+                      for tab, index in @props.tableTab
+                        if index is 0
+                          <th>No.</th>
+                        else
+                          <th className="table-search">
+                            <Input
+                              type='text'
+                              value={@props.filterKeys[index]}
+                              placeholder={@props.tableTab[index]}
+                              ref="input#{index}"
+                              groupClassName='search-area'
+                              onChange={@handleKeyWordChange} />
+                          </th> if @props.rowChooseChecked[index]
+                    }
+                  </tr>
+              }  
               </thead>
               <tbody>
                 {

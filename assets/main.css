@@ -26,10 +26,15 @@ akashic-records .container {
 	width: 100%; !important
 }
 
-#akashic-records-settings {
+.akashic-records-settings {
   margin-top: 10px;
   margin-bottom: 15px;
 }
+
+.akashic-records-settings.tab-pane-hidden {
+  margin-bottom: 0px;
+}
+
 
 #myChart {
   min-height: 350px !important;
@@ -80,10 +85,7 @@ td.table-search{
 
 .form-group.search-area{
   margin: 0px;
-}
-
-.form-group.search-area{
-  margin: 0px;
+  max-width: 150px;
 }
 
 .form-group.search-area input.form-control{
@@ -104,6 +106,7 @@ akashic-records table td.enable-auto-newline {
 }
 
 akashic-records .divider h5{
+  margin-top: 3px;
   -webkit-user-select: none;
 }
 
@@ -111,10 +114,24 @@ akashic-records .divider h5{
   margin-bottom: 0px;
 }
 
+akashic-records hr{
+  margin-top: 10px;
+  margin-bottom: 8px;
+}
+
 akashic-records .divider hr{
   margin-top: 10px;
-  margin-bottom: 14px;
+  margin-bottom: 8px;
 }
+
+/*akashic-records .tab-pane-hidden .divider hr{
+  margin-bottom: 3px;
+}*/
+
+akashic-records .akashic-records-filter .checkbox{
+  margin-top: 0px;
+}
+
 
 akashic-records .akashic-records-filter .btn {
     padding-top: 3px;

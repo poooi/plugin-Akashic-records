@@ -22,22 +22,24 @@ dateToString = (date)->
     second = "0#{second}"
   "#{date.getFullYear()}/#{month}/#{day} #{hour}:#{minute}:#{second}"
 
+configList = ['显示表头', '显示筛选框', '自动判断', '隐藏筛选框时取消筛选']
+
 AkashicLog = React.createClass
   getInitialState: ->
     rowChooseChecked: [true, true, true, true, true, true, true, true, true, true, true, true,
                       true, true]
+    configChecked: [true, true, false, false]
     filterKeys:['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '']
     showAmount: 10
     activePage: 0
-    tabFilterVersion: 0
     filterVersion: 0
     showRulesVersion: 0
     dataShow: []
     dataAfterFilterLength: 0
-  tabFilterVersion: 0
   filterVersion: 0
   showRulesVersion: 0
   dataVersion: -1
+  configChecked: [true, true, false, false]
   rowChooseChecked: [true, true, true, true, true, true, true, true, true, true, true, true,
                       true, true]
   dataAfterFilter: []
@@ -79,7 +81,6 @@ AkashicLog = React.createClass
   tabFilterRules: (checked) ->
     @setState
       rowChooseChecked: checked
-      tabFilterVersion: @state.tabFilterVersion + 1
 
   #about filter    
   filterRules: (filterKeys) ->
@@ -112,6 +113,16 @@ AkashicLog = React.createClass
         dataShow: dataShow
         showRulesVersion: @state.showRulesVersion + 1
 
+  #click config checkbox
+  configCheckboxClick: (index)->
+    {configChecked} = @state
+    configChecked[index] = not configChecked[index]
+    if configChecked[2] is true
+      configChecked[0] = false
+      configChecked[1] = false
+    @setState
+      configChecked: configChecked
+
   componentWillMount: ->
     {activePage} = @state
     @rowChooseChecked = JSON.parse config.get "plugin.Akashic.#{@props.contentType}.checkbox", JSON.stringify @state.rowChooseChecked
@@ -143,15 +154,16 @@ AkashicLog = React.createClass
     refreshFlag = false
     if nextProps.indexKey is nextProps.selectedKey
       if @dataVersion isnt nextProps.dataVersion
-        refreshFlag = true
         @dataVersion = nextProps.dataVersion
+        refreshFlag = true
       for item, i in @rowChooseChecked
         if item isnt nextState.rowChooseChecked[i]
           @rowChooseChecked[i] = nextState.rowChooseChecked[i]
           refreshFlag = true
-      if @tabFilterVersion isnt nextState.tabFilterVersion
-        @tabFilterVersion = nextState.tabFilterVersion
-        refreshFlag = true
+      for item, i in @configChecked
+        if item isnt nextState.configChecked[i]
+          @configChecked[i] = nextState.configChecked[i]
+          refreshFlag = true
       if @filterVersion isnt nextState.filterVersion
         @filterVersion = nextState.filterVersion
         refreshFlag = true
@@ -171,7 +183,9 @@ AkashicLog = React.createClass
         showRules={@showRules}
         showAmount={@state.showAmount}
         activePage={@state.activePage}
-      />
+        configList={configList}
+        configChecked={@state.configChecked}
+        configCheckboxClick={@configCheckboxClick} />
       <AkashicRecordsTableArea
         contentType={@props.contentType} 
         tableTab={@props.tableTab} 
@@ -183,7 +197,8 @@ AkashicLog = React.createClass
         paginationMaxButtons={if Math.ceil(@state.dataAfterFilterLength/@state.showAmount)>5 then 5 else Math.ceil(@state.dataAfterFilterLength/@state.showAmount)} 
         activePage={@state.activePage} 
         showAmount={@state.showAmount}
-        handlePageChange={@handlePageChange}/>
+        handlePageChange={@handlePageChange}
+        configChecked={@state.configChecked}/>
     </div>
 
 module.exports = AkashicLog
