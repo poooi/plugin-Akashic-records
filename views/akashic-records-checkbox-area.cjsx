@@ -2,6 +2,24 @@
 {Panel, Button, Col, Input, Grid, Row, ButtonGroup, DropdownButton, MenuItem, Table} = ReactBootstrap
 Divider = require './divider'
 
+dateToString = (date)->
+  month = date.getMonth() + 1
+  if month < 10
+    month = "0#{month}"
+  day = date.getDate()
+  if day < 10
+    day = "0#{day}"
+  hour = date.getHours()
+  if hour < 10
+    hour = "0#{hour}"
+  minute = date.getMinutes()
+  if minute < 10
+    minute = "0#{minute}"
+  second = date.getSeconds()
+  if second < 10
+    second = "0#{second}"
+  "#{date.getFullYear()}/#{month}/#{day} #{hour}:#{minute}:#{second}"
+
 AkashicRecordsCheckboxArea = React.createClass
   getInitialState: ->
     topPaneShow: true
@@ -12,6 +30,30 @@ AkashicRecordsCheckboxArea = React.createClass
       num: 0
       percent: 0
     ]
+  refreshSearchResult: (data, filterKeys)->
+    {searchResult} = @state
+    for index in [0..@state.searchNum]
+      continue if filterKeys[index] is ''
+      filterKey = filterKeys[index]
+      searchResult[index].num = data.length
+      result = 0
+      for log in data
+        match = false
+        for item, i in log
+          if i is 0
+            searchText = dateToString(new Date(item)).toLowerCase().trim()
+          else
+            searchText = "#{item}".toLowerCase().trim()
+          if searchText.indexOf(filterKey.toLowerCase().trim()) >= 0
+            match = true
+        if match
+          result += 1
+      searchResult[index].result = result
+      searchResult[index].percent = Math.round(result*10000/searchResult[index].num) / 100
+    @setState
+      searchResult: searchResult
+      filterKeys: filterKeys
+
   handlePaneShow: ->
     {topPaneShow} = @state
     topPaneShow = not topPaneShow
@@ -28,7 +70,15 @@ AkashicRecordsCheckboxArea = React.createClass
   handleShowPageSelect: (selectedKey)->
     @props.showRules @props.showAmount, selectedKey
   handleKeyWordChange: (selectedKey)->
-    test = 1
+    {searchNum} = @state
+    filterKeys = []
+    for index in [0..searchNum]
+      filterKeys[index] = @refs["search#{index}"].getValue()
+    @refreshSearchResult @props.dataAfterFilter, filterKeys
+  componentWillMount: ->
+    @refreshSearchResult @props.dataAfterFilter, @state.filterKeys
+  componentWillReceiveProps: (nextProps)->
+    @refreshSearchResult nextProps.dataAfterFilter, @state.filterKeys
   render: ->
     <div className='akashic-records-settings' className={if @state.topPaneShow then "tap-pane-show" else "tab-pane-hidden"}>
       <Grid>

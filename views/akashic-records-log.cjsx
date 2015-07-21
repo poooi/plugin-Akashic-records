@@ -35,6 +35,7 @@ AkashicLog = React.createClass
     filterVersion: 0
     showRulesVersion: 0
     dataShow: []
+    dataAfterFilter: []
     dataAfterFilterLength: 0
   filterVersion: 0
   showRulesVersion: 0
@@ -42,7 +43,6 @@ AkashicLog = React.createClass
   configChecked: [true, true, false, false]
   rowChooseChecked: [true, true, true, true, true, true, true, true, true, true, true, true,
                       true, true]
-  dataAfterFilter: []
   _testFilter: (log, keyWords)->
     {rowChooseChecked} = @state
     for item, index in log
@@ -65,17 +65,17 @@ AkashicLog = React.createClass
         @_testFilter row, keyWords
     else rawData
   refreshDataShow: (data, filterKeys, activePage, showAmount)->
-    @dataAfterFilter = @_filter data, filterKeys
-    dataAfterFilterLength = @dataAfterFilter.length
+    dataAfterFilter = @_filter data, filterKeys
+    dataAfterFilterLength = dataAfterFilter.length
     if activePage < 1
       activePage = 1
     if activePage > Math.ceil(dataAfterFilterLength/showAmount)
       activePage = Math.ceil(dataAfterFilterLength/showAmount)
     if dataAfterFilterLength > 0
-      dataShow = @dataAfterFilter.slice((activePage - 1) * showAmount, activePage * showAmount)
+      dataShow = dataAfterFilter.slice((activePage - 1) * showAmount, activePage * showAmount)
     else
       dataShow = []
-    {dataShow, dataAfterFilterLength, activePage}
+    {dataShow, dataAfterFilter, dataAfterFilterLength, activePage}
 
   ## about tab checkbox
   tabFilterRules: (checked) ->
@@ -84,10 +84,11 @@ AkashicLog = React.createClass
 
   #about filter    
   filterRules: (filterKeys) ->
-    {dataShow, dataAfterFilterLength, activePage} = @refreshDataShow @props.data, filterKeys, @state.activePage, @state.showAmount
+    {dataShow, dataAfterFilter, dataAfterFilterLength, activePage} = @refreshDataShow @props.data, filterKeys, @state.activePage, @state.showAmount
     @setState
       filterKeys: filterKeys
       filterVersion: @state.filterVersion + 1
+      dataAfterFilter: dataAfterFilter
       dataAfterFilterLength: dataAfterFilterLength
       dataShow: dataShow
       activePage: activePage
@@ -99,7 +100,7 @@ AkashicLog = React.createClass
     if showAmount isnt @state.showAmount
       config.set "plugin.Akashic.#{@props.contentType}.showAmount", showAmount
     if showAmount isnt @state.showAmount or activePage isnt @state.activePage
-      dataShow = @dataAfterFilter.slice((activePage - 1) * showAmount, activePage * showAmount)
+      dataShow = @state.dataAfterFilter.slice((activePage - 1) * showAmount, activePage * showAmount)
       @setState
         showAmount: showAmount
         activePage: activePage
@@ -107,7 +108,7 @@ AkashicLog = React.createClass
         dataShow: dataShow
   handlePageChange: (activePage)->
     if activePage isnt @state.activePage
-      dataShow = @dataAfterFilter.slice((activePage - 1) * @state.showAmount, activePage * @state.showAmount)
+      dataShow = @state.dataAfterFilter.slice((activePage - 1) * @state.showAmount, activePage * @state.showAmount)
       @setState
         activePage: activePage
         dataShow: dataShow
@@ -128,25 +129,27 @@ AkashicLog = React.createClass
     @rowChooseChecked = JSON.parse config.get "plugin.Akashic.#{@props.contentType}.checkbox", JSON.stringify @state.rowChooseChecked
     rowChooseChecked = JSON.parse JSON.stringify @rowChooseChecked
     showAmount = config.get "plugin.Akashic.#{@props.contentType}.showAmount", @state.showAmount
-    @dataAfterFilter = @_filter @props.data, @state.filterKeys
-    dataAfterFilterLength = @dataAfterFilter.length
+    dataAfterFilter = @_filter @props.data, @state.filterKeys
+    dataAfterFilterLength = dataAfterFilter.length
     if dataAfterFilterLength > 0
       if activePage < 1
         activePage = 1
-      dataShow = @dataAfterFilter.slice((activePage - 1) * showAmount, activePage * showAmount)
+      dataShow = dataAfterFilter.slice((activePage - 1) * showAmount, activePage * showAmount)
     else
       dataShow = []
     @setState
       rowChooseChecked: rowChooseChecked
       showAmount: showAmount
+      dataAfterFilter: dataAfterFilter
       dataAfterFilterLength: dataAfterFilterLength
       dataShow: dataShow
       activePage: activePage
   componentWillReceiveProps: (nextProps)->
     if nextProps.indexKey is nextProps.selectedKey
       if @dataVersion isnt nextProps.dataVersion
-        {dataShow, dataAfterFilterLength, activePage} = @refreshDataShow nextProps.data, @state.filterKeys, @state.activePage, @state.showAmount
+        {dataShow, dataAfterFilter, dataAfterFilterLength, activePage} = @refreshDataShow nextProps.data, @state.filterKeys, @state.activePage, @state.showAmount
         @setState
+          dataAfterFilter: dataAfterFilter
           dataAfterFilterLength: dataAfterFilterLength
           dataShow: dataShow
           activePage: activePage
@@ -178,7 +181,8 @@ AkashicLog = React.createClass
         contentType={@props.contentType}
         tableTab={@props.tableTab} 
         tabFilterRules={@tabFilterRules} 
-        rowChooseChecked={@state.rowChooseChecked} 
+        rowChooseChecked={@state.rowChooseChecked}
+        dataAfterFilter={@state.dataAfterFilter}
         dataShowLength={@state.dataAfterFilterLength}
         showRules={@showRules}
         showAmount={@state.showAmount}
