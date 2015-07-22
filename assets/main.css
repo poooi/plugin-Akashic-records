@@ -45,10 +45,10 @@ akashic-records .container {
   padding-bottom: 12px;
 }
 
-.col-xs-2 .form-group {
+.col-xs-2 .form-group, .col-xs-3 .form-group, .col-xs-4 .form-group{
   margin-bottom: 0px;
 }
-.col-xs-2 .form-group .checkbox {
+.col-xs-2 .form-group .checkbox, .col-xs-3 .form-group .checkbox, .col-xs-4 .form-group .checkbox{
   margin-top: 0px;
   margin-bottom: 0px;
 }
@@ -83,12 +83,12 @@ td.table-search{
   padding-right: 1px !important;
 }
 
-.form-group.search-area{
+.form-group.search-area, .form-group.filter-area{
   margin: 0px;
   max-width: 150px;
 }
 
-.form-group.search-area input.form-control{
+.form-group.filter-area input.form-control{
   height: 24px;
   padding-top: 1px;
   padding-bottom: 1px;
@@ -96,6 +96,16 @@ td.table-search{
   padding-right: 3px;
   font-size: 13px;
 }
+
+.form-group.search-area input.form-control, .form-group.search-area select.form-control{
+  height: 20px;
+  padding-top: 1px;
+  padding-bottom: 1px;
+  padding-left: 1px;
+  padding-right: 3px;
+  font-size: 12px;
+}
+
 
 akashic-records table td {
   white-space: nowrap !important;
@@ -105,13 +115,14 @@ akashic-records table td.enable-auto-newline {
   white-space: normal !important;
 }
 
-akashic-records .divider h5{
-  margin-top: 3px;
-  -webkit-user-select: none;
+akashic-records .divider hr{
+  margin-top: 0px;
 }
 
 akashic-records .divider h5{
-  margin-bottom: 0px;
+  margin-top: 12px;
+  -webkit-user-select: none;
+  margin-bottom: 10px;
 }
 
 akashic-records hr{
@@ -128,12 +139,14 @@ akashic-records .divider hr{
   margin-bottom: 3px;
 }*/
 
-akashic-records .akashic-records-filter .checkbox{
+akashic-records .akashic-records-filter .checkbox,
+akashic-records .akashic-records-statistics .checkbox{
   margin-top: 0px;
 }
 
 
-akashic-records .akashic-records-filter .btn {
+akashic-records .akashic-records-filter .btn,
+akashic-records .akashic-records-statistics .btn {
     padding-top: 3px;
     padding-bottom: 3px;
 }

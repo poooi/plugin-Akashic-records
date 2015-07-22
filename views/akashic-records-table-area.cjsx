@@ -110,7 +110,7 @@ AkashicRecordsTableArea = React.createClass
                               label={if showLabel then @props.tableTab[index] else ''}
                               placeholder={@props.tableTab[index]}
                               ref="input#{index}"
-                              groupClassName='search-area'
+                              groupClassName='filter-area'
                               onChange={@handleKeyWordChange} />
                           </th> if @props.rowChooseChecked[index]
                     }
@@ -133,7 +133,7 @@ AkashicRecordsTableArea = React.createClass
                               label={@props.tableTab[index]}
                               placeholder={@props.tableTab[index]}
                               ref="input#{index}"
-                              groupClassName='search-area'
+                              groupClassName='filter-area'
                               onChange={@handleKeyWordChange} />
                           </th> if @props.rowChooseChecked[index]
                     }
@@ -162,7 +162,7 @@ AkashicRecordsTableArea = React.createClass
                               value={@props.filterKeys[index]}
                               placeholder={@props.tableTab[index]}
                               ref="input#{index}"
-                              groupClassName='search-area'
+                              groupClassName='filter-area'
                               onChange={@handleKeyWordChange} />
                           </th> if @props.rowChooseChecked[index]
                     }

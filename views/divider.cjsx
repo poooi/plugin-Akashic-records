@@ -12,5 +12,8 @@ module.exports = React.createClass
               <FontAwesome name='chevron-circle-right' />
         }
       </h5>
-      <hr />
+      {
+        if @props.hr
+          <hr />
+      }
     </div>

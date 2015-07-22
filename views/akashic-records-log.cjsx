@@ -182,6 +182,7 @@ AkashicLog = React.createClass
         tableTab={@props.tableTab} 
         tabFilterRules={@tabFilterRules} 
         rowChooseChecked={@state.rowChooseChecked}
+        data={@props.data}
         dataAfterFilter={@state.dataAfterFilter}
         dataShowLength={@state.dataAfterFilterLength}
         showRules={@showRules}

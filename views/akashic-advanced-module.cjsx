@@ -410,11 +410,11 @@ AttackLog = React.createClass
         <Row>
           <Col xs={4}>
             <Input type="select" ref="type" value={@state.typeChoosed} onChange={@handleSetType}>
-                <option key={0} value={'出击'}>出击</option>
-                <option key={1} value={'远征'}>远征</option>
-                <option key={2} value={'建造'}>建造</option>
-                <option key={3} value={'开发'}>开发</option>
-                <option key={4} value={'资源'}>资源</option>
+              <option key={0} value={'出击'}>出击</option>
+              <option key={1} value={'远征'}>远征</option>
+              <option key={2} value={'建造'}>建造</option>
+              <option key={3} value={'开发'}>开发</option>
+              <option key={4} value={'资源'}>资源</option>
             </Input>
           </Col>
           <Col xs={4}>
