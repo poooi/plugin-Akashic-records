@@ -124,12 +124,16 @@ AkashicResourceChart = React.createClass
                 config.set "plugin.Akashic.resource.chart.showAsDay", @showAsDay
             )(@showAsDay)
           showType: ((showAllSymbol)=>
+            if @sleepMode
+              suffix = "-sleepmode"
+            else 
+              suffix = ""
             if showAllSymbol
               title = '显示节点'
-              icon = './assets/echarts-with-node.png'
+              icon = "./assets/echarts-with-node#{suffix}.png"
             else
               title = '隐藏节点'
-              icon = './assets/echarts-no-node.png'
+              icon = "./assets/echarts-no-node#{suffix}.png"
             showType = 
               show: true
               title: title
@@ -138,6 +142,9 @@ AkashicResourceChart = React.createClass
                 @showAllSymbol = not @showAllSymbol
                 @resourceChart.setOption @getEChartsOption(), true
                 config.set "plugin.Akashic.resource.chart.showAllSymbol", @showAllSymbol
+            if @sleepMode
+              showType.color = '#eee'
+            showType
             )(@showAllSymbol)
           themeMode: ((sleepMode)=>
             if sleepMode
@@ -159,6 +166,8 @@ AkashicResourceChart = React.createClass
                 @resourceChart.setOption @getEChartsOption(), true
                 config.set "plugin.Akashic.resource.chart.sleepMode", @sleepMode
             )(@sleepMode)
+      grid:
+        y2: 80
       dataZoom:
         show: true
         realtime: true

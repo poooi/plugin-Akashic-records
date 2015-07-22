@@ -123,6 +123,7 @@ AkashicRecordsArea = React.createClass
     resourceData: []
     mapShowFlag: false
     selectedKey: 0
+    dataVersion: [0, 0, 0, 0, 0]
   nickNameId: 0
   mapAreaId: 0
   mapInfoNo: 0
@@ -176,37 +177,47 @@ AkashicRecordsArea = React.createClass
   getLogFromFile: (id, type) ->
     switch type
       when 0
-        {attackData} = @state
+        {attackData, dataVersion} = @state
         attackData = @getDataAccordingToNameId id, "attack"
         console.log "get attackData from file" if process.env.DEBUG?
+        dataVersion[0] += 1
         @setState 
           attackData: attackData
+          dataVersion: dataVersion
       when 1
-        {missionData} = @state
+        {missionData, dataVersion} = @state
         missionData = @getDataAccordingToNameId id, "mission"
         console.log "get missionData from file" if process.env.DEBUG?
+        dataVersion[1] += 1
         @setState 
           missionData: missionData
+          dataVersion: dataVersion
       when 2
-        {createItemData} = @state
+        {createItemData, dataVersion} = @state
         createItemData = @getDataAccordingToNameId id, "createitem"
         console.log "get createItemData from file" if process.env.DEBUG?
+        dataVersion[2] += 1
         @setState 
           createItemData: createItemData
+          dataVersion: dataVersion
       when 3
-        {createShipData} = @state
+        {createShipData, dataVersion} = @state
         createShipData = @getDataAccordingToNameId id, "createship"
         console.log "get createShipData from file" if process.env.DEBUG?
+        dataVersion[3] += 1
         @setState 
           createShipData: createShipData
+          dataVersion: dataVersion
       when 4
-        {resourceData} = @state
+        {resourceData, dataVersion} = @state
         resourceData = @getDataAccordingToNameId id, "resource"
-        log "get resourceData from file"
+        log "get resourceData from file" if process.env.DEBUG?
+        dataVersion[4] += 1
         if resourceData.length > 0
           @timeString = timeToBString resourceData[0][0]
         @setState 
           resourceData: resourceData
+          dataVersion: dataVersion
   getAttackData: (id) ->
     @getLogFromFile id, 0  
   getMissionData: (id) ->
@@ -370,7 +381,11 @@ AkashicRecordsArea = React.createClass
         attackData.unshift dataItem
         # log "save and show new data"
         @saveAttackLog dataItem
-        @setState attackData
+        {dataVersion} = @state
+        dataVersion[0] += 1
+        @setState 
+          attackData: attackData
+          dataVersion: dataVersion
 
       # 远征
       when '/kcsapi/api_req_mission/result'
@@ -417,7 +432,11 @@ AkashicRecordsArea = React.createClass
         {missionData} = @state
         missionData.unshift dataItem
         @saveMissionLog dataItem
-        @setState missionData
+        {dataVersion} = @state
+        dataVersion[1] += 1
+        @setState 
+          missionData: missionData
+          dataVersion: dataVersion
 
       # 开发
       when '/kcsapi/api_req_kousyou/createitem'
@@ -442,7 +461,11 @@ AkashicRecordsArea = React.createClass
         {createItemData} = @state
         createItemData.unshift dataItem
         @saveCreateItemLog dataItem
-        @setState createItemData
+        {dataVersion} = @state
+        dataVersion[2] += 1
+        @setState 
+          createItemData: createItemData
+          dataVersion: dataVersion
 
       # 建造
       when '/kcsapi/api_req_kousyou/createship'
@@ -478,7 +501,11 @@ AkashicRecordsArea = React.createClass
           {createShipData} = @state
           createShipData.unshift dataItem
           @saveCreateShipLog dataItem
-          @setState createShipData
+          {dataVersion} = @state
+          dataVersion[3] += 1
+          @setState 
+            createShipData: createShipData
+            dataVersion: dataVersion
           @createShipFlag = false
       # 资源 
       when '/kcsapi/api_port/port'
@@ -492,13 +519,23 @@ AkashicRecordsArea = React.createClass
           {resourceData} = @state
           resourceData.unshift dataItem
           @saveResourceLog dataItem
-          @setState resourceData
+          {dataVersion} = @state
+          dataVersion[4] += 1
+          @setState 
+            resourceData: resourceData
+            dataVersion: dataVersion
 
   componentDidMount: ->
     window.addEventListener 'game.response', @handleResponse
   componentWillMount: ->
+    @nickNameId = '132778983'
     if @nickNameId isnt 0
-      @getDataAccordingToNameId @nickNameId
+      @getAttackData @nickNameId
+      @getMissionData @nickNameId
+      @getCreateItemData @nickNameId
+      @getCreateShipData @nickNameId
+      @getResourceData @nickNameId
+
   handleSelectTab: (selectedKey)->
     if selectedKey is 4
       @setState
@@ -510,11 +547,11 @@ AkashicRecordsArea = React.createClass
         selectedKey: selectedKey
   render: ->
     <TabbedArea activeKey={@state.selectedKey} animation={false} onSelect={@handleSelectTab}>
-      <TabPane eventKey={0} tab='出击' ><AkashicLog data={@state.attackData} tableTab={attackTableTab} contentType={'attack'}/></TabPane>
-      <TabPane eventKey={1} tab='远征' ><AkashicLog data={@state.missionData} tableTab={missionTableTab} contentType={'mission'}/></TabPane>
-      <TabPane eventKey={2} tab='建造' ><AkashicLog data={@state.createShipData} tableTab={createShipTableTab} contentType={'createShip'}/></TabPane>
-      <TabPane eventKey={3} tab='开发' ><AkashicLog data={@state.createItemData} tableTab={createItemTableTab} contentType={'createItem'}/></TabPane>
-      <TabPane eventKey={4} tab='资源统计' ><AkashicResourceLog data={@state.resourceData} tableTab={resourceTableTab} mapShowFlag={@state.mapShowFlag} contentType={'resource'}/></TabPane>
+      <TabPane eventKey={0} tab='出击' ><AkashicLog indexKey={0} selectedKey={@state.selectedKey} data={@state.attackData} dataVersion={@state.dataVersion[0]} tableTab={attackTableTab} contentType={'attack'}/></TabPane>
+      <TabPane eventKey={1} tab='远征' ><AkashicLog indexKey={1} selectedKey={@state.selectedKey} data={@state.missionData} dataVersion={@state.dataVersion[1]} tableTab={missionTableTab} contentType={'mission'}/></TabPane>
+      <TabPane eventKey={2} tab='建造' ><AkashicLog indexKey={2} selectedKey={@state.selectedKey} data={@state.createShipData} dataVersion={@state.dataVersion[3]} tableTab={createShipTableTab} contentType={'createShip'}/></TabPane>
+      <TabPane eventKey={3} tab='开发' ><AkashicLog indexKey={3} selectedKey={@state.selectedKey} data={@state.createItemData} dataVersion={@state.dataVersion[2]} tableTab={createItemTableTab} contentType={'createItem'}/></TabPane>
+      <TabPane eventKey={4} tab='资源统计' ><AkashicResourceLog indexKey={4} selectedKey={@state.selectedKey} data={@state.resourceData} dataVersion={@state.dataVersion[4]} tableTab={resourceTableTab} mapShowFlag={@state.mapShowFlag} contentType={'resource'}/></TabPane>
       <TabPane eventKey={5} tab='高级' >
         <AkashicAdvancedModule
           tableTab={
