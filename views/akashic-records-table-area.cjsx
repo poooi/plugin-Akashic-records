@@ -1,7 +1,8 @@
 {React, ReactBootstrap, ROOT, config} = window
-{Grid, Row, Col, Table, ButtonGroup, DropdownButton, MenuItem, Input, Pagination} = ReactBootstrap
+{Grid, Row, Col, Table, ButtonGroup, DropdownButton, MenuItem, Input, Pagination, OverlayTrigger, Popover} = ReactBootstrap
 path = require 'path-extra'
 {log, warn, error} = require path.join(ROOT, 'lib/utils')
+{openExternal} = require 'shell'
 
 dateToString = (date)->
   month = date.getMonth() + 1
@@ -101,7 +102,16 @@ AkashicRecordsTableArea = React.createClass
                           showLabel = true
                       for tab, index in @props.tableTab
                         if index is 0
-                          <th>No.</th>
+                          <th>
+                            <OverlayTrigger trigger='click' rootClose={true} placement='right' overlay={
+                              <Popover title='筛选说明'>
+                                <li>隐藏的列自动取消筛选</li>
+                                <li>支持javascript的<a onClick={openExternal.bind(this, "http://www.w3school.com.cn/jsref/jsref_obj_regexp.asp")}>正则表达式</a></li>
+                              </Popover>
+                              }>
+                              <FontAwesome name='question-circle'/>
+                            </OverlayTrigger>
+                          </th>
                         else
                           <th className="table-search">
                             <Input
@@ -124,7 +134,16 @@ AkashicRecordsTableArea = React.createClass
                           showLabel = true
                       for tab, index in @props.tableTab
                         if index is 0
-                          <th>No.</th>
+                          <th>
+                            <OverlayTrigger trigger='click' rootClose={true} placement='right' overlay={
+                              <Popover title='筛选说明'>
+                                <li>隐藏的列自动取消筛选</li>
+                                <li>支持javascript的<a onClick={openExternal.bind(this, "http://www.w3school.com.cn/jsref/jsref_obj_regexp.asp")}>正则表达式</a></li>
+                              </Popover>
+                              }>
+                              <FontAwesome name='question-circle'/>
+                            </OverlayTrigger>
+                          </th>
                         else
                           <th className="table-search">
                             <Input
@@ -154,7 +173,16 @@ AkashicRecordsTableArea = React.createClass
                           showLabel = true
                       for tab, index in @props.tableTab
                         if index is 0
-                          <th>No.</th>
+                          <th>
+                            <OverlayTrigger trigger='click' rootClose={true} placement='right' overlay={
+                              <Popover title='筛选说明'>
+                                <li>隐藏的列自动取消筛选</li>
+                                <li>支持javascript的<a onClick={openExternal.bind(this, "http://www.w3school.com.cn/jsref/jsref_obj_regexp.asp")}>正则表达式</a></li>
+                              </Popover>
+                              }>
+                              <FontAwesome name='question-circle'/>
+                            </OverlayTrigger>
+                          </th>
                         else
                           <th className="table-search">
                             <Input

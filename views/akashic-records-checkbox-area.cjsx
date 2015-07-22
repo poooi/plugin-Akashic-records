@@ -1,6 +1,7 @@
 {React, ReactBootstrap, jQuery, config} = window
-{Panel, Button, Col, Input, Grid, Row, ButtonGroup, DropdownButton, MenuItem, Table} = ReactBootstrap
+{Panel, Button, Col, Input, Grid, Row, ButtonGroup, DropdownButton, MenuItem, Table, OverlayTrigger, Popover} = ReactBootstrap
 Divider = require './divider'
+{openExternal} = require 'shell'
 
 dateToString = (date)->
   month = date.getMonth() + 1
@@ -61,6 +62,17 @@ AkashicRecordsCheckboxArea = React.createClass
         searchArgv[index].percent=0
       else 
         filterKey = searchArgv[index].filterKey
+        regFlag = false
+        res = filterKey.match /^\/(.+)\/([gim]*)$/
+        if res?
+          try
+            reg = new RegExp res[1], res[2]
+            regFlag = true
+          catch e
+            regFlag = false
+          finally
+            if regFlag
+              filterKey = reg
         result = data.filter (log)=>
           match = false
           for item, i in log
@@ -68,8 +80,11 @@ AkashicRecordsCheckboxArea = React.createClass
               searchText = dateToString(new Date(item)).toLowerCase().trim()
             else
               searchText = "#{item}".toLowerCase().trim()
-            if searchText.indexOf(filterKey.toLowerCase().trim()) >= 0
-              match = true
+            if regFlag
+              match = filterKey.test searchText
+            else
+              match = searchText.indexOf(filterKey.toLowerCase().trim()) >= 0
+            if match
               return match
           match
         searchArgv[index].result = result
@@ -253,7 +268,15 @@ AkashicRecordsCheckboxArea = React.createClass
             <Table bordered responsive>
               <thead>
                 <tr>
-                  <th style={verticalAlign: 'middle'}><FontAwesome name='question-circle'/></th>
+                  <th style={verticalAlign: 'middle'}>
+                    <OverlayTrigger trigger='click' rootClose={true} placement='right' overlay={
+                      <Popover title='说明'>
+                        <li>搜索支持javascript的<a onClick={openExternal.bind(this, "http://www.w3school.com.cn/jsref/jsref_obj_regexp.asp")}>正则表达式</a></li>
+                      </Popover>
+                      }>
+                      <FontAwesome name='question-circle'/>
+                    </OverlayTrigger>
+                  </th>
                   <th>No.</th>
                   <th>基于</th>
                   <th>关键词</th>

@@ -45,13 +45,34 @@ AkashicLog = React.createClass
                       true, true]
   _testFilter: (log, keyWords)->
     {rowChooseChecked} = @state
+    regFlag = []
+    filterKeys = []
+    for item, index in keyWords
+      regFlag[index] =false
+      filterKeys[index] = item
+      if item isnt ''
+        res = item.match /^\/(.+)\/([gim]*)$/
+        if res?
+          try
+            reg = new RegExp res[1], res[2]
+            regFlag[index] = true
+          catch e
+            regFlag[index] = false
+            # ...
+          finally
+            if regFlag[index]
+              filterKeys[index] = reg
     for item, index in log
       if rowChooseChecked[index+1]
         if keyWords[index+1] isnt ''
           if index is 0
-            match = dateToString(new Date(item)).toLowerCase().trim().indexOf(keyWords[index+1].toLowerCase().trim()) >= 0
+            testText = dateToString(new Date(item)).toLowerCase().trim()
           else
-            match = "#{item}".toLowerCase().trim().indexOf(keyWords[index+1].toLowerCase().trim()) >= 0
+            testText = "#{item}".toLowerCase().trim()
+          if regFlag[index+1]
+            match = filterKeys[index+1].test testText
+          else
+            match = testText.indexOf(filterKeys[index+1].toLowerCase().trim()) >= 0
           if not match
             return false
     return true
@@ -79,8 +100,13 @@ AkashicLog = React.createClass
 
   ## about tab checkbox
   tabFilterRules: (checked) ->
+    {dataShow, dataAfterFilter, dataAfterFilterLength, activePage} = @refreshDataShow @props.data, @state.filterKeys, @state.activePage, @state.showAmount
     @setState
       rowChooseChecked: checked
+      dataAfterFilter: dataAfterFilter
+      dataAfterFilterLength: dataAfterFilterLength
+      dataShow: dataShow
+      activePage: activePage
 
   #about filter    
   filterRules: (filterKeys) ->

@@ -5,6 +5,10 @@ body {
   font-size: 13px;
 }
 
+a, table span.fa{
+  cursor: pointer;
+}
+
 #Akashic .show-grid {
 	padding: 10px;
 }
