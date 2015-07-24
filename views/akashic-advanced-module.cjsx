@@ -424,26 +424,21 @@ AttackLog = React.createClass
              <Button bsStyle='primary' style={width: '100%'} onClick={@importLogHandle}>导入</Button>
           </Col>
         </Row>
-        <Row>
+        <Row style={marginTop:"10px"}>
           <Col xs={12}>
             <div>
               <OverlayTrigger trigger='click' rootClose={true} placement='right' overlay={
                 <Popover title=''>
-                  <h4>统计页面部分</h4>
-                  <ul>
-                    <li>排序</li>
-                    <li>高级搜索</li>
-                  </ul>
-                  <h4>其他功能</h4>
-                  <ul>
-                    <li>航海日志数据导入</li>
-                    <li>允许离线查看</li>
-                  </ul>
+                  <h5>原因</h5>
+                    <li>目前来看是所用chrome中v8的问题，彻底解决要等上游chrome更新版本</li>
+                  <h5>暂时解决方法</h5>
+                    <li>不关闭日志插件，而是选择最小化，可缓解这一问题，减少白屏的出现。</li>
+                    <li>关闭和最小化对系统资源的占用是一样的，所以一直最小化并不会同比影响系统性能。</li>
                 </Popover>
                 }>
-                <Button bsStyle='default'>TODO list</Button>
+                <Button bsStyle='default'>常见问题：有时会插件白屏，是什么原因？</Button>
               </OverlayTrigger>
-              <h4>Bug汇报：https://github.com/yudachi/plugin-Akashic-records</h4>
+              <a style={marginLeft: "30px"} href="https://github.com/yudachi/plugin-Akashic-records">Bug汇报</a>
             </div>
           </Col>
         </Row>
