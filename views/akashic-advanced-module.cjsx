@@ -1,5 +1,5 @@
 {React, ReactBootstrap, ROOT, FontAwesome} = window
-{Grid, Row, Col, Input, Button, OverlayTrigger, Popover} = ReactBootstrap
+{Grid, Row, Col, Input, Button, OverlayTrigger, Popover, Input} = ReactBootstrap
 
 fs = require 'fs-extra'
 iconv = require 'iconv-lite'
@@ -257,8 +257,15 @@ resolveFile = (fileContent, tableTab)->
 AttackLog = React.createClass
   getInitialState: ->
     typeChoosed: '出击'
-  # componentWillMount: ->
-  #   console.log "test"
+    forceMinimize: true
+  componentWillMount: ->
+    forceMinimize = config.get "plugin.Akashic.forceMinimize", true
+    @setState
+      forceMinimize: forceMinimize
+  handleClickCheckbox: ->
+    config.set "plugin.Akashic.forceMinimize", not @state.forceMinimize
+    @setState
+      forceMinimize: not @state.forceMinimize
   handleSetType: ->
     @setState
       typeChoosed: @refs.type.getValue()
@@ -430,13 +437,14 @@ AttackLog = React.createClass
               <OverlayTrigger trigger='click' rootClose={true} placement='right' overlay={
                 <Popover title=''>
                   <h5>原因</h5>
-                    <li>目前来看是所用chrome中v8的问题，彻底解决要等上游chrome更新版本</li>
-                  <h5>暂时解决方法</h5>
-                    <li>不关闭日志插件，而是选择最小化，可缓解这一问题，减少白屏的出现。</li>
+                    <li>目前来看是所用chrome中v8的问题，彻底解决要等上游chrome更新版本。</li>
+                  <h5>目前解决方案</h5>
+                    <li>不关闭日志插件，代之直接最小化，可缓解这一问题，减少白屏的出现。但无法根治。</li>
                     <li>关闭和最小化对系统资源的占用是一样的，所以一直最小化并不会同比影响系统性能。</li>
+                  <Input type='checkbox' onChange={@handleClickCheckbox.bind(@)} checked={@state.forceMinimize} style={verticalAlign: 'middle'} label={"同意此解决方案(更改在重启后生效)"} />
                 </Popover>
                 }>
-                <Button bsStyle='default'>常见问题：有时会插件白屏，是什么原因？</Button>
+                <Button bsStyle='default'>常见问题：有关白屏与关闭/最小化插件</Button>
               </OverlayTrigger>
               <a style={marginLeft: "30px"} href="https://github.com/yudachi/plugin-Akashic-records">Bug汇报</a>
             </div>
