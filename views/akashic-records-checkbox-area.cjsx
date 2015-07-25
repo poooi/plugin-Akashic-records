@@ -230,7 +230,7 @@ AkashicRecordsCheckboxArea = React.createClass
               {
                 if @props.dataShowLength isnt 0
                   for index in [1..Math.ceil(@props.dataShowLength/@props.showAmount)]
-                    <MenuItem eventKey={index} onSelect={@handleShowPageSelect}>第{index}页</MenuItem>
+                    <MenuItem key={index} eventKey={index} onSelect={@handleShowPageSelect}>第{index}页</MenuItem>
               } 
               </DropdownButton>
             </ButtonGroup>
@@ -288,7 +288,7 @@ AkashicRecordsCheckboxArea = React.createClass
               <tbody>
               {
                 for index in [0..@state.searchArgv.length-1]
-                  <tr>
+                  <tr key={index}>
                     {
                       if index is 0
                         <td style={verticalAlign: 'middle'}><FontAwesome name='plus-circle' onClick={@addSearchLine}/></td>
@@ -336,7 +336,7 @@ AkashicRecordsCheckboxArea = React.createClass
               <tbody>
               {
                 for index in [0..@state.compareArgv.length-1]
-                  <tr>
+                  <tr key={index}>
                     {
                       if index is 0
                         <td style={verticalAlign: 'middle'}><FontAwesome name='plus-circle' onClick={@addCompareLine}/></td>

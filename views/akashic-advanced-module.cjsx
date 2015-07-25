@@ -436,12 +436,12 @@ AttackLog = React.createClass
             <div>
               <OverlayTrigger trigger='click' rootClose={true} placement='right' overlay={
                 <Popover title=''>
-                  <h5>原因</h5>
+                  <h5>白屏原因</h5>
                     <li>目前来看是所用chrome中v8的问题，彻底解决要等上游chrome更新版本。</li>
                   <h5>目前解决方案</h5>
                     <li>不关闭日志插件，代之直接最小化，可缓解这一问题，减少白屏的出现。但无法根治。</li>
                     <li>关闭和最小化对系统资源的占用是一样的，所以一直最小化并不会同比影响系统性能。</li>
-                  <Input type='checkbox' onChange={@handleClickCheckbox.bind(@)} checked={@state.forceMinimize} style={verticalAlign: 'middle'} label={"同意此解决方案(更改在重启后生效)"} />
+                  <Input type='checkbox' onChange={@handleClickCheckbox} checked={@state.forceMinimize} style={verticalAlign: 'middle'} label={"同意此解决方案(更改在重启后生效)"} />
                 </Popover>
                 }>
                 <Button bsStyle='default'>常见问题：有关白屏与关闭/最小化插件</Button>

@@ -29,11 +29,11 @@ AkashicRecordsTableTbodyItem = React.createClass
       {
         for item,index in @props.data
           if index is 0 and @props.rowChooseChecked[1]
-            <td>{dateToString(new Date(item))}</td>
+            <td key={index}>{dateToString(new Date(item))}</td>
           else if @props.contentType is 'attack' and @props.tableTab[index+1] is '大破舰'
-            <td className="enable-auto-newline">{item}</td> if @props.rowChooseChecked[8]
+            <td key={index} className="enable-auto-newline">{item}</td> if @props.rowChooseChecked[8]
           else 
-            <td>{item}</td> if @props.rowChooseChecked[index+1] 
+            <td key={index}>{item}</td> if @props.rowChooseChecked[index+1] 
       }
     </tr>
 
@@ -102,7 +102,7 @@ AkashicRecordsTableArea = React.createClass
                           showLabel = true
                       for tab, index in @props.tableTab
                         if index is 0
-                          <th>
+                          <th key={index}>
                             <OverlayTrigger trigger='click' rootClose={true} placement='right' overlay={
                               <Popover title='筛选说明'>
                                 <li>隐藏的列自动取消筛选</li>
@@ -113,7 +113,7 @@ AkashicRecordsTableArea = React.createClass
                             </OverlayTrigger>
                           </th>
                         else
-                          <th className="table-search">
+                          <th key={index} className="table-search">
                             <Input
                               type='text'
                               value={@props.filterKeys[index]}
@@ -134,7 +134,7 @@ AkashicRecordsTableArea = React.createClass
                           showLabel = true
                       for tab, index in @props.tableTab
                         if index is 0
-                          <th>
+                          <th key={index}>
                             <OverlayTrigger trigger='click' rootClose={true} placement='right' overlay={
                               <Popover title='筛选说明'>
                                 <li>隐藏的列自动取消筛选</li>
@@ -145,7 +145,7 @@ AkashicRecordsTableArea = React.createClass
                             </OverlayTrigger>
                           </th>
                         else
-                          <th className="table-search">
+                          <th key={index} className="table-search">
                             <Input
                               type='text'
                               value={@props.filterKeys[index]}
@@ -161,7 +161,7 @@ AkashicRecordsTableArea = React.createClass
                   <tr>
                   {
                     for tab, index in @props.tableTab
-                      <th>{@props.tableTab[index]}</th> if @props.rowChooseChecked[index]
+                      <th key={index}>{@props.tableTab[index]}</th> if @props.rowChooseChecked[index]
                   }
                   </tr>
                 else if @props.configChecked[1]
@@ -173,7 +173,7 @@ AkashicRecordsTableArea = React.createClass
                           showLabel = true
                       for tab, index in @props.tableTab
                         if index is 0
-                          <th>
+                          <th key={index}>
                             <OverlayTrigger trigger='click' rootClose={true} placement='right' overlay={
                               <Popover title='筛选说明'>
                                 <li>隐藏的列自动取消筛选</li>
@@ -184,7 +184,7 @@ AkashicRecordsTableArea = React.createClass
                             </OverlayTrigger>
                           </th>
                         else
-                          <th className="table-search">
+                          <th key={index} className="table-search">
                             <Input
                               type='text'
                               value={@props.filterKeys[index]}

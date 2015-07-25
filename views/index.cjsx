@@ -211,7 +211,7 @@ AkashicRecordsArea = React.createClass
       when 4
         {resourceData, dataVersion} = @state
         resourceData = @getDataAccordingToNameId id, "resource"
-        log "get resourceData from file" if process.env.DEBUG?
+        console.log "get resourceData from file" if process.env.DEBUG?
         dataVersion[4] += 1
         if resourceData.length > 0
           @timeString = timeToBString resourceData[0][0]
