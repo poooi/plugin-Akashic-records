@@ -528,7 +528,9 @@ AkashicRecordsArea = React.createClass
   componentDidMount: ->
     window.addEventListener 'game.response', @handleResponse
   componentWillMount: ->
-    @nickNameId = '132778983'
+    @nickNameId = window._nickNameId
+    if @nickNameId is 0 or not @nickNameId?
+      @nickNameId = '132778983'
     if @nickNameId isnt 0
       @getAttackData @nickNameId
       @getMissionData @nickNameId
