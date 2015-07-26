@@ -17,8 +17,15 @@ initialAkashicRecordsWindow = ->
   if process.env.DEBUG?
     window.akashicRecordsWindow.openDevTools
       detach: true
+
+checkAkashicRecordsCrashed = ->
+  if window.akashicRecordsWindow.isCrashed() and config.get('plugin.Akashic.enable', true)
+    window.akashicRecordsWindow.destroy()
+    initialAkashicRecordsWindow()
+
 if config.get('plugin.Akashic.enable', true)
   initialAkashicRecordsWindow()
+  setInterval checkAkashicRecordsCrashed, 2000
 
 module.exports =
   name: 'Akashic'
@@ -29,4 +36,5 @@ module.exports =
   link: 'https://github.com/JenningsWu'
   version: '1.0.0'
   handleClick: ->
+    checkAkashicRecordsCrashed()
     window.akashicRecordsWindow.show()
