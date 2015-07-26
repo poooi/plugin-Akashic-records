@@ -20,6 +20,7 @@ initialAkashicRecordsWindow = ->
 
 checkAkashicRecordsCrashed = ->
   if window.akashicRecordsWindow.isCrashed() and config.get('plugin.Akashic.enable', true)
+    window.akashicRecordsWindow.destroy()
     initialAkashicRecordsWindow()
 
 if config.get('plugin.Akashic.enable', true)
