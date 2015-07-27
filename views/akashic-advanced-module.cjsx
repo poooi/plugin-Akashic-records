@@ -9,6 +9,8 @@ path = require 'path-extra'
 remote = require 'remote'
 dialog = remote.require 'dialog'
 
+{openExternal} = require 'shell'
+
 duplicateRemoval = (arr) ->
   arr.sort (a, b)->
     if isNaN a[0]
@@ -446,7 +448,7 @@ AttackLog = React.createClass
                 }>
                 <Button bsStyle='default'>常见问题：有关白屏与关闭/最小化插件</Button>
               </OverlayTrigger>
-              <a style={marginLeft: "30px"} href="https://github.com/yudachi/plugin-Akashic-records">Bug汇报</a>
+              <a style={marginLeft: "30px"} onClick={openExternal.bind(this, "https://github.com/yudachi/plugin-Akashic-records")}>Bug汇报</a>
             </div>
           </Col>
         </Row>
