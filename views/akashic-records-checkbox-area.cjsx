@@ -123,10 +123,12 @@ AkashicRecordsCheckboxArea = React.createClass
     {filterPaneShow} = @state
     filterPaneShow = not filterPaneShow
     @setState {filterPaneShow}
+    config.set "plugin.Akashic.#{@props.contentType}.filterPaneShow", filterPaneShow
   handleStatisticsPaneShow: ->
     {statisticsPaneShow} = @state
     statisticsPaneShow = not statisticsPaneShow
     @setState {statisticsPaneShow}
+    config.set "plugin.Akashic.#{@props.contentType}.statisticsPaneShow", statisticsPaneShow
   handleClickCheckbox: (index) ->
     {rowChooseChecked} = @props
     rowChooseChecked[index] = !rowChooseChecked[index]
@@ -184,6 +186,11 @@ AkashicRecordsCheckboxArea = React.createClass
     @setState
       compareArgv: compareArgv
   componentWillMount: ->
+    filterPaneShow = config.get "plugin.Akashic.#{@props.contentType}.filterPaneShow", true
+    statisticsPaneShow = config.get "plugin.Akashic.#{@props.contentType}.statisticsPaneShow", true
+    @setState
+      filterPaneShow: filterPaneShow
+      statisticsPaneShow: statisticsPaneShow
     @refreshSearchResult @state.searchArgv
     @refreshCompareResult @state.compareArgv
   componentWillReceiveProps: (nextProps)->
