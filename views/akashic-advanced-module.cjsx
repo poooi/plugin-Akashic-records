@@ -254,7 +254,7 @@ resolveFile = (fileContent, tableTab)->
       logType = "attack"
       data = logs.slice(1).map (logItem) ->
         logItem = logItem.split ','
-        if logItem.length isnt 5
+        if logItem.length isnt 6
           return []
         retData = []
         retData.push (new Date(logItem[0].replace(/-/g, "/"))).getTime()
@@ -272,6 +272,76 @@ resolveFile = (fileContent, tableTab)->
         retData
       data = data.filter (log) ->
         log.length is 12
+    when "Date,Result,Secretary,Secretary level,Fuel,Ammo,Steel,Bauxite"
+      logType = "createItem"
+      data = logs.slice(1).map (logItem) ->
+        logItem = logItem.split ','
+        if logItem.length isnt 9
+          return []
+        retData = []
+        retData.push (new Date(logItem[0].replace(/-/g, "/"))).getTime()
+        if logItem[1] is "Penguin"
+          retData.push "失败"
+          retData.push ""
+          retData.push ""
+        else 
+          retData.push "成功"
+          retData.push logItem[1]
+          retData.push ""
+        retData.push logItem[4]
+        retData.push logItem[5]
+        retData.push logItem[6]
+        retData.push logItem[7]
+        retData.push "#{logItem[2]}(Lv.#{logItem[3]})"
+        retData.push ""
+        retData
+      data = data.filter (log) ->
+        log.length is 10
+    when "Date,Result,Secretary,Secretary level,Fuel,Ammo,Steel,Bauxite,# of Build Materials"
+      logType = "createShip"
+      data = logs.slice(1).map (logItem) ->
+        logItem = logItem.split ','
+        if logItem.length isnt 10
+          return []
+        retData = []
+        retData.push (new Date(logItem[0].replace(/-/g, "/"))).getTime()
+        if logItem[4] < 1000
+          tmp = "普通建造"
+        else
+          tmp = "大型建造"
+        retData.push tmp
+        retData.push logItem[1]
+        retData.push ''
+        retData.push logItem[4]
+        retData.push logItem[5]
+        retData.push logItem[6]
+        retData.push logItem[7]
+        retData.push logItem[8]
+        retData.push ""
+        retData.push "#{logItem[2]}(Lv.#{logItem[3]})"
+        retData.push ""
+        retData
+      data = data.filter (log) ->
+        log.length is 12
+    when "Date,Fuel,Ammunition,Steel,Bauxite,DevKits,Buckets,Flamethrowers"
+      logType = "resource"
+      data = logs.slice(1).map (logItem) ->
+        logItem = logItem.split ','
+        if logItem.length isnt 9
+          return []
+        retData = []
+        retData.push (new Date(logItem[0].replace(/-/g, "/"))).getTime()
+        retData.push logItem[1]
+        retData.push logItem[2]
+        retData.push logItem[3]
+        retData.push logItem[4]
+        retData.push logItem[7]
+        retData.push logItem[6]
+        retData.push logItem[5]
+        retData.push "0"
+        retData
+      data = data.filter (log) ->
+        log.length is 9
     else
       e = new Error()
       e.message = "不支持的编码或文件格式！"
@@ -418,20 +488,28 @@ AttackLog = React.createClass
             <span style={{fontSize: "24px"}}>数据导入导出</span>
             <OverlayTrigger trigger='click' rootClose={true} placement='right' overlay={
               <Popover title='说明'>
-                <h4>导出</h4>
+                <h5>导出</h5>
                 <ul>
                   <li>需选择导出类型</li>
                   <li>根据平台决定导出编码格式，win为GB2312，其他均为utf8</li>
                 </ul>
-                <h4>导入</h4>
+                <h5>导入</h5>
                 <ul>
                   <li>自动判断编码格式与类型</li>
                   <li>支持：
                     <ul>
                       <li>阿克夏记录</li>
                       <li>航海日誌 拡張版</li>
+                      <li>KCV yuyuvn版</li>
                     </ul>
                   </li>
+                </ul>
+                <h5>想要增加更多的导入支持？</h5>
+                <ul>
+                  <li>
+                    <a onClick={openExternal.bind(this, "https://github.com/yudachi/plugin-Akashic-records")}>github项目</a>上提出issue。
+                  </li>
+                  <li style={"whiteSpace": "nowrap"}>或邮件联系 jenningswu@gmail.com 。</li>
                 </ul>
               </Popover>
               }>
