@@ -120,6 +120,8 @@ resolveFile = (fileContent, tableTab)->
         logItem
       data = data.filter (log) ->
         log.length is 9
+
+    # 航海日志扩张版
     when "No.,日付,海域,マス,出撃,ランク,敵艦隊,ドロップ艦種,ドロップ艦娘,大破艦,旗艦,旗艦(第二艦隊),MVP,MVP(第二艦隊)"
       logType = "attack"
       data = logs.slice(1).map (logItem) ->
@@ -227,7 +229,6 @@ resolveFile = (fileContent, tableTab)->
         retData
       data = data.filter (log) ->
         log.length is 10
-    
     when "日付,直前のイベント,燃料,弾薬,鋼材,ボーキ,高速修復材,高速建造材,開発資材,改修資材"
       logType = "resource"
       data = logs.slice(1).map (logItem) ->
@@ -247,6 +248,30 @@ resolveFile = (fileContent, tableTab)->
         retData
       data = data.filter (log) ->
         log.length is 9
+
+    # KCV鬼佬版
+    when "Date,Result,Operation,Enemy Fleet,Rank"
+      logType = "attack"
+      data = logs.slice(1).map (logItem) ->
+        logItem = logItem.split ','
+        if logItem.length isnt 5
+          return []
+        retData = []
+        retData.push (new Date(logItem[0].replace(/-/g, "/"))).getTime()
+        retData.push logItem[2]
+        retData.push ''
+        retData.push ''
+        retData.push logItem[4]
+        retData.push logItem[3]
+        retData.push logItem[1]
+        retData.push ''
+        retData.push ''
+        retData.push ''
+        retData.push ''
+        retData.push ''
+        retData
+      data = data.filter (log) ->
+        log.length is 12
     else
       e = new Error()
       e.message = "不支持的编码或文件格式！"
