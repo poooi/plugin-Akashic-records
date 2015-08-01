@@ -36,24 +36,26 @@ AkashicRecordsCheckboxArea = React.createClass
       numerator: -1
       denominator: -1
     ]
+  inputDataVersion: 0
+  currentDataVersion: 0
   compareResult: []
-  getDataNum: (type)->
+  getDataNum: (type, data, dataAfterFilter, searchArgv)->
     data = 0
     switch type
       when -2
-        data = @props.data.length
+        data = data.length
       when -1
-        data = @props.dataAfterFilter.length
+        data = dataAfterFilter.length
       else
         data = @state.searchArgv[type].result.length
     data
-  refreshSearchResult: (searchArgv)->
+  refreshSearchResult: (searchArgv, data, dataAfterFilter)->
     for index in [0..searchArgv.length-1]
       switch searchArgv[index].searchBaseOn
         when -2
-          data = @props.data
+          data = data
         when -1
-          data = @props.dataAfterFilter
+          data = dataAfterFilter
         else
           data = searchArgv[searchArgv[index].searchBaseOn].result
       searchArgv[index].num = data.length
@@ -95,7 +97,7 @@ AkashicRecordsCheckboxArea = React.createClass
     @setState
       searchArgv: searchArgv
 
-  refreshCompareResult: (compareArgv)->
+  refreshCompareResult: (compareArgv, data, dataAfterFilter, searchArgv)->
     @compareResult = []
     for item, index in compareArgv
       if item.numerator is -3
@@ -103,13 +105,13 @@ AkashicRecordsCheckboxArea = React.createClass
         if not numerator
           numerator = 0
       else
-        numerator = @getDataNum item.numerator
+        numerator = @getDataNum item.numerator, data, dataAfterFilter, searchArgv
       if item.denominator is -3
         denominator = @refs["denominator#{index}"]?.getValue()
         if not denominator
           denominator = 0
       else
-        denominator = @getDataNum item.denominator
+        denominator = @getDataNum item.denominator, data, dataAfterFilter, searchArgv
       if denominator isnt 0
         percent = Math.round(numerator*10000/denominator) / 100
       else
@@ -125,8 +127,12 @@ AkashicRecordsCheckboxArea = React.createClass
     @setState {filterPaneShow}
     config.set "plugin.Akashic.#{@props.contentType}.filterPaneShow", filterPaneShow
   handleStatisticsPaneShow: ->
-    {statisticsPaneShow} = @state
+    {statisticsPaneShow, searchArgv} = @state
     statisticsPaneShow = not statisticsPaneShow
+    if statisticsPaneShow
+      if @currentDataVersion isnt @inputDataVersion
+        @currentDataVersion = @inputDataVersion
+        @refreshSearchResult searchArgv, @props.data, @props.dataAfterFilter
     @setState {statisticsPaneShow}
     config.set "plugin.Akashic.#{@props.contentType}.statisticsPaneShow", statisticsPaneShow
   handleClickCheckbox: (index) ->
@@ -145,7 +151,7 @@ AkashicRecordsCheckboxArea = React.createClass
     for index in [0..searchArgv.length-1]
       searchArgv[index].filterKey = @refs["search#{index}"].getValue()
       searchArgv[index].searchBaseOn = parseInt @refs["baseOn#{index}"].getValue()
-    @refreshSearchResult searchArgv
+    @refreshSearchResult searchArgv, @props.data, @props.dataAfterFilter
   addSearchLine: ->
     {searchArgv} = @state
     searchArgv.push
@@ -164,7 +170,7 @@ AkashicRecordsCheckboxArea = React.createClass
       else if item.searchBaseOn > index
         item.searchBaseOn -= 1
     searchArgv.splice index, 1
-    @refreshSearchResult searchArgv
+    @refreshSearchResult searchArgv, @props.data, @props.dataAfterFilter
 
   handleCompareChange: ()->
     {compareArgv} = @state
@@ -191,12 +197,16 @@ AkashicRecordsCheckboxArea = React.createClass
     @setState
       filterPaneShow: filterPaneShow
       statisticsPaneShow: statisticsPaneShow
-    @refreshSearchResult @state.searchArgv
-    @refreshCompareResult @state.compareArgv
+    @refreshSearchResult @state.searchArgv, @props.data, @props.dataAfterFilter
+    @refreshCompareResult @state.compareArgv, @props.data, @props.dataAfterFilter, @state.searchArgv
   componentWillReceiveProps: (nextProps)->
-    @refreshSearchResult @state.searchArgv
+    @inputDataVersion += 1
+    if @state.statisticsPaneShow
+      @currentDataVersion = @inputDataVersion
+      @refreshSearchResult @state.searchArgv, nextProps.data, nextProps.dataAfterFilter
   componentWillUpdate: (nextProps, nextState)->
-    @refreshCompareResult nextState.compareArgv
+    if nextState.statisticsPaneShow
+      @refreshCompareResult nextState.compareArgv, nextProps.data, nextProps.dataAfterFilter, nextState.searchArgv     
   render: ->
     <div className='akashic-records-settings' className={if @state.filterPaneShow or @state.statisticsPaneShow then "tap-pane-show" else "tab-pane-hidden"}>
       <Grid>
