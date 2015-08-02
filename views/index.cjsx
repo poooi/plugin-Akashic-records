@@ -11,6 +11,7 @@ path = require 'path-extra'
 AkashicLog = require './akashic-records-log'
 AkashicResourceLog = require './akashic-resource-log'
 AkashicAdvancedModule = require './akashic-advanced-module'
+AkashicSenkaLog = require './akashic-senka-log'
 
 getHp = (maxHps, nowHps)->
   maxHp = []
@@ -77,17 +78,38 @@ timeToBString = (time) ->
   date = new Date(time)
   "#{date.getFullYear()}#{date.getMonth()}#{date.getDate()}#{date.getHours()}"
 
-attackTableTab = ['No.', '时间', '海域', '地图点', '状态', '战况', '敌舰队', 
+senkaDateToString = ->
+  date = new Date()
+  year = date.getFullYear()
+  month = date.getMonth() + 1
+  if month < 10
+    month = "0#{month}"
+  day = date.getDate()
+  if day < 10
+    day = "0#{day}"
+  hour = date.getHours()
+  if hour in [2..13]
+    time = "02"
+  else if hour in [14..23]
+    time = "14"
+  else
+    day = day - 1
+    time = "14"
+  "#{year}#{month}#{day}#{time}"
+
+attackTableTab = ['No.', '时间', '海域', '地图点', '状态', '战况', '敌舰队',
     '捞！', '大破舰', '旗舰', '旗舰（第二舰队）', 'MVP', 'MVP(第二舰队）']
-missionTableTab = ['No.', '时间', '类型', '结果', '燃', '弹', '钢', '铝', 
+missionTableTab = ['No.', '时间', '类型', '结果', '燃', '弹', '钢', '铝',
     '获得物品1', '数量', '获得物品2', '数量']
-createItemTableTab = ['No.', '时间', '结果', '开发装备', '类别', 
+createItemTableTab = ['No.', '时间', '结果', '开发装备', '类别',
     '燃', '弹', '钢', '铝', '秘书舰', '司令部Lv']
-createShipTableTab = ['No.', '时间', '种类', '船只', '舰种', 
+createShipTableTab = ['No.', '时间', '种类', '船只', '舰种',
     '燃', '弹', '钢', '铝', '资材', '空渠数', '秘书舰', '司令部Lv']
 
-resourceTableTab = ['No.', '时间', '燃料', '弹药', '钢材', '铝材', 
+resourceTableTab = ['No.', '时间', '燃料', '弹药', '钢材', '铝材',
   '高速建造', '高速修复', '开发资材', '改修螺丝']
+
+senkaTableTab = ['顺位', 'Lv.', '提督名', '阶级', '时段累计经验', '战果', '勋章']
 
 getUseItem: (id)->
   switch id
@@ -122,9 +144,12 @@ AkashicRecordsArea = React.createClass
     createShipData: []
     resourceData: []
     mapShowFlag: false
+    downloadFlag: false
     selectedKey: 0
     dataVersion: [0, 0, 0, 0, 0]
   nickNameId: 0
+  memberId: 0
+  serverId: 0
   mapAreaId: 0
   mapInfoNo: 0
   apiNo: 0
@@ -150,30 +175,42 @@ AkashicRecordsArea = React.createClass
   kdockId: 0
   getDataAccordingToNameId: (id, type) ->
     testNum = /^[1-9]+[0-9]*$/
-    datalogs = glob.sync(path.join(APPDATA_PATH, 'akashic-records', @nickNameId.toString(), type, '*'))
-    datalogs = datalogs.map (filePath) ->
-      try
-        fileContent = fs.readFileSync filePath, 'utf8'
-        logs = fileContent.split "\n"
-        logs = logs.map (logItem) ->
-          logItem = logItem.split ','
-          logItem[0] = parseInt logItem[0] if testNum.test(logItem[0])
-          logItem
-        logs.filter (log) ->
-          log.length > 2
-      catch e
-        warn "Read and decode file:#{filePath} error!#{e.toString()}"
-        return []
-    data = []
-    for datalog in datalogs
-      data = data.concat datalog
-    data.reverse()
-    data.sort (a, b)->
-      if isNaN a[0]
-        a[0] = (new Date(a[0])).getTime()
-      if isNaN b[0]
-        b[0] = (new Date(b[0])).getTime()
-      return b[0] - a[0]
+    if type == "senkaList"
+      serverId = config.get "plugin.Akashic.senka.serverId", 0
+      if serverId > 0
+        time = senkaDateToString()
+        datalogs = glob.sync(path.join(APPDATA_PATH, 'akashic-records', id.toString(), type, "#{serverId}", '500', time))
+        if datalogs.length isnt 0
+          return @setState downloadFlag: false
+        else
+          return @setState downloadFlag: true
+      else
+        return @setState downloadFlag: false
+    else
+      datalogs = glob.sync(path.join(APPDATA_PATH, 'akashic-records', @nickNameId.toString(), type, '*'))
+      datalogs = datalogs.map (filePath) ->
+        try
+          fileContent = fs.readFileSync filePath, 'utf8'
+          logs = fileContent.split "\n"
+          logs = logs.map (logItem) ->
+            logItem = logItem.split ','
+            logItem[0] = parseInt logItem[0] if testNum.test(logItem[0])
+            logItem
+          logs.filter (log) ->
+            log.length > 2
+        catch e
+          warn "Read and decode file:#{filePath} error!#{e.toString()}"
+          return []
+      data = []
+      for datalog in datalogs
+        data = data.concat datalog
+      data.reverse()
+      data.sort (a, b)->
+        if isNaN a[0]
+          a[0] = (Date(a[0])).getTime()
+        if isNaN b[0]
+          b[0] = (Date(b[0])).getTime()
+        return b[0] - a[0]
   getLogFromFile: (id, type) ->
     switch type
       when 0
@@ -181,7 +218,7 @@ AkashicRecordsArea = React.createClass
         attackData = @getDataAccordingToNameId id, "attack"
         console.log "get attackData from file" if process.env.DEBUG?
         dataVersion[0] += 1
-        @setState 
+        @setState
           attackData: attackData
           dataVersion: dataVersion
       when 1
@@ -189,7 +226,7 @@ AkashicRecordsArea = React.createClass
         missionData = @getDataAccordingToNameId id, "mission"
         console.log "get missionData from file" if process.env.DEBUG?
         dataVersion[1] += 1
-        @setState 
+        @setState
           missionData: missionData
           dataVersion: dataVersion
       when 2
@@ -197,7 +234,7 @@ AkashicRecordsArea = React.createClass
         createItemData = @getDataAccordingToNameId id, "createitem"
         console.log "get createItemData from file" if process.env.DEBUG?
         dataVersion[2] += 1
-        @setState 
+        @setState
           createItemData: createItemData
           dataVersion: dataVersion
       when 3
@@ -205,7 +242,7 @@ AkashicRecordsArea = React.createClass
         createShipData = @getDataAccordingToNameId id, "createship"
         console.log "get createShipData from file" if process.env.DEBUG?
         dataVersion[3] += 1
-        @setState 
+        @setState
           createShipData: createShipData
           dataVersion: dataVersion
       when 4
@@ -215,11 +252,15 @@ AkashicRecordsArea = React.createClass
         dataVersion[4] += 1
         if resourceData.length > 0
           @timeString = timeToBString resourceData[0][0]
-        @setState 
+        @setState
           resourceData: resourceData
           dataVersion: dataVersion
+      when 5
+        {senkaData} = @state
+        senkaData = @getDataAccordingToNameId id, "senkaList"
+        log "check senkaData from file"
   getAttackData: (id) ->
-    @getLogFromFile id, 0  
+    @getLogFromFile id, 0
   getMissionData: (id) ->
     @getLogFromFile id, 1
   getCreateItemData: (id) ->
@@ -228,6 +269,8 @@ AkashicRecordsArea = React.createClass
     @getLogFromFile id, 3
   getResourceData: (id) ->
     @getLogFromFile id, 4
+  checkSenkaData: (id) ->
+    @getLogFromFile id, 5
 
   saveLog: (type, log) ->
     fs.ensureDirSync(path.join(APPDATA_PATH, 'akashic-records', @nickNameId.toString(), type))
@@ -242,7 +285,7 @@ AkashicRecordsArea = React.createClass
         day = "0#{day}"
       fs.appendFile(path.join(APPDATA_PATH, 'akashic-records', @nickNameId.toString(), type, "#{year}#{month}#{day}"), "#{log.join(',')}\n", 'utf8', (err)->
         error "Write attack-log file error!" if err)
-    else 
+    else
       fs.appendFile(path.join(APPDATA_PATH, 'akashic-records', @nickNameId.toString(), type, "data"), "#{log.join(',')}\n", 'utf8', (err)->
         error "Write #{type}-log file error!" if err)
   saveAttackLog: (alog) ->
@@ -271,6 +314,9 @@ AkashicRecordsArea = React.createClass
         @getCreateItemData @nickNameId
         @getCreateShipData @nickNameId
         @getResourceData @nickNameId
+        @checkSenkaData body.api_member_id
+        @setState
+          memberId: body.api_member_id
       when '/kcsapi/api_req_map/start'
         [@mapAreaId, @mapInfoNo, @apiNo, @BosscellNo, @colorNo] = [body.api_maparea_id, body.api_mapinfo_no, body.api_no, body.api_bosscell_no, body.api_color_no]
         @_deck = window._decks[postBody.api_deck_id-1]
@@ -335,7 +381,7 @@ AkashicRecordsArea = React.createClass
           afterHp = hougekiAttack afterHp, body.api_hougeki
         [dangerFlag, dangerInfo] = judgeDanger afterHp, maxHp, @_deck, @_ships
         @dangerousShip = dangerInfo if dangerFlag
-        @notDemageFlag = @notDemageFlag and judgeFace nowHp, afterHp  
+        @notDemageFlag = @notDemageFlag and judgeFace nowHp, afterHp
       when '/kcsapi/api_req_sortie/battleresult'
         @_ships = window._ships
         @_decks = window._decks
@@ -383,7 +429,7 @@ AkashicRecordsArea = React.createClass
         @saveAttackLog dataItem
         {dataVersion} = @state
         dataVersion[0] += 1
-        @setState 
+        @setState
           attackData: attackData
           dataVersion: dataVersion
 
@@ -405,7 +451,7 @@ AkashicRecordsArea = React.createClass
             dataItem.push "奇怪的结果"
         if body.api_clear_result is 0
           dataItem.push 0, 0, 0, 0
-        else 
+        else
           dataItem.push body.api_get_material[0]
           dataItem.push body.api_get_material[1]
           dataItem.push body.api_get_material[2]
@@ -414,27 +460,27 @@ AkashicRecordsArea = React.createClass
         if useItemFlag[0] > 0
           if body.api_get_item1.api_useitem_id <= 0
             useItemId = useItemFlag[0]
-          else 
+          else
             useItemId = body.api_get_item1.api_useitem_id;
           dataItem.push $useitems[useItemId].api_name
           dataItem.push body.api_get_item1.api_useitem_count
-        else 
+        else
           dataItem.push "", ""
         if useItemFlag[1] > 0
           if body.api_get_item2.api_useitem_id <= 0
             useItemId = useItemFlag[1]
-          else 
+          else
             useItemId = body.api_get_item2.api_useitem_id;
           dataItem.push $useitems[useItemId].api_name
           dataItem.push body.api_get_item2.api_useitem_count
-        else 
+        else
           dataItem.push "", ""
         {missionData} = @state
         missionData.unshift dataItem
         @saveMissionLog dataItem
         {dataVersion} = @state
         dataVersion[1] += 1
-        @setState 
+        @setState
           missionData: missionData
           dataVersion: dataVersion
 
@@ -463,7 +509,7 @@ AkashicRecordsArea = React.createClass
         @saveCreateItemLog dataItem
         {dataVersion} = @state
         dataVersion[2] += 1
-        @setState 
+        @setState
           createItemData: createItemData
           dataVersion: dataVersion
 
@@ -503,11 +549,11 @@ AkashicRecordsArea = React.createClass
           @saveCreateShipLog dataItem
           {dataVersion} = @state
           dataVersion[3] += 1
-          @setState 
+          @setState
             createShipData: createShipData
             dataVersion: dataVersion
           @createShipFlag = false
-      # 资源 
+      # 资源
       when '/kcsapi/api_port/port'
         dataItem = []
         nowDate = new Date()
@@ -521,7 +567,7 @@ AkashicRecordsArea = React.createClass
           @saveResourceLog dataItem
           {dataVersion} = @state
           dataVersion[4] += 1
-          @setState 
+          @setState
             resourceData: resourceData
             dataVersion: dataVersion
 
@@ -552,7 +598,8 @@ AkashicRecordsArea = React.createClass
       <TabPane eventKey={2} tab='建造' ><AkashicLog indexKey={2} selectedKey={@state.selectedKey} data={@state.createShipData} dataVersion={@state.dataVersion[3]} tableTab={createShipTableTab} contentType={'createShip'}/></TabPane>
       <TabPane eventKey={3} tab='开发' ><AkashicLog indexKey={3} selectedKey={@state.selectedKey} data={@state.createItemData} dataVersion={@state.dataVersion[2]} tableTab={createItemTableTab} contentType={'createItem'}/></TabPane>
       <TabPane eventKey={4} tab='资源统计' ><AkashicResourceLog indexKey={4} selectedKey={@state.selectedKey} data={@state.resourceData} dataVersion={@state.dataVersion[4]} tableTab={resourceTableTab} mapShowFlag={@state.mapShowFlag} contentType={'resource'}/></TabPane>
-      <TabPane eventKey={5} tab='高级' >
+      <TabPane eventKey={5} tab='战果' ><AkashicSenkaLog indexKey={5} selectedKey={@state.selectedKey} downloadFlag={@state.downloadFlag} memberId={@state.memberId} tableTab={senkaTableTab} rankShowFlag={@state.rankShowFlag} contentType={'resource'}/></TabPane>
+      <TabPane eventKey={6} tab='高级' >
         <AkashicAdvancedModule
           tableTab={
             'attack': attackTableTab
@@ -560,7 +607,7 @@ AkashicRecordsArea = React.createClass
             'createItem': createItemTableTab
             'createShip': createShipTableTab
             'resource': resourceTableTab
-          } 
+          }
           attackData={@state.attackData}
           missionData={@state.missionData}
           createItemData={@state.createItemData}
