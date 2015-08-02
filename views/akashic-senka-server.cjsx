@@ -76,6 +76,7 @@ AkashicSenkaServer = React.createClass
     server: "镇守府"
     date: "日期"
     serverId: config.get "plugin.Akashic.senka.serverId", -1
+    downloadingFlag: false
   memberId: 0
   updateTime: ""
 
@@ -85,8 +86,12 @@ AkashicSenkaServer = React.createClass
     senkaList = glob.sync(path.join(APPDATA_PATH, 'akashic-records', "#{@state.memberId}", 'senkaList', "#{serverId}", "#{showAmount}", "#{time}"))
     log "senkaList:#{senkaList}  length #{senkaList.length}"
     if senkaList.length == 0
+      @setState
+        downloadingFlag: true
       if sync(@state.memberId, serverId)
         senkaList = glob.sync(path.join(APPDATA_PATH, 'akashic-records', "#{@state.memberId}", 'senkaList', "#{serverId}", "#{showAmount}", "#{time}"))
+      @setState
+        downloadingFlag: false
     senkaList = senkaList.map (filePath) ->
       try
         fileContent = fs.readFileSync filePath, 'utf8'
@@ -106,6 +111,8 @@ AkashicSenkaServer = React.createClass
 
   shouldComponentUpdate: (nextProps, nextState) ->
     if @state.tableData isnt nextState.tableData
+      return true
+    else if @state.downloadingFlag isnt nextProps.downloadingFlag
       return true
     return false
   componentWillReceiveProps: (nextProps) ->
@@ -161,16 +168,16 @@ AkashicSenkaServer = React.createClass
                                     statisticsPaneShow={@state.statisticsPaneShow}
                                     serverId={@state.serverId}
                                     serverNames={serverNames}/>
-
-          <AkashicSenkaServerTable tableTab={@props.tableTab} data={@state.tableData}/>
-
+          {
+            if @state.downloadingFlag
+              <Alert onDismiss={true}>
+                <h4>downloading...</h4>
+              </Alert>
+            else
+              <AkashicSenkaServerTable tableTab={@props.tableTab} data={@state.tableData}/>
+          }
         </Col>
       </Row>
     </Grid>
 
 module.exports = AkashicSenkaServer
-#            if @state.downloadingFlag
-#              <Alert onDismiss={true}>
-#                <h4>downloading...</h4>
-#              </Alert>
-#            else
