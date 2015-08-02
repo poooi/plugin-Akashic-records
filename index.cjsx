@@ -34,7 +34,7 @@ module.exports =
   description: '日志'
   author: 'W.G.'
   link: 'https://github.com/JenningsWu'
-  version: '1.0.0'
+  version: '1.1.0'
   handleClick: ->
     # checkAkashicRecordsCrashed()
     window.akashicRecordsWindow.show()
