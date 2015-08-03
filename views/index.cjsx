@@ -142,6 +142,7 @@ AkashicRecordsArea = React.createClass
     mapShowFlag: false
     selectedKey: 0
     dataVersion: [0, 0, 0, 0, 0]
+  enableRecord: false
   nickNameId: 0
   memberId: 0
   mapAreaId: 0
@@ -222,7 +223,6 @@ AkashicRecordsArea = React.createClass
       when 4
         {resourceData, dataVersion} = @state
         resourceData = @getDataAccordingToNameId id, "resource"
-        log "get resourceData from file"
         if resourceData.length > 0
           @timeString = timeToBString resourceData[0][0]
         @setState
@@ -275,6 +275,8 @@ AkashicRecordsArea = React.createClass
     switch urlpath
       when '/kcsapi/api_get_member/basic'
         @nickNameId = window._nickNameId
+        if @nickNameId isnt 0 or not @nickNameId?
+          config.set 'plugin.Akashic.nickNameId', @nickNameId
         @getAttackData @nickNameId
         @getMissionData @nickNameId
         @getCreateItemData @nickNameId
@@ -348,6 +350,8 @@ AkashicRecordsArea = React.createClass
         @dangerousShip = dangerInfo if dangerFlag
         @notDemageFlag = @notDemageFlag and judgeFace nowHp, afterHp
       when '/kcsapi/api_req_sortie/battleresult'
+        if not @enableRecord
+          break
         @_ships = window._ships
         @_decks = window._decks
         dataItem = []
@@ -400,6 +404,8 @@ AkashicRecordsArea = React.createClass
 
       # 远征
       when '/kcsapi/api_req_mission/result'
+        if not @enableRecord
+          break
         {$useitems} = window
         dataItem = []
         nowDate = new Date()
@@ -451,6 +457,8 @@ AkashicRecordsArea = React.createClass
 
       # 开发
       when '/kcsapi/api_req_kousyou/createitem'
+        if not @enableRecord
+          break
         {$slotitems, $slotitemTypes} = window
         dataItem = []
         nowDate = new Date()
@@ -480,13 +488,15 @@ AkashicRecordsArea = React.createClass
 
       # 建造
       when '/kcsapi/api_req_kousyou/createship'
+        if not @enableRecord
+          break
         if body.api_result is 1
           @largeFlag = (postBody.api_large_flag is "1")
           @material = [parseInt(postBody.api_item1), parseInt(postBody.api_item2), parseInt(postBody.api_item3), parseInt(postBody.api_item4), parseInt(postBody.api_item5)]
           @kdockId = parseInt(postBody.api_kdock_id)
           @createShipFlag = true
       when '/kcsapi/api_get_member/kdock'
-        if @createShipFlag
+        if @createShipFlag and @enableRecord
           @_ships = window._ships
           @_decks = window._decks
           @$ships = window.$ships
@@ -520,6 +530,7 @@ AkashicRecordsArea = React.createClass
           @createShipFlag = false
       # 资源
       when '/kcsapi/api_port/port'
+        @enableRecord = true
         dataItem = []
         nowDate = new Date()
         if @timeString isnt timeToBString(nowDate.getTime())
@@ -539,7 +550,9 @@ AkashicRecordsArea = React.createClass
   componentDidMount: ->
     window.addEventListener 'game.response', @handleResponse
   componentWillMount: ->
-    @nickNameId = '132778983'
+    @nickNameId = window._nickNameId
+    if @nickNameId is 0 or not @nickNameId?
+      @nickNameId = config.get 'plugin.Akashic.nickNameId', 0
     if @nickNameId isnt 0
       @getAttackData @nickNameId
       @getMissionData @nickNameId

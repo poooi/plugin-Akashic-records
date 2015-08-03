@@ -29,17 +29,17 @@ AkashicResourceTableTbodyItem = React.createClass
       {
         for item,index in @props.data
           if index is 0 and @props.rowChooseChecked[1]
-            <td>{dateToString(new Date(item))}</td>
+            <td key={index}>{dateToString(new Date(item))}</td>
           else
             if @props.rowChooseChecked[index+1]
               if @props.lastFlag
-                <td>{item}</td> 
+                <td key={index}>{item}</td> 
               else
                 flag = ""
                 diff = item - @props.nextdata[index]
                 if diff > 0
                   diff = "+#{diff}"
-                <td>{"#{item}(#{diff})"}</td> 
+                <td key={index}>{"#{item}(#{diff})"}</td> 
       }
     </tr>
 
@@ -185,7 +185,7 @@ AkashicResourceTableArea = React.createClass
               {
                 if @state.dataShow.length isnt 0
                   for index in [1..Math.ceil(@state.dataShow.length/@state.showAmount)]
-                    <MenuItem eventKey={index} onSelect={@handleShowPageSelect}>第{index}页</MenuItem>
+                    <MenuItem key={index} eventKey={index} onSelect={@handleShowPageSelect}>第{index}页</MenuItem>
               } 
               </DropdownButton>
             </ButtonGroup>
@@ -207,7 +207,7 @@ AkashicResourceTableArea = React.createClass
                 <tr>
                   {
                     for tab, index in @props.tableTab
-                      <th>{tab}</th> if @props.rowChooseChecked[index]
+                      <th key={index}>{tab}</th> if @props.rowChooseChecked[index]
                   }
                 </tr>
               </thead>

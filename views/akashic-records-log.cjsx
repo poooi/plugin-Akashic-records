@@ -147,6 +147,7 @@ AkashicLog = React.createClass
     if configChecked[2] is true
       configChecked[0] = false
       configChecked[1] = false
+    config.set "plugin.Akashic.#{@props.contentType}.configChecked", JSON.stringify configChecked
     @setState
       configChecked: configChecked
 
@@ -154,6 +155,8 @@ AkashicLog = React.createClass
     {activePage} = @state
     @rowChooseChecked = JSON.parse config.get "plugin.Akashic.#{@props.contentType}.checkbox", JSON.stringify @state.rowChooseChecked
     rowChooseChecked = JSON.parse JSON.stringify @rowChooseChecked
+    @configChecked = JSON.parse config.get "plugin.Akashic.#{@props.contentType}.configChecked", JSON.stringify @state.configChecked
+    configChecked = JSON.parse JSON.stringify @configChecked
     showAmount = config.get "plugin.Akashic.#{@props.contentType}.showAmount", @state.showAmount
     dataAfterFilter = @_filter @props.data, @state.filterKeys
     dataAfterFilterLength = dataAfterFilter.length
@@ -165,6 +168,7 @@ AkashicLog = React.createClass
       dataShow = []
     @setState
       rowChooseChecked: rowChooseChecked
+      configChecked: configChecked
       showAmount: showAmount
       dataAfterFilter: dataAfterFilter
       dataAfterFilterLength: dataAfterFilterLength

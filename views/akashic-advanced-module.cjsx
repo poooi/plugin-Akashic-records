@@ -1,5 +1,5 @@
 {React, ReactBootstrap, ROOT, FontAwesome} = window
-{Grid, Row, Col, Input, Button, OverlayTrigger, Popover} = ReactBootstrap
+{Grid, Row, Col, Input, Button, OverlayTrigger, Popover, Input} = ReactBootstrap
 
 fs = require 'fs-extra'
 iconv = require 'iconv-lite'
@@ -8,6 +8,8 @@ path = require 'path-extra'
 
 remote = require 'remote'
 dialog = remote.require 'dialog'
+
+{openExternal} = require 'shell'
 
 duplicateRemoval = (arr) ->
   arr.sort (a, b)->
@@ -118,6 +120,8 @@ resolveFile = (fileContent, tableTab)->
         logItem
       data = data.filter (log) ->
         log.length is 9
+
+    # 航海日志扩张版
     when "No.,日付,海域,マス,出撃,ランク,敵艦隊,ドロップ艦種,ドロップ艦娘,大破艦,旗艦,旗艦(第二艦隊),MVP,MVP(第二艦隊)"
       logType = "attack"
       data = logs.slice(1).map (logItem) ->
@@ -225,7 +229,6 @@ resolveFile = (fileContent, tableTab)->
         retData
       data = data.filter (log) ->
         log.length is 10
-    
     when "日付,直前のイベント,燃料,弾薬,鋼材,ボーキ,高速修復材,高速建造材,開発資材,改修資材"
       logType = "resource"
       data = logs.slice(1).map (logItem) ->
@@ -245,6 +248,100 @@ resolveFile = (fileContent, tableTab)->
         retData
       data = data.filter (log) ->
         log.length is 9
+
+    # KCV鬼佬版
+    when "Date,Result,Operation,Enemy Fleet,Rank"
+      logType = "attack"
+      data = logs.slice(1).map (logItem) ->
+        logItem = logItem.split ','
+        if logItem.length isnt 6
+          return []
+        retData = []
+        retData.push (new Date(logItem[0].replace(/-/g, "/"))).getTime()
+        retData.push logItem[2]
+        retData.push ''
+        retData.push ''
+        retData.push logItem[4]
+        retData.push logItem[3]
+        retData.push logItem[1]
+        retData.push ''
+        retData.push ''
+        retData.push ''
+        retData.push ''
+        retData.push ''
+        retData
+      data = data.filter (log) ->
+        log.length is 12
+    when "Date,Result,Secretary,Secretary level,Fuel,Ammo,Steel,Bauxite"
+      logType = "createItem"
+      data = logs.slice(1).map (logItem) ->
+        logItem = logItem.split ','
+        if logItem.length isnt 9
+          return []
+        retData = []
+        retData.push (new Date(logItem[0].replace(/-/g, "/"))).getTime()
+        if logItem[1] is "Penguin"
+          retData.push "失败"
+          retData.push ""
+          retData.push ""
+        else 
+          retData.push "成功"
+          retData.push logItem[1]
+          retData.push ""
+        retData.push logItem[4]
+        retData.push logItem[5]
+        retData.push logItem[6]
+        retData.push logItem[7]
+        retData.push "#{logItem[2]}(Lv.#{logItem[3]})"
+        retData.push ""
+        retData
+      data = data.filter (log) ->
+        log.length is 10
+    when "Date,Result,Secretary,Secretary level,Fuel,Ammo,Steel,Bauxite,# of Build Materials"
+      logType = "createShip"
+      data = logs.slice(1).map (logItem) ->
+        logItem = logItem.split ','
+        if logItem.length isnt 10
+          return []
+        retData = []
+        retData.push (new Date(logItem[0].replace(/-/g, "/"))).getTime()
+        if logItem[4] < 1000
+          tmp = "普通建造"
+        else
+          tmp = "大型建造"
+        retData.push tmp
+        retData.push logItem[1]
+        retData.push ''
+        retData.push logItem[4]
+        retData.push logItem[5]
+        retData.push logItem[6]
+        retData.push logItem[7]
+        retData.push logItem[8]
+        retData.push ""
+        retData.push "#{logItem[2]}(Lv.#{logItem[3]})"
+        retData.push ""
+        retData
+      data = data.filter (log) ->
+        log.length is 12
+    when "Date,Fuel,Ammunition,Steel,Bauxite,DevKits,Buckets,Flamethrowers"
+      logType = "resource"
+      data = logs.slice(1).map (logItem) ->
+        logItem = logItem.split ','
+        if logItem.length isnt 9
+          return []
+        retData = []
+        retData.push (new Date(logItem[0].replace(/-/g, "/"))).getTime()
+        retData.push logItem[1]
+        retData.push logItem[2]
+        retData.push logItem[3]
+        retData.push logItem[4]
+        retData.push logItem[7]
+        retData.push logItem[6]
+        retData.push logItem[5]
+        retData.push "0"
+        retData
+      data = data.filter (log) ->
+        log.length is 9
     else
       e = new Error()
       e.message = "不支持的编码或文件格式！"
@@ -257,8 +354,15 @@ resolveFile = (fileContent, tableTab)->
 AttackLog = React.createClass
   getInitialState: ->
     typeChoosed: '出击'
-  # componentWillMount: ->
-  #   console.log "test"
+    forceMinimize: true
+  componentWillMount: ->
+    forceMinimize = config.get "plugin.Akashic.forceMinimize", true
+    @setState
+      forceMinimize: forceMinimize
+  handleClickCheckbox: ->
+    config.set "plugin.Akashic.forceMinimize", not @state.forceMinimize
+    @setState
+      forceMinimize: not @state.forceMinimize
   handleSetType: ->
     @setState
       typeChoosed: @refs.type.getValue()
@@ -384,20 +488,28 @@ AttackLog = React.createClass
             <span style={{fontSize: "24px"}}>数据导入导出</span>
             <OverlayTrigger trigger='click' rootClose={true} placement='right' overlay={
               <Popover title='说明'>
-                <h4>导出</h4>
+                <h5>导出</h5>
                 <ul>
                   <li>需选择导出类型</li>
                   <li>根据平台决定导出编码格式，win为GB2312，其他均为utf8</li>
                 </ul>
-                <h4>导入</h4>
+                <h5>导入</h5>
                 <ul>
                   <li>自动判断编码格式与类型</li>
                   <li>支持：
                     <ul>
                       <li>阿克夏记录</li>
                       <li>航海日誌 拡張版</li>
+                      <li>KCV yuyuvn版</li>
                     </ul>
                   </li>
+                </ul>
+                <h5>想要增加更多的导入支持？</h5>
+                <ul>
+                  <li>
+                    <a onClick={openExternal.bind(this, "https://github.com/yudachi/plugin-Akashic-records")}>github项目</a>上提出issue。
+                  </li>
+                  <li style={"whiteSpace": "nowrap"}>或邮件联系 jenningswu@gmail.com 。</li>
                 </ul>
               </Popover>
               }>
@@ -424,26 +536,22 @@ AttackLog = React.createClass
              <Button bsStyle='primary' style={width: '100%'} onClick={@importLogHandle}>导入</Button>
           </Col>
         </Row>
-        <Row>
+        <Row style={marginTop:"10px"}>
           <Col xs={12}>
             <div>
               <OverlayTrigger trigger='click' rootClose={true} placement='right' overlay={
                 <Popover title=''>
-                  <h4>统计页面部分</h4>
-                  <ul>
-                    <li>排序</li>
-                    <li>高级搜索</li>
-                  </ul>
-                  <h4>其他功能</h4>
-                  <ul>
-                    <li>航海日志数据导入</li>
-                    <li>允许离线查看</li>
-                  </ul>
+                  <h5>白屏原因</h5>
+                    <li>目前来看是所用chrome中v8的问题，彻底解决要等上游chrome更新版本。</li>
+                  <h5>目前解决方案</h5>
+                    <li>不关闭日志插件，代之直接最小化，可缓解这一问题，减少白屏的出现。但无法根治。</li>
+                    <li>关闭和最小化对系统资源的占用是一样的，所以一直最小化并不会同比影响系统性能。</li>
+                  <Input type='checkbox' onChange={@handleClickCheckbox} checked={@state.forceMinimize} style={verticalAlign: 'middle'} label={"同意此解决方案(更改在重启后生效)"} />
                 </Popover>
                 }>
-                <Button bsStyle='default'>TODO list</Button>
+                <Button bsStyle='default'>常见问题：有关白屏与关闭/最小化插件</Button>
               </OverlayTrigger>
-              <h4>Bug汇报：https://github.com/yudachi/plugin-Akashic-records</h4>
+              <a style={marginLeft: "30px"} onClick={openExternal.bind(this, "https://github.com/yudachi/plugin-Akashic-records")}>Bug汇报</a>
             </div>
           </Col>
         </Row>
