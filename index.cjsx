@@ -3,7 +3,7 @@ windowManager = remote.require './lib/window'
 
 window.akashicRecordsWindow = null
 initialAkashicRecordsWindow = ->
-  if config.get "plugin.Akashic.forceMinimize", true
+  if config.get "plugin.Akashic.forceMinimize", false
     forceMinimize = true
   else
     forceMinimize = false
@@ -23,7 +23,7 @@ checkAkashicRecordsCrashed = ->
     window.akashicRecordsWindow.destroy()
     initialAkashicRecordsWindow()
 
-if config.get('plugin.Akashic.enable', false)
+if config.get('plugin.Akashic.enable', true)
   initialAkashicRecordsWindow()
   # setInterval checkAkashicRecordsCrashed, 2000
 
