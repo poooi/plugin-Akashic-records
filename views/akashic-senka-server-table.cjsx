@@ -56,13 +56,12 @@ AkashicSenkaServerTableTbodyItem = React.createClass
 
 AkashicSenkaServerTable = React.createClass
   getInitialState: ->
-    dataShow: []
     filterKey: ""
-  componentWillReceiveProps: (nextProps)->
+  shouldComponentUpdate: (nextProps, nextState) ->
     if nextProps.data? and nextProps.data isnt @props.data
-      data = nextProps.data
-      @setState
-        dataShow: data
+      true
+    else
+      false
   render: ->
     <div>
       <Grid>
@@ -79,10 +78,10 @@ AkashicSenkaServerTable = React.createClass
               </thead>
               <tbody>
                   {
-                    if @state.dataShow isnt []
-                      if @state.dataShow.length > 0
-                        for item,index in @state.dataShow
-                          if index == @state.dataShow.length-1
+                    if @props.data isnt []
+                      if @props.data.length > 0
+                        for item,index in @props.data
+                          if index == @props.data.length-1
                             lastFlag = 1
                           else
                             lastFlag = 0

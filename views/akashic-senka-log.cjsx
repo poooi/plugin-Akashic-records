@@ -7,8 +7,7 @@ AkashicSenkaServer = require './akashic-senka-server'
 AkashicSenkaLog = React.createClass
   getInitialState: ->
     personalShowFlag: true
-    selectedKey: 0
-  memberId: 0
+    selectedKey: 1
 
   handleSelectTab: (selectedKey)->
     if selectedKey is 0

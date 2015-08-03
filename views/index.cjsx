@@ -142,9 +142,9 @@ AkashicRecordsArea = React.createClass
     mapShowFlag: false
     selectedKey: 0
     dataVersion: [0, 0, 0, 0, 0]
+    memberId: 0
   enableRecord: false
   nickNameId: 0
-  memberId: 0
   mapAreaId: 0
   mapInfoNo: 0
   apiNo: 0
@@ -190,43 +190,54 @@ AkashicRecordsArea = React.createClass
     data.reverse()
     data.sort (a, b)->
       if isNaN a[0]
-        a[0] = (Date(a[0])).getTime()
+        a[0] = (new Date(a[0])).getTime()
       if isNaN b[0]
-        b[0] = (Date(b[0])).getTime()
+        b[0] = (new Date(b[0])).getTime()
       return b[0] - a[0]
   getLogFromFile: (id, type) ->
     switch type
       when 0
         {attackData, dataVersion} = @state
         attackData = @getDataAccordingToNameId id, "attack"
-        log "get attackData from file"
+        console.log "get attackData from file" if process.env.DEBUG?
+        dataVersion[type] += 1
         @setState
           attackData: attackData
+          dataVersion: dataVersion
       when 1
         {missionData, dataVersion} = @state
         missionData = @getDataAccordingToNameId id, "mission"
-        log "get missionData from file"
+        console.log "get missionData from file" if process.env.DEBUG?
+        dataVersion[type] += 1
         @setState
           missionData: missionData
+          dataVersion: dataVersion
       when 2
         {createItemData, dataVersion} = @state
         createItemData = @getDataAccordingToNameId id, "createitem"
-        log "get createItemData from file"
+        console.log "get createItemData from file" if process.env.DEBUG?
+        dataVersion[type] += 1
         @setState
           createItemData: createItemData
+          dataVersion: dataVersion
       when 3
         {createShipData, dataVersion} = @state
         createShipData = @getDataAccordingToNameId id, "createship"
-        log "get createShipData from file"
+        console.log "get createShipData from file" if process.env.DEBUG?
+        dataVersion[type] += 1
         @setState
           createShipData: createShipData
+          dataVersion: dataVersion
       when 4
         {resourceData, dataVersion} = @state
         resourceData = @getDataAccordingToNameId id, "resource"
+        console.log "get resourceData from file" if process.env.DEBUG?
+        dataVersion[type] += 1
         if resourceData.length > 0
           @timeString = timeToBString resourceData[0][0]
         @setState
           resourceData: resourceData
+          dataVersion: dataVersion
   getAttackData: (id) ->
     @getLogFromFile id, 0
   getMissionData: (id) ->
@@ -578,7 +589,7 @@ AkashicRecordsArea = React.createClass
         selectedKey: selectedKey
 
   render: ->
-     <TabbedArea activeKey={@state.selectedKey} animation={false} onSelect={@handleSelectTab}>
+    <TabbedArea activeKey={@state.selectedKey} animation={false} onSelect={@handleSelectTab}>
       <TabPane eventKey={0} tab='出击' ><AkashicLog indexKey={0} selectedKey={@state.selectedKey} data={@state.attackData} dataVersion={@state.dataVersion[0]} tableTab={attackTableTab} contentType={'attack'}/></TabPane>
       <TabPane eventKey={1} tab='远征' ><AkashicLog indexKey={1} selectedKey={@state.selectedKey} data={@state.missionData} dataVersion={@state.dataVersion[1]} tableTab={missionTableTab} contentType={'mission'}/></TabPane>
       <TabPane eventKey={2} tab='建造' ><AkashicLog indexKey={2} selectedKey={@state.selectedKey} data={@state.createShipData} dataVersion={@state.dataVersion[3]} tableTab={createShipTableTab} contentType={'createShip'}/></TabPane>
