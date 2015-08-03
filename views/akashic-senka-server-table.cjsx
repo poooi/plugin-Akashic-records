@@ -78,19 +78,18 @@ AkashicSenkaServerTable = React.createClass
               </thead>
               <tbody>
                   {
-                    if @props.data isnt []
-                      if @props.data.length > 0
-                        for item,index in @props.data
-                          if index == @props.data.length-1
-                            lastFlag = 1
-                          else
-                            lastFlag = 0
-                          <AkashicSenkaServerTableTbodyItem
-                            key = {index}
-                            data = {item}
-                            lastFlag = {lastFlag}
-                            index = {index}
-                          />
+                    if @props.data?.length > 0
+                      for item,index in @props.data
+                        if index == @props.data.length-1
+                          lastFlag = 1
+                        else
+                          lastFlag = 0
+                        <AkashicSenkaServerTableTbodyItem
+                          key = {index}
+                          data = {item}
+                          lastFlag = {lastFlag}
+                          index = {index}
+                        />
                    }
               </tbody>
             </Table>
