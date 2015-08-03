@@ -157,6 +157,41 @@ resolveFile = (fileContent, tableTab)->
         retData
       data = data.filter (log) ->
         log.length is 12
+    when "日付,海域,マス,出撃,ランク,敵艦隊,ドロップ艦種,ドロップ艦娘,大破艦,旗艦,旗艦(第二艦隊),MVP,MVP(第二艦隊)"
+      logType = "attack"
+      data = logs.slice(1).map (logItem) ->
+        logItem = logItem.split ','
+        if logItem.length isnt 13
+          return []
+        retData = []
+        retData.push (new Date(logItem[0].replace(/-/g, "/"))).getTime()
+        tmpArray = logItem[2].match(/:\d+(-\d+)?/g)
+        retData.push "#{logItem[1]}(#{tmpArray[0].substring(1)})"
+        if logItem[3] is "ボス"
+          tmp = "Boss点"
+        else 
+          tmp = "道中"
+        retData.push "#{tmpArray[1].substring(1)}(#{tmp})"
+        if logItem[3] is "出撃"
+          tmp = "出击"
+        else
+          tmp = "进击"
+        retData.push tmp
+        retData.push logItem[4]
+        retData.push logItem[5]
+        retData.push logItem[7]
+        if logItem[8] is ""
+          tmp = "无"
+        else
+          tmp = "有"
+        retData.push tmp
+        retData.push logItem[9]
+        retData.push logItem[10]
+        retData.push logItem[11]
+        retData.push logItem[12]
+        retData
+      data = data.filter (log) ->
+        log.length is 12
     when "No.,日付,結果,遠征,燃料,弾薬,鋼材,ボーキ,アイテム1,個数,アイテム2,個数"
       logType = "mission"
       data = logs.slice(1).map (logItem) ->
@@ -175,6 +210,27 @@ resolveFile = (fileContent, tableTab)->
         retData.push logItem[9]
         retData.push logItem[10]
         retData.push logItem[11]
+        retData
+      data = data.filter (log) ->
+        log.length is 11
+    when "日付,結果,遠征,燃料,弾薬,鋼材,ボーキ,アイテム1,個数,アイテム2,個数"
+      logType = "mission"
+      data = logs.slice(1).map (logItem) ->
+        logItem = logItem.split ','
+        if logItem.length isnt 11
+          return []
+        retData = []
+        retData.push (new Date(logItem[0].replace(/-/g, "/"))).getTime()
+        retData.push logItem[2]
+        retData.push logItem[1]
+        retData.push logItem[3]
+        retData.push logItem[4]
+        retData.push logItem[5]
+        retData.push logItem[6]
+        retData.push logItem[7]
+        retData.push logItem[8]
+        retData.push logItem[9]
+        retData.push logItem[10]
         retData
       data = data.filter (log) ->
         log.length is 11
@@ -204,6 +260,32 @@ resolveFile = (fileContent, tableTab)->
         retData
       data = data.filter (log) ->
         log.length is 12
+    when "日付,種類,名前,艦種,燃料,弾薬,鋼材,ボーキ,開発資材,空きドック,秘書艦,司令部Lv"
+      logType = "createShip"
+      data = logs.slice(1).map (logItem) ->
+        logItem = logItem.split ','
+        if logItem.length isnt 12
+          return []
+        retData = []
+        retData.push (new Date(logItem[0].replace(/-/g, "/"))).getTime()
+        if logItem[1] is "通常艦建造"
+          tmp = "普通建造"
+        else
+          tmp = "大型建造"
+        retData.push tmp
+        retData.push logItem[3]
+        retData.push logItem[2]
+        retData.push logItem[4]
+        retData.push logItem[5]
+        retData.push logItem[6]
+        retData.push logItem[7]
+        retData.push logItem[8]
+        retData.push logItem[9]
+        retData.push logItem[10]
+        retData.push logItem[11]
+        retData
+      data = data.filter (log) ->
+        log.length is 12
     when "No.,日付,開発装備,種別,燃料,弾薬,鋼材,ボーキ,秘書艦,司令部Lv"
       logType = "createItem"
       data = logs.slice(1).map (logItem) ->
@@ -226,6 +308,31 @@ resolveFile = (fileContent, tableTab)->
         retData.push logItem[7]
         retData.push logItem[8]
         retData.push logItem[9]
+        retData
+      data = data.filter (log) ->
+        log.length is 10
+    when "日付,開発装備,種別,燃料,弾薬,鋼材,ボーキ,秘書艦,司令部Lv"
+      logType = "createItem"
+      data = logs.slice(1).map (logItem) ->
+        logItem = logItem.split ','
+        if logItem.length isnt 9
+          return []
+        retData = []
+        retData.push (new Date(logItem[0].replace(/-/g, "/"))).getTime()
+        if logItem[1] is "失敗"
+          retData.push "失败"
+          retData.push ""
+          retData.push ""
+        else 
+          retData.push "成功"
+          retData.push logItem[1]
+          retData.push logItem[2]
+        retData.push logItem[3]
+        retData.push logItem[4]
+        retData.push logItem[5]
+        retData.push logItem[6]
+        retData.push logItem[7]
+        retData.push logItem[8]
         retData
       data = data.filter (log) ->
         log.length is 10
@@ -354,9 +461,9 @@ resolveFile = (fileContent, tableTab)->
 AttackLog = React.createClass
   getInitialState: ->
     typeChoosed: '出击'
-    forceMinimize: true
+    forceMinimize: false
   componentWillMount: ->
-    forceMinimize = config.get "plugin.Akashic.forceMinimize", true
+    forceMinimize = config.get "plugin.Akashic.forceMinimize", false
     @setState
       forceMinimize: forceMinimize
   handleClickCheckbox: ->
