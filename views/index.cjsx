@@ -2,9 +2,7 @@ fs = require 'fs-extra'
 glob = require 'glob'
 {React, ReactBootstrap, $, ROOT, APPDATA_PATH} = window
 {TabbedArea, TabPane} = ReactBootstrap
-
 path = require 'path-extra'
-
 {log, warn, error} = require path.join(ROOT, 'lib/utils')
 # AkashicRecordTab = require './item-info-table-area'
 # AkashicRecordContent = require './item-info-checkbox-area'
@@ -105,10 +103,8 @@ createItemTableTab = ['No.', '时间', '结果', '开发装备', '类别',
     '燃', '弹', '钢', '铝', '秘书舰', '司令部Lv']
 createShipTableTab = ['No.', '时间', '种类', '船只', '舰种',
     '燃', '弹', '钢', '铝', '资材', '空渠数', '秘书舰', '司令部Lv']
-
 resourceTableTab = ['No.', '时间', '燃料', '弹药', '钢材', '铝材',
   '高速建造', '高速修复', '开发资材', '改修螺丝']
-
 senkaTableTab = ['顺位', 'Lv.', '提督名', '阶级', '时段累计经验', '战果', '勋章']
 
 getUseItem: (id)->
@@ -144,12 +140,10 @@ AkashicRecordsArea = React.createClass
     createShipData: []
     resourceData: []
     mapShowFlag: false
-    downloadFlag: false
     selectedKey: 0
     dataVersion: [0, 0, 0, 0, 0]
   nickNameId: 0
   memberId: 0
-  serverId: 0
   mapAreaId: 0
   mapInfoNo: 0
   apiNo: 0
@@ -175,90 +169,64 @@ AkashicRecordsArea = React.createClass
   kdockId: 0
   getDataAccordingToNameId: (id, type) ->
     testNum = /^[1-9]+[0-9]*$/
-    if type == "senkaList"
-      serverId = config.get "plugin.Akashic.senka.serverId", 0
-      if serverId > 0
-        time = senkaDateToString()
-        datalogs = glob.sync(path.join(APPDATA_PATH, 'akashic-records', id.toString(), type, "#{serverId}", '500', time))
-        if datalogs.length isnt 0
-          return @setState downloadFlag: false
-        else
-          return @setState downloadFlag: true
-      else
-        return @setState downloadFlag: false
-    else
-      datalogs = glob.sync(path.join(APPDATA_PATH, 'akashic-records', @nickNameId.toString(), type, '*'))
-      datalogs = datalogs.map (filePath) ->
-        try
-          fileContent = fs.readFileSync filePath, 'utf8'
-          logs = fileContent.split "\n"
-          logs = logs.map (logItem) ->
-            logItem = logItem.split ','
-            logItem[0] = parseInt logItem[0] if testNum.test(logItem[0])
-            logItem
-          logs.filter (log) ->
-            log.length > 2
-        catch e
-          warn "Read and decode file:#{filePath} error!#{e.toString()}"
-          return []
-      data = []
-      for datalog in datalogs
-        data = data.concat datalog
-      data.reverse()
-      data.sort (a, b)->
-        if isNaN a[0]
-          a[0] = (Date(a[0])).getTime()
-        if isNaN b[0]
-          b[0] = (Date(b[0])).getTime()
-        return b[0] - a[0]
+    datalogs = glob.sync(path.join(APPDATA_PATH, 'akashic-records', @nickNameId.toString(), type, '*'))
+    datalogs = datalogs.map (filePath) ->
+      try
+        fileContent = fs.readFileSync filePath, 'utf8'
+        logs = fileContent.split "\n"
+        logs = logs.map (logItem) ->
+          logItem = logItem.split ','
+          logItem[0] = parseInt logItem[0] if testNum.test(logItem[0])
+          logItem
+        logs.filter (log) ->
+          log.length > 2
+      catch e
+        warn "Read and decode file:#{filePath} error!#{e.toString()}"
+        return []
+    data = []
+    for datalog in datalogs
+      data = data.concat datalog
+    data.reverse()
+    data.sort (a, b)->
+      if isNaN a[0]
+        a[0] = (Date(a[0])).getTime()
+      if isNaN b[0]
+        b[0] = (Date(b[0])).getTime()
+      return b[0] - a[0]
   getLogFromFile: (id, type) ->
     switch type
       when 0
         {attackData, dataVersion} = @state
         attackData = @getDataAccordingToNameId id, "attack"
-        console.log "get attackData from file" if process.env.DEBUG?
-        dataVersion[0] += 1
+        log "get attackData from file"
         @setState
           attackData: attackData
-          dataVersion: dataVersion
       when 1
         {missionData, dataVersion} = @state
         missionData = @getDataAccordingToNameId id, "mission"
-        console.log "get missionData from file" if process.env.DEBUG?
-        dataVersion[1] += 1
+        log "get missionData from file"
         @setState
           missionData: missionData
-          dataVersion: dataVersion
       when 2
         {createItemData, dataVersion} = @state
         createItemData = @getDataAccordingToNameId id, "createitem"
-        console.log "get createItemData from file" if process.env.DEBUG?
-        dataVersion[2] += 1
+        log "get createItemData from file"
         @setState
           createItemData: createItemData
-          dataVersion: dataVersion
       when 3
         {createShipData, dataVersion} = @state
         createShipData = @getDataAccordingToNameId id, "createship"
-        console.log "get createShipData from file" if process.env.DEBUG?
-        dataVersion[3] += 1
+        log "get createShipData from file"
         @setState
           createShipData: createShipData
-          dataVersion: dataVersion
       when 4
         {resourceData, dataVersion} = @state
         resourceData = @getDataAccordingToNameId id, "resource"
-        log "get resourceData from file" if process.env.DEBUG?
-        dataVersion[4] += 1
+        log "get resourceData from file"
         if resourceData.length > 0
           @timeString = timeToBString resourceData[0][0]
         @setState
           resourceData: resourceData
-          dataVersion: dataVersion
-      when 5
-        {senkaData} = @state
-        senkaData = @getDataAccordingToNameId id, "senkaList"
-        log "check senkaData from file"
   getAttackData: (id) ->
     @getLogFromFile id, 0
   getMissionData: (id) ->
@@ -269,8 +237,6 @@ AkashicRecordsArea = React.createClass
     @getLogFromFile id, 3
   getResourceData: (id) ->
     @getLogFromFile id, 4
-  checkSenkaData: (id) ->
-    @getLogFromFile id, 5
 
   saveLog: (type, log) ->
     fs.ensureDirSync(path.join(APPDATA_PATH, 'akashic-records', @nickNameId.toString(), type))
@@ -314,7 +280,6 @@ AkashicRecordsArea = React.createClass
         @getCreateItemData @nickNameId
         @getCreateShipData @nickNameId
         @getResourceData @nickNameId
-        @checkSenkaData body.api_member_id
         @setState
           memberId: body.api_member_id
       when '/kcsapi/api_req_map/start'
@@ -586,19 +551,27 @@ AkashicRecordsArea = React.createClass
     if selectedKey is 4
       @setState
         mapShowFlag: true
+        personalShowFlag: false
+        selectedKey: selectedKey
+    else if selectedKey is 5
+      @setState
+        mapShowFlag: false
+        personalShowFlag: true
         selectedKey: selectedKey
     else
       @setState
         mapShowFlag: false
+        personalShowFlag: false
         selectedKey: selectedKey
+
   render: ->
-    <TabbedArea activeKey={@state.selectedKey} animation={false} onSelect={@handleSelectTab}>
+     <TabbedArea activeKey={@state.selectedKey} animation={false} onSelect={@handleSelectTab}>
       <TabPane eventKey={0} tab='出击' ><AkashicLog indexKey={0} selectedKey={@state.selectedKey} data={@state.attackData} dataVersion={@state.dataVersion[0]} tableTab={attackTableTab} contentType={'attack'}/></TabPane>
       <TabPane eventKey={1} tab='远征' ><AkashicLog indexKey={1} selectedKey={@state.selectedKey} data={@state.missionData} dataVersion={@state.dataVersion[1]} tableTab={missionTableTab} contentType={'mission'}/></TabPane>
       <TabPane eventKey={2} tab='建造' ><AkashicLog indexKey={2} selectedKey={@state.selectedKey} data={@state.createShipData} dataVersion={@state.dataVersion[3]} tableTab={createShipTableTab} contentType={'createShip'}/></TabPane>
       <TabPane eventKey={3} tab='开发' ><AkashicLog indexKey={3} selectedKey={@state.selectedKey} data={@state.createItemData} dataVersion={@state.dataVersion[2]} tableTab={createItemTableTab} contentType={'createItem'}/></TabPane>
       <TabPane eventKey={4} tab='资源统计' ><AkashicResourceLog indexKey={4} selectedKey={@state.selectedKey} data={@state.resourceData} dataVersion={@state.dataVersion[4]} tableTab={resourceTableTab} mapShowFlag={@state.mapShowFlag} contentType={'resource'}/></TabPane>
-      <TabPane eventKey={5} tab='战果' ><AkashicSenkaLog indexKey={5} selectedKey={@state.selectedKey} downloadFlag={@state.downloadFlag} memberId={@state.memberId} tableTab={senkaTableTab} rankShowFlag={@state.rankShowFlag} contentType={'resource'}/></TabPane>
+      <TabPane eventKey={5} tab='战果' ><AkashicSenkaLog indexKey={5} selectedKey={@state.selectedKey} memberId={@state.memberId} tableTab={senkaTableTab}  personalShowFlag={@state.personalShowFlag} contentType={'senka'}/></TabPane>
       <TabPane eventKey={6} tab='高级' >
         <AkashicAdvancedModule
           tableTab={

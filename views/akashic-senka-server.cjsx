@@ -29,8 +29,8 @@ dateToString = ->
   "#{year}#{month}#{day}#{time}"
 
 dateStringFormat = (date)->
-  time = ''
-  if date[11..15] == "15:00"
+  time = date[11..15]
+  if time == "15:00"
     time = "夜"
   else
     time = "昼"
@@ -41,15 +41,14 @@ serverNames = ["空", "横须贺镇守府", "吴镇守府", "佐世保镇守府"
                "タウイタウイ泊地", "パラオ泊地", "ブルネイ泊地", "単冠湾泊地", "幌筵泊地",
                "宿毛湾泊地", "鹿屋基地", "岩川基地", "佐伯湾泊地", "柱岛泊地"]
 
-sync = async (memberId, serverId) ->
+sync = async (memberId, serverId, isDownloading) ->
   time = dateToString()
   senkaList = {}
-  #serverList 1-100/500/990 #{serverId}
+  #serverList 1-100/500/990
   [response, body] = yield request.getAsync "https://www.senka.me/server/#{serverId}/ranking?f=json",
     json: true
   if response.statusCode == 200
     senkaList = JSON.stringify(body)
-    #'111243999' player_id
     fs.ensureDirSync(path.join(APPDATA_PATH, 'akashic-records', "#{memberId}", 'senkaList', "#{serverId}", '500'))
     fs.appendFile(path.join(APPDATA_PATH, 'akashic-records', "#{memberId}", 'senkaList', "#{serverId}", '500', time), "#{senkaList}", 'utf8', (err)->
       error "Write senkaList file error!" if err)
@@ -67,85 +66,78 @@ sync = async (memberId, serverId) ->
     log "save server:#{serverId} senkaList(990) from senkame[#{time}]"
   else
     log response.statusCode
-  return true
+  isDownloading()
+  return
 
 AkashicSenkaServer = React.createClass
   getInitialState: ->
-    showAmount: 500
+    showAmount: config.get "plugin.Akashic.senka.table.showAmount", 500
     tableData: []
     server: "镇守府"
     date: "日期"
-    serverId: config.get "plugin.Akashic.senka.serverId", -1
-    downloadingFlag: false
-  memberId: 0
-  updateTime: ""
+    serverId: config.get "plugin.Akashic.senka.serverId", 0
+    downloadingFlag: ""
 
   updateSenkaList: (showAmount, serverId) ->
     time = dateToString()
     senkalist = {}
-    senkaList = glob.sync(path.join(APPDATA_PATH, 'akashic-records', "#{@state.memberId}", 'senkaList', "#{serverId}", "#{showAmount}", "#{time}"))
-    log "senkaList:#{senkaList}  length #{senkaList.length}"
+    senkaList = glob.sync(path.join(APPDATA_PATH, 'akashic-records', "#{@props.memberId}", 'senkaList', "#{serverId}", "#{showAmount}", "#{time}"))
     if senkaList.length == 0
+      sync @props.memberId, serverId, isDownloading=() =>
+        @updateSenkaList @state.showAmount, @state.serverId
+        @setState
+        	downloadingFlag: false
       @setState
         downloadingFlag: true
-      if sync(@state.memberId, serverId)
-        senkaList = glob.sync(path.join(APPDATA_PATH, 'akashic-records', "#{@state.memberId}", 'senkaList', "#{serverId}", "#{showAmount}", "#{time}"))
-      @setState
-        downloadingFlag: false
-    senkaList = senkaList.map (filePath) ->
-      try
-        fileContent = fs.readFileSync filePath, 'utf8'
-        data = JSON.parse(fileContent)
-        data
-      catch e
-        warn "Read and decode file:#{senkaList} error!#{e}"
-        return {}
-    if senkaList[0]?
-      console.log "get senkalist from server:#{serverId}[#{showAmount}-#{time}]"
+    else
+      senkaList = senkaList.map (filePath) ->
+        try
+          fileContent = fs.readFileSync filePath, 'utf8'
+          data = JSON.parse(fileContent)
+          data
+        catch e
+          warn "Read and decode file:#{senkaList} error!#{e}"
+          return {}
+      log "read senkaList[#{serverId}]-[#{showAmount}]-[#{time}]"
       list = senkaList[0]
-      date = dateStringFormat(list["date"])
       @setState
         tableData: list["list"]
         server: list["name"]
-        date: date
+        date: dateStringFormat(list["date"])
 
   shouldComponentUpdate: (nextProps, nextState) ->
-    if @state.tableData isnt nextState.tableData
-      return true
-    else if @state.downloadingFlag isnt nextProps.downloadingFlag
-      return true
-    return false
+    refreshFlag = false
+    if @state.downloadingFlag isnt nextProps.downloadingFlag
+      refreshFlag = true
+    else if @state.tableData isnt nextProps.tableData or @state.tableData.length < 10
+      refreshFlag = true
+    refreshFlag
+
+#  componentDidUpdate: (prevProps, prevState) ->
+#    if @state.tableData.length < 10 and @props.memberId > 0
+#      @updateSenkaList @state.showAmount, @state.serverId
+
   componentWillReceiveProps: (nextProps) ->
     time = dateToString()
-    if nextProps.memberId > 0 and nextProps.memberId isnt @state.memberId
-      serverId = config.get "plugin.Akashic.senka.serverId"
-      if nextProps.downloadFlag
-        if sync(nextProps.memberId, serverId)
-          @setState
-            memberId: nextProps.memberId
-            updateTime: time
-      else
-        @updateSenkaList(@state.showAmount, serverId)
-        @setState
-          memberId: nextProps.memberId
-          updateTime: time
+    if @props.memberId > 0 and @state.tableData.length < 10
+      @updateSenkaList @state.showAmount, @state.serverId
 
   handleCustomClick: ->
     showAmount = 500
-    @updateSenkaList(showAmount, @state.serverId)
+    @updateSenkaList showAmount, @state.serverId
     @setState
       showAmount: showAmount
     config.set "plugin.Akashic.senka.table.showAmount", showAmount
   handleMoreClick: ->
     showAmount = 990
-    @updateSenkaList(showAmount, @state.serverId)
+    @updateSenkaList showAmount, @state.serverId
     @setState
       showAmount: showAmount
     config.set "plugin.Akashic.senka.table.showAmount", showAmount
 
   handleFilterSelect: (e) ->
     serverId = parseInt e.target.value
-    @updateSenkaList(@state.showAmount, serverId)
+    @updateSenkaList @state.showAmount, serverId
     @setState
       serverId: serverId
     config.set "plugin.Akashic.senka.serverId", serverId
@@ -163,14 +155,13 @@ AkashicSenkaServer = React.createClass
           <AkashicSenkaServerSelect handleFilterSelect={@handleFilterSelect}
                                     handleCustomClick={@handleCustomClick}
                                     handleMoreClick={@handleMoreClick}
-                                    handleCustomClick={@handleCustomClick}
                                     filterPaneShow={@state.filterPaneShow}
                                     statisticsPaneShow={@state.statisticsPaneShow}
                                     serverId={@state.serverId}
                                     serverNames={serverNames}/>
           {
             if @state.downloadingFlag
-              <Alert onDismiss={true}>
+              <Alert className="akashic-senka-alert">
                 <h4>downloading...</h4>
               </Alert>
             else

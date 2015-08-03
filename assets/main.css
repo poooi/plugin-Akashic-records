@@ -173,3 +173,9 @@ akashic-records .akashic-records-statistics .btn {
   word-wrap: break-word;
   letter-spacing: 10px;
 }
+.akashic-senka-alert{
+  color: black;
+  background-color: rgba(230, 230, 230, 0.91);
+  border-radius: 3px;
+  text-align: center;
+}
