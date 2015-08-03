@@ -72,7 +72,7 @@ AkashicSenkaServerTable = React.createClass
                 <tr>
                   {
                     for tab, index in @props.tableTab
-                      <th>{tab}</th>
+                      <th key={index}>{tab}</th>
                   }
                 </tr>
               </thead>
