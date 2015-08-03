@@ -23,7 +23,7 @@ checkAkashicRecordsCrashed = ->
     window.akashicRecordsWindow.destroy()
     initialAkashicRecordsWindow()
 
-if config.get('plugin.Akashic.enable', true)
+if config.get('plugin.Akashic.enable', false)
   initialAkashicRecordsWindow()
   # setInterval checkAkashicRecordsCrashed, 2000
 
