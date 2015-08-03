@@ -359,7 +359,7 @@ resolveFile = (fileContent, tableTab)->
       logType = "resource"
       data = logs.slice(1).map (logItem) ->
         logItem = logItem.split ','
-        if logItem.length isnt 9 and logItem.length.isnt 11
+        if logItem.length isnt 9 and logItem.length isnt 11
           return []
         retData = []
         retData.push (new Date(logItem[0].replace(/-/g, "/"))).getTime()
@@ -371,6 +371,25 @@ resolveFile = (fileContent, tableTab)->
         retData.push logItem[5]
         retData.push logItem[7]
         retData.push logItem[8]
+        retData
+      data = data.filter (log) ->
+        log.length is 9
+    when "日付,燃料,弾薬,鋼材,ボーキ,高速修復材,高速建造材,開発資材"
+      logType = "resource"
+      data = logs.slice(1).map (logItem) ->
+        logItem = logItem.split ','
+        if logItem.length isnt 8
+          return []
+        retData = []
+        retData.push (new Date(logItem[0].replace(/-/g, "/"))).getTime()
+        retData.push logItem[1]
+        retData.push logItem[2]
+        retData.push logItem[3]
+        retData.push logItem[4]
+        retData.push logItem[6]
+        retData.push logItem[5]
+        retData.push logItem[7]
+        retData.push "0"
         retData
       data = data.filter (log) ->
         log.length is 9
