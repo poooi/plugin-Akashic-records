@@ -340,7 +340,7 @@ resolveFile = (fileContent, tableTab)->
       logType = "resource"
       data = logs.slice(1).map (logItem) ->
         logItem = logItem.split ','
-        if logItem.length isnt 10 and logItem.length.isnt 12
+        if logItem.length isnt 10 and logItem.length isnt 12
           return []
         retData = []
         retData.push (new Date(logItem[0].replace(/-/g, "/"))).getTime()
@@ -394,7 +394,7 @@ resolveFile = (fileContent, tableTab)->
       data = data.filter (log) ->
         log.length is 9
 
-    # KCV鬼佬版
+    # KCV yuyuvn版
     when "Date,Result,Operation,Enemy Fleet,Rank"
       logType = "attack"
       data = logs.slice(1).map (logItem) ->
