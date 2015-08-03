@@ -31,10 +31,10 @@ module.exports =
   name: 'Akashic'
   priority: 10
   displayName: <span><FontAwesome key={0} name='book' /> 航海日志</span>
-  description: '日志'
+  description: '日志. 战果部分 by rui'
   author: 'W.G.'
   link: 'https://github.com/JenningsWu'
-  version: '1.1.0'
+  version: '1.2.0'
   handleClick: ->
     # checkAkashicRecordsCrashed()
     window.akashicRecordsWindow.show()
