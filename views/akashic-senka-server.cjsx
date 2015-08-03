@@ -54,7 +54,7 @@ sync = async (memberId, serverId, serverSelectedVersion, isDownloading) ->
       fs.writeFileSync path.join(APPDATA_PATH, 'akashic-records', "#{memberId}", 'senkaList', "#{serverId}", '500', time), "#{senkaList}", 'utf8'
     catch e
       error "Write senkaList file error!#{e}"
-    log "save server:#{serverId} senkaList(500) from senkame[#{time}]"
+    console.log "save server:#{serverId} senkaList(500) from senkame[#{time}]" if process.env.DEBUG?
   else
     log response.statusCode
   #serverList 1-990
@@ -67,7 +67,7 @@ sync = async (memberId, serverId, serverSelectedVersion, isDownloading) ->
       fs.writeFileSync path.join(APPDATA_PATH, 'akashic-records', "#{memberId}", 'senkaList', "#{serverId}", '990', time), "#{senkaList}", 'utf8'
     catch e
       error "Write senkaList file error!#{e}"
-    log "save server:#{serverId} senkaList(990) from senkame[#{time}]"
+    console.log "save server:#{serverId} senkaList(990) from senkame[#{time}]" if process.env.DEBUG?
   else
     log response.statusCode
   isDownloading(serverSelectedVersion)
@@ -102,7 +102,7 @@ AkashicSenkaServer = React.createClass
         catch e
           warn "Read and decode file:#{senkaList} error!#{e}"
           return {}
-      log "read senkaList[#{serverId}]-[#{showAmount}]-[#{time}]"
+      console.log "read senkaList[#{serverId}]-[#{showAmount}]-[#{time}]" if process.env.DEBUG?
       list = senkaList[0]
       @setState
         tableData: list["list"]

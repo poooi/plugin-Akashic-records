@@ -266,19 +266,19 @@ AkashicRecordsArea = React.createClass
       fs.appendFile(path.join(APPDATA_PATH, 'akashic-records', @nickNameId.toString(), type, "data"), "#{log.join(',')}\n", 'utf8', (err)->
         error "Write #{type}-log file error!" if err)
   saveAttackLog: (alog) ->
-    log "save one Attack-log"
+    console.log "save one Attack-log" if process.env.DEBUG?
     @saveLog "attack", alog
   saveMissionLog: (alog) ->
-    log "save one Mission-log"
+    console.log "save one Mission-log" if process.env.DEBUG?
     @saveLog "mission", alog
   saveCreateItemLog: (alog) ->
-    log "save one CreateItem-log"
+    console.log "save one CreateItem-log" if process.env.DEBUG?
     @saveLog "createitem", alog
   saveCreateShipLog: (alog) ->
-    log "save one CreateShip-log"
+    console.log "save one CreateShip-log" if process.env.DEBUG?
     @saveLog "createship", alog
   saveResourceLog: (alog) ->
-    log "save one Resource-log"
+    console.log "save one Resource-log" if process.env.DEBUG?
     @saveLog "resource", alog
   handleResponse: (e) ->
     {method, body, postBody} = e.detail
