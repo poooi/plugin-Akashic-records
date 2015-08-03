@@ -41,7 +41,7 @@ serverNames = ["空", "横须贺镇守府", "吴镇守府", "佐世保镇守府"
                "タウイタウイ泊地", "パラオ泊地", "ブルネイ泊地", "単冠湾泊地", "幌筵泊地",
                "宿毛湾泊地", "鹿屋基地", "岩川基地", "佐伯湾泊地", "柱岛泊地"]
 
-sync = async (memberId, serverId, isDownloading) ->
+sync = async (memberId, serverId, serverSelectedVersion, isDownloading) ->
   time = dateToString()
   senkaList = {}
   #serverList 1-100/500/990
@@ -49,9 +49,11 @@ sync = async (memberId, serverId, isDownloading) ->
     json: true
   if response.statusCode == 200
     senkaList = JSON.stringify(body)
-    fs.ensureDirSync(path.join(APPDATA_PATH, 'akashic-records', "#{memberId}", 'senkaList', "#{serverId}", '500'))
-    fs.appendFile(path.join(APPDATA_PATH, 'akashic-records', "#{memberId}", 'senkaList', "#{serverId}", '500', time), "#{senkaList}", 'utf8', (err)->
-      error "Write senkaList file error!" if err)
+    try
+      fs.ensureDirSync path.join(APPDATA_PATH, 'akashic-records', "#{memberId}", 'senkaList', "#{serverId}", '500')
+      fs.writeFileSync path.join(APPDATA_PATH, 'akashic-records', "#{memberId}", 'senkaList', "#{serverId}", '500', time), "#{senkaList}", 'utf8'
+    catch e
+      error "Write senkaList file error!#{e}"
     log "save server:#{serverId} senkaList(500) from senkame[#{time}]"
   else
     log response.statusCode
@@ -60,13 +62,15 @@ sync = async (memberId, serverId, isDownloading) ->
     json: true
   if response.statusCode == 200
     senkaList = JSON.stringify(body)
-    fs.ensureDirSync(path.join(APPDATA_PATH, 'akashic-records', "#{memberId}", 'senkaList', "#{serverId}", '990'))
-    fs.appendFile(path.join(APPDATA_PATH, 'akashic-records', "#{memberId}", 'senkaList', "#{serverId}", '990', time), "#{senkaList}", 'utf8', (err)->
-      error "Write senkaList file error!" if err)
+    try
+      fs.ensureDirSync path.join(APPDATA_PATH, 'akashic-records', "#{memberId}", 'senkaList', "#{serverId}", '990')
+      fs.writeFileSync path.join(APPDATA_PATH, 'akashic-records', "#{memberId}", 'senkaList', "#{serverId}", '990', time), "#{senkaList}", 'utf8'
+    catch e
+      error "Write senkaList file error!#{e}"
     log "save server:#{serverId} senkaList(990) from senkame[#{time}]"
   else
     log response.statusCode
-  isDownloading()
+  isDownloading(serverSelectedVersion)
   return
 
 AkashicSenkaServer = React.createClass
@@ -76,17 +80,17 @@ AkashicSenkaServer = React.createClass
     server: "镇守府"
     date: "日期"
     serverId: config.get "plugin.Akashic.senka.serverId", 0
-    downloadingFlag: ""
+    serverSelectedVersion: 0
+    downloadingFlag: true
 
-  updateSenkaList: (showAmount, serverId) ->
+  updateSenkaList: (showAmount, serverId, serverSelectedVersion) ->
     time = dateToString()
     senkalist = {}
     senkaList = glob.sync(path.join(APPDATA_PATH, 'akashic-records', "#{@props.memberId}", 'senkaList', "#{serverId}", "#{showAmount}", "#{time}"))
     if senkaList.length == 0
-      sync @props.memberId, serverId, isDownloading=() =>
-        @updateSenkaList @state.showAmount, @state.serverId
-        @setState
-        	downloadingFlag: false
+      sync @props.memberId, serverId, serverSelectedVersion, isDownloading=(serverSelectedVersion) =>
+        if serverSelectedVersion is @state.serverSelectedVersion
+          @updateSenkaList @state.showAmount, @state.serverId, @state.serverSelectedVersion
       @setState
         downloadingFlag: true
     else
@@ -104,6 +108,7 @@ AkashicSenkaServer = React.createClass
         tableData: list["list"]
         server: list["name"]
         date: dateStringFormat(list["date"])
+        downloadingFlag: false
 
   shouldComponentUpdate: (nextProps, nextState) ->
     refreshFlag = false
@@ -117,29 +122,37 @@ AkashicSenkaServer = React.createClass
 #    if @state.tableData.length < 10 and @props.memberId > 0
 #      @updateSenkaList @state.showAmount, @state.serverId
 
+  componentWillMount: () ->
+    @updateSenkaList @state.showAmount, @state.serverId, @state.serverSelectedVersion
+
   componentWillReceiveProps: (nextProps) ->
     time = dateToString()
     if @props.memberId > 0 and @state.tableData.length < 10
-      @updateSenkaList @state.showAmount, @state.serverId
+      @updateSenkaList @state.showAmount, @state.serverId, @state.serverSelectedVersion
 
   handleCustomClick: ->
     showAmount = 500
-    @updateSenkaList showAmount, @state.serverId
-    @setState
-      showAmount: showAmount
-    config.set "plugin.Akashic.senka.table.showAmount", showAmount
+    if not @state.downloadingFlag
+      @updateSenkaList showAmount, @state.serverId, @state.serverSelectedVersion
+      @setState
+        showAmount: showAmount
+      config.set "plugin.Akashic.senka.table.showAmount", showAmount
   handleMoreClick: ->
     showAmount = 990
-    @updateSenkaList showAmount, @state.serverId
-    @setState
-      showAmount: showAmount
-    config.set "plugin.Akashic.senka.table.showAmount", showAmount
+    if not @state.downloadingFlag
+      @updateSenkaList showAmount, @state.serverId, @state.serverSelectedVersion
+      @setState
+        showAmount: showAmount
+      config.set "plugin.Akashic.senka.table.showAmount", showAmount
 
   handleFilterSelect: (e) ->
     serverId = parseInt e.target.value
-    @updateSenkaList @state.showAmount, serverId
+    {serverSelectedVersion} = @state
+    serverSelectedVersion += 1
+    @updateSenkaList @state.showAmount, serverId, serverSelectedVersion
     @setState
       serverId: serverId
+      serverSelectedVersion: serverSelectedVersion
     config.set "plugin.Akashic.senka.serverId", serverId
 
   render: ->
