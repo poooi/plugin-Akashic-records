@@ -235,6 +235,8 @@ AkashicRecordsArea = React.createClass
         dataVersion[type] += 1
         if resourceData.length > 0
           @timeString = timeToBString resourceData[0][0]
+        else
+          @timeString = ""
         @setState
           resourceData: resourceData
           dataVersion: dataVersion
