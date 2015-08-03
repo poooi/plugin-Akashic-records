@@ -546,22 +546,28 @@ AttackLog = React.createClass
             else
               fileContent = iconv.decode fileContentBuffer, 'shiftjis'
           {logType, data} = resolveFile fileContent, @props.tableTab
+          saveType = -1
           switch logType
             when 'attack'
               hint = '出击'
               oldData = @props.attackData
+              saveType = 0
             when 'mission'
               hint = '远征'
               oldData = @props.missionData
+              saveType = 1
             when 'createShip'
               hint = '建造'
               oldData = @props.createShipData
+              saveType = 3
             when 'createItem'
               hint = '开发'
               oldData = @props.createItemData
+              saveType = 2
             when 'resource'
               hint = '资源'
               oldData = @props.resourceData
+              saveType = 4
           oldData = duplicateRemoval oldData
           oldLength = oldData.length
           newData = oldData.concat data
@@ -577,7 +583,8 @@ AttackLog = React.createClass
           fs.writeFile path.join(APPDATA_PATH, 'akashic-records', "tmp", "data"), saveData
           fs.emptyDirSync path.join(APPDATA_PATH, 'akashic-records', nickNameId.toString(), logType.toLowerCase())
           fs.writeFile path.join(APPDATA_PATH, 'akashic-records', nickNameId.toString(), logType.toLowerCase(), "data"), saveData
-          @showMessage "新导入#{newLength - oldLength}条#{hint}记录！重启后会刷新列表。"
+          @props.setDataHandler saveType, newData
+          @showMessage "新导入#{newLength - oldLength}条#{hint}记录！"
         catch e
           @showMessage e.message
           throw e

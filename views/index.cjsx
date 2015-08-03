@@ -251,6 +251,28 @@ AkashicRecordsArea = React.createClass
   getResourceData: (id) ->
     @getLogFromFile id, 4
 
+  setDataHandler: (type, data) ->
+    {dataVersion} = @state
+    if type isnt -1
+      dataVersion[type] += 1
+    dataVersion: dataVersion
+    switch type
+      when 0
+        @setState
+          attackData: data
+      when 1
+        @setState
+          missionData: data
+      when 2
+        @setState
+          createItemData: data
+      when 3
+        @setState
+          createShipData: data
+      when 4
+        @setState
+          resourceData: data
+
   saveLog: (type, log) ->
     fs.ensureDirSync(path.join(APPDATA_PATH, 'akashic-records', @nickNameId.toString(), type))
     if type is "attack"
@@ -611,7 +633,8 @@ AkashicRecordsArea = React.createClass
           missionData={@state.missionData}
           createItemData={@state.createItemData}
           createShipData={@state.createShipData}
-          resourceData={@state.resourceData}/>
+          resourceData={@state.resourceData}
+          setDataHandler={@setDataHandler}/>
       </TabPane>
     </TabbedArea>
 
