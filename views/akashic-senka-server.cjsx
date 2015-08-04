@@ -9,6 +9,9 @@ request = Promise.promisifyAll require('request')
 {log, warn, error} = require path.join(ROOT, 'lib/utils')
 AkashicSenkaServerTable = require './akashic-senka-server-table'
 AkashicSenkaServerSelect = require './akashic-senka-server-select'
+
+{openExternal} = require 'shell'
+
 dateToString = ->
   date = new Date()
   year = date.getFullYear()
@@ -140,10 +143,10 @@ AkashicSenkaServer = React.createClass
 
   componentWillReceiveProps: (nextProps) ->
     time = dateToString()
-    if @props.memberId > 0 and @state.tableData.length < 10
-      @updateSenkaList @state.showAmount, @state.serverId, @state.serverSelectedVersion
-    @setState
-      downloadingFailFlag: false
+    # if @props.memberId > 0 and @state.tableData.length < 10
+    #   @updateSenkaList @state.showAmount, @state.serverId, @state.serverSelectedVersion
+    #   @setState
+    #     downloadingFailFlag: false
 
   handleCustomClick: ->
     showAmount = 500
@@ -200,6 +203,9 @@ AkashicSenkaServer = React.createClass
             else
               <AkashicSenkaServerTable tableTab={@props.tableTab} data={@state.tableData}/>
           }
+        </Col>
+        <Col xs={12} md={12}>
+          数据来源： <a onClick={openExternal.bind(this, "https://www.senka.me/")}>战果基地</a>
         </Col>
       </Row>
     </Grid>
