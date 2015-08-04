@@ -42,6 +42,7 @@ serverNames = ["空", "横须贺镇守府", "吴镇守府", "佐世保镇守府"
                "宿毛湾泊地", "鹿屋基地", "岩川基地", "佐伯湾泊地", "柱岛泊地"]
 
 sync = async (memberId, serverId, serverSelectedVersion, isDownloading) ->
+  isSuccess = true
   time = dateToString()
   senkaList = {}
   #serverList 1-100/500/990
@@ -57,6 +58,7 @@ sync = async (memberId, serverId, serverSelectedVersion, isDownloading) ->
     console.log "save server:#{serverId} senkaList(500) from senkame[#{time}]" if process.env.DEBUG?
   else
     log response.statusCode
+    isSuccess = false
   #serverList 1-990
   [response, body] = yield request.getAsync "https://www.senka.me/server/#{serverId}/ranking?f=json&lm=990",
     json: true
@@ -70,7 +72,8 @@ sync = async (memberId, serverId, serverSelectedVersion, isDownloading) ->
     console.log "save server:#{serverId} senkaList(990) from senkame[#{time}]" if process.env.DEBUG?
   else
     log response.statusCode
-  isDownloading(serverSelectedVersion)
+    isSuccess = false
+  isDownloading(serverSelectedVersion, isSuccess)
   return
 
 AkashicSenkaServer = React.createClass
@@ -82,15 +85,22 @@ AkashicSenkaServer = React.createClass
     serverId: config.get "plugin.Akashic.senka.serverId", 0
     serverSelectedVersion: 0
     downloadingFlag: true
+    downloadingFailFlag: false
 
   updateSenkaList: (showAmount, serverId, serverSelectedVersion) ->
+    if serverId is 0
+      return
     time = dateToString()
     senkalist = {}
     senkaList = glob.sync(path.join(APPDATA_PATH, 'akashic-records', "#{@props.memberId}", 'senkaList', "#{serverId}", "#{showAmount}", "#{time}"))
     if senkaList.length == 0
-      sync @props.memberId, serverId, serverSelectedVersion, isDownloading=(serverSelectedVersion) =>
-        if serverSelectedVersion is @state.serverSelectedVersion
-          @updateSenkaList @state.showAmount, @state.serverId, @state.serverSelectedVersion
+      sync @props.memberId, serverId, serverSelectedVersion, isDownloading=(serverSelectedVersion, isSuccess) =>
+        if isSuccess
+          if serverSelectedVersion is @state.serverSelectedVersion
+            @updateSenkaList @state.showAmount, @state.serverId, @state.serverSelectedVersion
+        else
+          @setState
+            downloadingFailFlag: true
       @setState
         downloadingFlag: true
     else
@@ -128,7 +138,9 @@ AkashicSenkaServer = React.createClass
   componentWillReceiveProps: (nextProps) ->
     time = dateToString()
     if @props.memberId > 0 and @state.tableData.length < 10
-      @updateSenkaList @state.showAmount, @state.serverId, @state.serverSelectedVersion
+      @updateSenkaList @state.showAmount, @state.serverId, @state.serverSelectedVersion, false
+    @setState
+      downloadingFailFlag: false
 
   handleCustomClick: ->
     showAmount = 500
@@ -153,6 +165,7 @@ AkashicSenkaServer = React.createClass
     @setState
       serverId: serverId
       serverSelectedVersion: serverSelectedVersion
+      downloadingFailFlag: false
     config.set "plugin.Akashic.senka.serverId", serverId
 
   render: ->
@@ -173,6 +186,10 @@ AkashicSenkaServer = React.createClass
                                     serverId={@state.serverId}
                                     serverNames={serverNames}/>
           {
+            if @state.downloadingFailFlag
+              <Alert className="akashic-senka-alert">
+                <h4>数据获取失败</h4>
+              </Alert>
             if @state.downloadingFlag
               <Alert className="akashic-senka-alert">
                 <h4>downloading...</h4>
