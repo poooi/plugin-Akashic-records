@@ -247,8 +247,8 @@ resolveFile = (fileContent, tableTab)->
         else
           tmp = "大型建造"
         retData.push tmp
-        retData.push logItem[4]
         retData.push logItem[3]
+        retData.push logItem[4]
         retData.push logItem[5]
         retData.push logItem[6]
         retData.push logItem[7]
@@ -273,8 +273,8 @@ resolveFile = (fileContent, tableTab)->
         else
           tmp = "大型建造"
         retData.push tmp
-        retData.push logItem[3]
         retData.push logItem[2]
+        retData.push logItem[3]
         retData.push logItem[4]
         retData.push logItem[5]
         retData.push logItem[6]
