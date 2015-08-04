@@ -60,19 +60,20 @@ sync = async (memberId, serverId, serverSelectedVersion, isDownloading) ->
     log response.statusCode
     isSuccess = false
   #serverList 1-990
-  [response, body] = yield request.getAsync "https://www.senka.me/server/#{serverId}/ranking?f=json&lm=990",
-    json: true
-  if response.statusCode == 200
-    senkaList = JSON.stringify(body)
-    try
-      fs.ensureDirSync path.join(APPDATA_PATH, 'akashic-records', "#{memberId}", 'senkaList', "#{serverId}", '990')
-      fs.writeFileSync path.join(APPDATA_PATH, 'akashic-records', "#{memberId}", 'senkaList', "#{serverId}", '990', time), "#{senkaList}", 'utf8'
-    catch e
-      error "Write senkaList file error!#{e}"
-    console.log "save server:#{serverId} senkaList(990) from senkame[#{time}]" if process.env.DEBUG?
-  else
-    log response.statusCode
-    isSuccess = false
+  if isSuccess
+    [response, body] = yield request.getAsync "https://www.senka.me/server/#{serverId}/ranking?f=json&lm=990",
+      json: true
+    if response.statusCode == 200
+      senkaList = JSON.stringify(body)
+      try
+        fs.ensureDirSync path.join(APPDATA_PATH, 'akashic-records', "#{memberId}", 'senkaList', "#{serverId}", '990')
+        fs.writeFileSync path.join(APPDATA_PATH, 'akashic-records', "#{memberId}", 'senkaList', "#{serverId}", '990', time), "#{senkaList}", 'utf8'
+      catch e
+        error "Write senkaList file error!#{e}"
+      console.log "save server:#{serverId} senkaList(990) from senkame[#{time}]" if process.env.DEBUG?
+    else
+      log response.statusCode
+      isSuccess = false
   isDownloading(serverSelectedVersion, isSuccess)
   return
 
