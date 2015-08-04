@@ -127,6 +127,8 @@ AkashicSenkaServer = React.createClass
       refreshFlag = true
     else if @state.tableData isnt nextProps.tableData or @state.tableData.length < 10
       refreshFlag = true
+    else if @state.downloadingFailFlag isnt nextState.downloadingFailFlag
+      refreshFlag = true
     refreshFlag
 
 #  componentDidUpdate: (prevProps, prevState) ->
@@ -191,7 +193,7 @@ AkashicSenkaServer = React.createClass
               <Alert className="akashic-senka-alert">
                 <h4>数据获取失败</h4>
               </Alert>
-            if @state.downloadingFlag
+            else if @state.downloadingFlag
               <Alert className="akashic-senka-alert">
                 <h4>downloading...</h4>
               </Alert>
