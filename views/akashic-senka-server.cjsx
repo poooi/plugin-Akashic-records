@@ -138,7 +138,7 @@ AkashicSenkaServer = React.createClass
   componentWillReceiveProps: (nextProps) ->
     time = dateToString()
     if @props.memberId > 0 and @state.tableData.length < 10
-      @updateSenkaList @state.showAmount, @state.serverId, @state.serverSelectedVersion, false
+      @updateSenkaList @state.showAmount, @state.serverId, @state.serverSelectedVersion
     @setState
       downloadingFailFlag: false
 
