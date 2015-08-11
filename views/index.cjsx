@@ -384,7 +384,7 @@ AkashicRecordsArea = React.createClass
         [dangerFlag, dangerInfo] = judgeDanger afterHp, maxHp, @_deck, @_ships
         @dangerousShip = dangerInfo if dangerFlag
         @notDemageFlag = @notDemageFlag and judgeFace nowHp, afterHp
-      when '/kcsapi/api_req_sortie/battleresult'
+      when '/kcsapi/api_req_sortie/battleresult',  '/kcsapi/api_req_combined_battle/battleresult'
         if not @enableRecord
           break
         @_ships = window._ships
@@ -394,6 +394,7 @@ AkashicRecordsArea = React.createClass
         # dataItem.push "#{nowDate.toLocaleDateString()} #{nowDate.toTimeString()}"
         dataItem.push nowDate.getTime()
         dataItem.push "#{body.api_quest_name}(#{@mapAreaId}-#{@mapInfoNo})"
+        isCombined = body.api_get_ship_exp_combined?
         if @apiNo is @BosscellNo or @colorNo is 5
           dataItem.push "#{@apiNo}(Boss点)"
         else dataItem.push "#{@apiNo}(道中)"
@@ -403,7 +404,8 @@ AkashicRecordsArea = React.createClass
         @isStart = false
         switch body.api_win_rank
           when 'S'
-            if @notDemageFlag
+            # need fix
+            if @notDemageFlag and not isCombined
               dataItem.push '完全胜利!!!S'
             else dataItem.push '胜利S'
           when 'A'
@@ -424,9 +426,15 @@ AkashicRecordsArea = React.createClass
         else if body.api_get_useitem
           dataItem.push getUseItem body.api_get_ship.api_get_useitem_id
         else dataItem.push ""
-        dataItem.push @dangerousShip
-        dataItem.push "#{@_ships[@_deck.api_ship[0]].api_name}(Lv.#{@_ships[@_deck.api_ship[0]].api_lv})", ''
-        dataItem.push "#{@_ships[@_deck.api_ship[body.api_mvp-1]].api_name}(Lv.#{@_ships[@_deck.api_ship[body.api_mvp-1]].api_lv})", ''
+        if not isCombined
+          dataItem.push @dangerousShip
+          dataItem.push "#{@_ships[@_deck.api_ship[0]].api_name}(Lv.#{@_ships[@_deck.api_ship[0]].api_lv})", ''
+          dataItem.push "#{@_ships[@_deck.api_ship[body.api_mvp-1]].api_name}(Lv.#{@_ships[@_deck.api_ship[body.api_mvp-1]].api_lv})", ''
+        else 
+          _decks = window._decks
+          dataItem.push "?"
+          dataItem.push "#{@_ships[_decks[0].api_ship[0]].api_name}(Lv.#{@_ships[_decks[0].api_ship[0]].api_lv})", "#{@_ships[_decks[1].api_ship[1]].api_name}(Lv.#{@_ships[_decks[1].api_ship[1]].api_lv})"
+          dataItem.push "#{@_ships[_decks[0].api_ship[body.api_mvp-1]].api_name}(Lv.#{@_ships[_decks[0].api_ship[body.api_mvp-1]].api_lv})", "#{@_ships[_decks[1].api_ship[body.api_mvp_combined-1]].api_name}(Lv.#{@_ships[_decks[1].api_ship[body.api_mvp_combined-1]].api_lv})"
         {attackData} = @state
         attackData.unshift dataItem
         # log "save and show new data"
