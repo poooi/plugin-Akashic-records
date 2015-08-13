@@ -433,7 +433,7 @@ AkashicRecordsArea = React.createClass
         else 
           _decks = window._decks
           dataItem.push "?"
-          dataItem.push "#{@_ships[_decks[0].api_ship[0]].api_name}(Lv.#{@_ships[_decks[0].api_ship[0]].api_lv})", "#{@_ships[_decks[1].api_ship[1]].api_name}(Lv.#{@_ships[_decks[1].api_ship[1]].api_lv})"
+          dataItem.push "#{@_ships[_decks[0].api_ship[0]].api_name}(Lv.#{@_ships[_decks[0].api_ship[0]].api_lv})", "#{@_ships[_decks[1].api_ship[0]].api_name}(Lv.#{@_ships[_decks[1].api_ship[0]].api_lv})"
           dataItem.push "#{@_ships[_decks[0].api_ship[body.api_mvp-1]].api_name}(Lv.#{@_ships[_decks[0].api_ship[body.api_mvp-1]].api_lv})", "#{@_ships[_decks[1].api_ship[body.api_mvp_combined-1]].api_name}(Lv.#{@_ships[_decks[1].api_ship[body.api_mvp_combined-1]].api_lv})"
         {attackData} = @state
         attackData.unshift dataItem
