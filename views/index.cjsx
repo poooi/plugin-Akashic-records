@@ -518,7 +518,7 @@ AkashicRecordsArea = React.createClass
         dataItem.push postBody.api_item1, postBody.api_item2, postBody.api_item3, postBody.api_item4
         @_ships = window._ships
         @_decks = window._decks
-        dataItem.push "#{@_ships[_decks[0].api_ship[0]].api_name}(Lv.#{@_ships[_decks[0].api_ship[0]].api_lv})"
+        dataItem.push "#{@_ships[@_decks[0].api_ship[0]].api_name}(Lv.#{@_ships[@_decks[0].api_ship[0]].api_lv})"
         dataItem.push window._teitokuLv
         {createItemData} = @state
         createItemData.unshift dataItem
