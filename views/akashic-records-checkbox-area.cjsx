@@ -1,7 +1,10 @@
-{React, ReactBootstrap, jQuery, config} = window
+{React, ReactBootstrap, jQuery, config, __} = window
 {Panel, Button, Col, Input, Grid, Row, ButtonGroup, DropdownButton, MenuItem, Table, OverlayTrigger, Popover} = ReactBootstrap
 Divider = require './divider'
 {openExternal} = require 'shell'
+
+#i18n = require '../node_modules/i18n'
+# {__} = i18n
 
 dateToString = (date)->
   month = date.getMonth() + 1
@@ -62,7 +65,7 @@ AkashicRecordsCheckboxArea = React.createClass
       if searchArgv[index].filterKey is ''
         searchArgv[index].result=[]
         searchArgv[index].percent=0
-      else 
+      else
         filterKey = searchArgv[index].filterKey
         regFlag = false
         res = filterKey.match /^\/(.+)\/([gim]*)$/
@@ -206,14 +209,14 @@ AkashicRecordsCheckboxArea = React.createClass
       @refreshSearchResult @state.searchArgv, nextProps.data, nextProps.dataAfterFilter
   componentWillUpdate: (nextProps, nextState)->
     if nextState.statisticsPaneShow
-      @refreshCompareResult nextState.compareArgv, nextProps.data, nextProps.dataAfterFilter, nextState.searchArgv     
+      @refreshCompareResult nextState.compareArgv, nextProps.data, nextProps.dataAfterFilter, nextState.searchArgv
   render: ->
     <div className='akashic-records-settings' className={if @state.filterPaneShow or @state.statisticsPaneShow then "tap-pane-show" else "tab-pane-hidden"}>
       <Grid>
         <Row>
           <Col xs={12}>
             <div onClick={@handleFilterPaneShow}>
-              <Divider text="筛选" icon={true} hr={true} show={@state.filterPaneShow}/>
+              <Divider text={__ "Filter"} icon={true} hr={true} show={@state.filterPaneShow}/>
             </div>
           </Col>
         </Row>
@@ -232,23 +235,23 @@ AkashicRecordsCheckboxArea = React.createClass
         <Row>
           <Col xs={2}>
             <ButtonGroup justified>
-              <DropdownButton bsSize='xsmall' center eventKey={4} title={"显示#{@props.showAmount}条"} block>
-                <MenuItem center eventKey=10 onSelect={@handleShowAmountSelect}>{"显示10条"}</MenuItem>
-                <MenuItem eventKey=20 onSelect={@handleShowAmountSelect}>{"显示20条"}</MenuItem>
-                <MenuItem eventKey=50 onSelect={@handleShowAmountSelect}>{"显示50条"}</MenuItem>
+              <DropdownButton bsSize='xsmall' center eventKey={4} title={__ "View newer %s", @props.showAmount} block>
+                <MenuItem center eventKey=10 onSelect={@handleShowAmountSelect}>{__ "View newer %s", "10"}</MenuItem>
+                <MenuItem eventKey=20 onSelect={@handleShowAmountSelect}>{__ "View newer %s", "20"}</MenuItem>
+                <MenuItem eventKey=50 onSelect={@handleShowAmountSelect}>{__ "View newer %s", "50"}</MenuItem>
                 <MenuItem divider />
-                <MenuItem eventKey=999999 onSelect={@handleShowAmountSelect}>{"显示全部"}</MenuItem>
+                <MenuItem eventKey=999999 onSelect={@handleShowAmountSelect}>{__ "View all"}</MenuItem>
               </DropdownButton>
             </ButtonGroup>
           </Col>
           <Col xs={2}>
             <ButtonGroup justified>
-              <DropdownButton bsSize='xsmall' eventKey={4} title={"第#{@props.activePage}页"} block>
+              <DropdownButton bsSize='xsmall' eventKey={4} title={__ "Page %s", @props.activePage} block>
               {
                 if @props.dataShowLength isnt 0
                   for index in [1..Math.ceil(@props.dataShowLength/@props.showAmount)]
-                    <MenuItem key={index} eventKey={index} onSelect={@handleShowPageSelect}>第{index}页</MenuItem>
-              } 
+                    <MenuItem key={index} eventKey={index} onSelect={@handleShowPageSelect}>{__ "Page %s", index}</MenuItem>
+              }
               </DropdownButton>
             </ButtonGroup>
           </Col>
@@ -274,7 +277,7 @@ AkashicRecordsCheckboxArea = React.createClass
         <Row>
           <Col xs={12}>
             <div onClick={@handleStatisticsPaneShow}>
-              <Divider text="统计" icon={true} hr={true} show={@state.statisticsPaneShow}/>
+              <Divider text={__ "statistics"} icon={true} hr={true} show={@state.statisticsPaneShow}/>
             </div>
           </Col>
         </Row>
@@ -287,19 +290,19 @@ AkashicRecordsCheckboxArea = React.createClass
                 <tr>
                   <th style={verticalAlign: 'middle'}>
                     <OverlayTrigger trigger='click' rootClose={true} placement='right' overlay={
-                      <Popover title='说明'>
-                        <li>搜索支持javascript的<a onClick={openExternal.bind(this, "http://www.w3school.com.cn/jsref/jsref_obj_regexp.asp")}>正则表达式</a></li>
+                      <Popover title={__ "Tips"}>
+                        <li>{__ "Support the %s RegExp object %s of JavaScript", <a onClick={openExternal.bind(this, "http://www.w3school.com.cn/jsref/jsref_obj_regexp.asp")}>, </a>}</li>
                       </Popover>
                       }>
                       <FontAwesome name='question-circle'/>
                     </OverlayTrigger>
                   </th>
                   <th>No.</th>
-                  <th>基于</th>
-                  <th>关键词</th>
-                  <th>命中数</th>
-                  <th>总样本</th>
-                  <th>百分比</th>
+                  <th>{__ "Base on"}</th>
+                  <th>{__ "Keywords"}</th>
+                  <th>{__ "Result"}</th>
+                  <th>{__ "Sample size"}</th>
+                  <th>{__ "Percentage"}</th>
                 </tr>
               </thead>
               <tbody>
@@ -315,12 +318,12 @@ AkashicRecordsCheckboxArea = React.createClass
                     <td>{index+1}</td>
                     <td>
                       <Input type="select" ref="baseOn#{index}" groupClassName='search-area' value={"#{@state.searchArgv[index].searchBaseOn}"} onChange={@handleSearchChange}>
-                        <option key={-2} value={-2}>所有数据</option>
-                        <option key={-1} value={-1}>经过表格筛选</option>
+                        <option key={-2} value={-2}>{__ "All data"}</option>
+                        <option key={-1} value={-1}>{__ "Filtered"}</option>
                         {
                           for i in [0..@state.searchArgv.length-1]
                             break if i >= index
-                            <option key={i} value={i}>{"No.#{i+1}搜索结果"}</option>
+                            <option key={i} value={i}>{__ "Search result No. %s", i+1}</option>
                         }
                       </Input>
                     </td>
@@ -328,7 +331,7 @@ AkashicRecordsCheckboxArea = React.createClass
                        <Input
                           type='text'
                           value={@state.searchArgv[index].filterKey}
-                          placeholder={"关键词"}
+                          placeholder={__ "Keywords"}
                           ref="search#{index}"
                           groupClassName='search-area'
                           onChange={@handleSearchChange} />
@@ -343,11 +346,11 @@ AkashicRecordsCheckboxArea = React.createClass
                 <tr>
                   <th></th>
                   <th>No.</th>
-                  <th>分子项</th>
-                  <th>分母项</th>
-                  <th>分子数</th>
-                  <th>分母数</th>
-                  <th>百分比</th>
+                  <th>{__ "Molecular"}</th>
+                  <th>{__ "Denominator"}</th>
+                  <th>{__ "Molecular number"}</th>
+                  <th>{__ "Denominator number"}</th>
+                  <th>{__ "Percentage"}</th>
                 </tr>
               </thead>
               <tbody>
@@ -363,24 +366,24 @@ AkashicRecordsCheckboxArea = React.createClass
                     <td>{index+1}</td>
                     <td>
                       <Input type="select" ref="numerator#{index}" groupClassName='search-area' value={"#{@state.compareArgv[index]['numerator']}"} onChange={@handleCompareChange}>
-                        <option key={-2} value={-2}>所有数据</option>
-                        <option key={-1} value={-1}>经过表格筛选</option>
+                        <option key={-2} value={-2}>{__ "All data"}</option>
+                        <option key={-1} value={-1}>{__ "Filtered"}</option>
                         {
                           for i in [0..@state.searchArgv.length-1]
-                            <option key={i} value={i}>{"No.#{i+1}搜索结果"}</option>
+                            <option key={i} value={i}>{__ "Search result No. %s", i+1}</option>
                         }
-                        <option key={-3} value={-3}>自定义</option>
+                        <option key={-3} value={-3}>{__ "Custom"}</option>
                       </Input>
                     </td>
                     <td>
                       <Input type="select" ref="denominator#{index}" groupClassName='search-area' value={"#{@state.compareArgv[index]['denominator']}"} onChange={@handleCompareChange}>
-                        <option key={-2} value={-2}>所有数据</option>
-                        <option key={-1} value={-1}>经过表格筛选</option>
+                        <option key={-2} value={-2}>{__ "All data"}</option>
+                        <option key={-1} value={-1}>{__ "Filtered"}</option>
                         {
                           for i in [0..@state.searchArgv.length-1]
-                            <option key={i} value={i}>{"No.#{i+1}搜索结果"}</option>
+                            <option key={i} value={i}>{__ "Search result No. %s", i+1}</option>
                         }
-                        <option key={-3} value={-3}>自定义</option>
+                        <option key={-3} value={-3}>{__ "Custom"}</option>
                       </Input>
                     </td>
                     {
