@@ -1,5 +1,19 @@
 remote = require 'remote'
 windowManager = remote.require './lib/window'
+path = require 'path-extra'
+i18n = require './node_modules/i18n'
+{__} = i18n
+# i18n configure
+i18n.configure
+  locales: ['en_US', 'ja_JP', 'zh_CN'],
+  defaultLocale: 'zh_CN',
+  directory: path.join(__dirname, 'i18n'),
+  updateFiles: false,
+  indent: '\t',
+  extension: '.json'
+
+i18n.setLocale(window.language)
+
 
 window.akashicRecordsWindow = null
 initialAkashicRecordsWindow = ->
@@ -30,7 +44,7 @@ if config.get('plugin.Akashic.enable', true)
 module.exports =
   name: 'Akashic'
   priority: 10
-  displayName: <span><FontAwesome key={0} name='book' /> 航海日志</span>
+  displayName: <span><FontAwesome key={0} name='book' /> {__ "Akashic Records"}</span>
   description: '日志. 战果部分 by rui'
   author: 'W.G.'
   link: 'https://github.com/JenningsWu'
