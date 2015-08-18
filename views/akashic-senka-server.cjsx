@@ -192,7 +192,11 @@ AkashicSenkaServer = React.createClass
                                     serverId={@state.serverId}
                                     serverNames={serverNames}/>
           {
-            if @state.downloadingFailFlag
+            if @state.serverId is 0
+              <Alert className="akashic-senka-alert">
+                <h4>请选择镇守府</h4>
+              </Alert>
+            else if @state.downloadingFailFlag
               <Alert className="akashic-senka-alert">
                 <h4>数据获取失败</h4>
               </Alert>
