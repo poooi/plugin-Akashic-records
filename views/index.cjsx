@@ -192,7 +192,8 @@ AkashicRecordsArea = React.createClass
   $shiptypes: []
   $slotitems: []
   timeString: ""
-
+  mapLv: []
+  
   # 建造
   createShipFlag: false   #注意！之后要用config处理关于建造中正好猫了导致log数据遗失的问题！
   largeFlag: false
@@ -349,6 +350,15 @@ AkashicRecordsArea = React.createClass
         @getResourceData @nickNameId
         @setState
           memberId: body.api_member_id
+      # Map selected rank
+      when '/kcsapi/api_get_member/mapinfo'
+        for map in body
+          @mapLv[map.api_id] = 0
+          if map.api_eventmap?
+            @mapLv[map.api_id] = map.api_eventmap.api_selected_rank
+      # Eventmap select report
+      when '/kcsapi/api_req_map/select_eventmap_rank'
+        @mapLv[parseInt(postBody.api_maparea_id) * 10 + parseInt(postBody.api_map_no)] = parseInt(postBody.api_rank)
       when '/kcsapi/api_req_map/start'
         [@mapAreaId, @mapInfoNo, @apiNo, @BosscellNo, @colorNo] = [body.api_maparea_id, body.api_mapinfo_no, body.api_no, body.api_bosscell_no, body.api_color_no]
         @combinedFlag = @deckCombinedFlag and (postBody.api_deck_id <= 2)
@@ -519,7 +529,18 @@ AkashicRecordsArea = React.createClass
         nowDate = new Date()
         # dataItem.push "#{nowDate.toLocaleDateString()} #{nowDate.toTimeString()}"
         dataItem.push nowDate.getTime()
-        dataItem.push "#{body.api_quest_name}(#{@mapAreaId}-#{@mapInfoNo})"
+        switch @mapLv[@mapAreaId * 10 + @mapInfoNo]
+          when 0
+            selectedRank = ""
+          when 1
+            selectedRank = " 丙"
+          when 2
+            selectedRank = " 乙"
+          when 3
+            selectedRank = " 甲"
+          else
+            selectedRank = ""
+        dataItem.push "#{body.api_quest_name}(#{@mapAreaId}-#{@mapInfoNo}#{selectedRank})"
         if @apiNo is @BosscellNo or @colorNo is 5
           dataItem.push "#{@apiNo}(Boss点)"
         else dataItem.push "#{@apiNo}(道中)"
