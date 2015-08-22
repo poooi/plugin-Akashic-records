@@ -1,8 +1,11 @@
-{React, ReactBootstrap, jQuery} = window
+{React, ReactBootstrap, jQuery, __} = window
 {Grid, Col, Table} = ReactBootstrap
 
 AkashicRecordsCheckboxArea = require './akashic-records-checkbox-area'
 AkashicRecordsTableArea = require './akashic-records-table-area'
+
+#i18n = require '../node_modules/i18n'
+# {__} = i18n
 
 dateToString = (date)->
   month = date.getMonth() + 1
@@ -22,7 +25,7 @@ dateToString = (date)->
     second = "0#{second}"
   "#{date.getFullYear()}/#{month}/#{day} #{hour}:#{minute}:#{second}"
 
-configList = ['显示表头', '显示筛选框', '自动判断', '隐藏筛选框时取消筛选']
+configList = [__("Show head"), __("Show filter-box"), __("Auto-selected"), __("Disable filtering while hiding filter-box")]
 
 AkashicLog = React.createClass
   getInitialState: ->
@@ -108,7 +111,7 @@ AkashicLog = React.createClass
       dataShow: dataShow
       activePage: activePage
 
-  #about filter    
+  #about filter
   filterRules: (filterKeys) ->
     {dataShow, dataAfterFilter, dataAfterFilterLength, activePage} = @refreshDataShow @props.data, filterKeys, @state.activePage, @state.showAmount
     @setState
@@ -207,10 +210,10 @@ AkashicLog = React.createClass
 
   render: ->
     <div>
-      <AkashicRecordsCheckboxArea  
+      <AkashicRecordsCheckboxArea
         contentType={@props.contentType}
-        tableTab={@props.tableTab} 
-        tabFilterRules={@tabFilterRules} 
+        tableTab={@props.tableTab}
+        tabFilterRules={@tabFilterRules}
         rowChooseChecked={@state.rowChooseChecked}
         data={@props.data}
         dataAfterFilter={@state.dataAfterFilter}
@@ -222,15 +225,15 @@ AkashicLog = React.createClass
         configChecked={@state.configChecked}
         configCheckboxClick={@configCheckboxClick} />
       <AkashicRecordsTableArea
-        contentType={@props.contentType} 
-        tableTab={@props.tableTab} 
-        data={@state.dataShow} 
-        rowChooseChecked={@state.rowChooseChecked} 
+        contentType={@props.contentType}
+        tableTab={@props.tableTab}
+        data={@state.dataShow}
+        rowChooseChecked={@state.rowChooseChecked}
         filterKeys={@state.filterKeys}
         filterRules={@filterRules}
-        paginationItems={Math.ceil(@state.dataAfterFilterLength/@state.showAmount)} 
-        paginationMaxButtons={if Math.ceil(@state.dataAfterFilterLength/@state.showAmount)>5 then 5 else Math.ceil(@state.dataAfterFilterLength/@state.showAmount)} 
-        activePage={@state.activePage} 
+        paginationItems={Math.ceil(@state.dataAfterFilterLength/@state.showAmount)}
+        paginationMaxButtons={if Math.ceil(@state.dataAfterFilterLength/@state.showAmount)>5 then 5 else Math.ceil(@state.dataAfterFilterLength/@state.showAmount)}
+        activePage={@state.activePage}
         showAmount={@state.showAmount}
         handlePageChange={@handlePageChange}
         configChecked={@state.configChecked}/>

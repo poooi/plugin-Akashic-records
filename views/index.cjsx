@@ -1,6 +1,6 @@
 fs = require 'fs-extra'
 glob = require 'glob'
-{React, ReactBootstrap, $, ROOT, APPDATA_PATH} = window
+{React, ReactBootstrap, $, ROOT, APPDATA_PATH, __} = window
 {TabbedArea, TabPane} = ReactBootstrap
 path = require 'path-extra'
 {log, warn, error} = require path.join(ROOT, 'lib/utils')
@@ -124,17 +124,26 @@ senkaDateToString = ->
     time = "14"
   "#{year}#{month}#{day}#{time}"
 
-attackTableTab = ['No.', '时间', '海域', '地图点', '状态', '战况', '敌舰队',
-    '捞！', '大破舰', '旗舰', '旗舰（第二舰队）', 'MVP', 'MVP(第二舰队）']
-missionTableTab = ['No.', '时间', '类型', '结果', '燃', '弹', '钢', '铝',
-    '获得物品1', '数量', '获得物品2', '数量']
-createItemTableTab = ['No.', '时间', '结果', '开发装备', '类别',
-    '燃', '弹', '钢', '铝', '秘书舰', '司令部Lv']
-createShipTableTab = ['No.', '时间', '种类', '船只', '舰种',
-    '燃', '弹', '钢', '铝', '资材', '空渠数', '秘书舰', '司令部Lv']
-resourceTableTab = ['No.', '时间', '燃料', '弹药', '钢材', '铝材',
-  '高速建造', '高速修复', '开发资材', '改修螺丝']
-senkaTableTab = ['顺位', 'Lv.', '提督名', '阶级', '签名', '战果', '勋章']
+attackTableTab = ['No.', __("Time"), __("World"), __("Node"), __("Sortie type"),
+                  __("BattleResult"), __("Enemy Encounters"), __("Drop"),
+                  __("Heavily damaged ship"), __("Flagship"),
+                  "#{__("Flagship")}（#{__("Second fleet")}）", 'MVP',
+                  "MVP(#{__("Second fleet")})"]
+missionTableTab = ['No.', __("Time"), __("Type"), __("Result"), __("Fuel"),
+                  __("Ammo"), __("Steel"), __("Bauxite"), "#{__("Item")}1",
+                   __("Number"), "#{__("Item")}2", __("Number")]
+createItemTableTab = ['No.', __("Time"), __("Result"), __("Development Item"),
+                      __("Type"), __("Fuel"), __("Ammo"), __("Steel"),
+                      __("Bauxite"), __("Flagship"), __("Headquarters Level")]
+createShipTableTab = ['No.', __("Time"), __("Type"), __("Ship"), __("Ship type"),
+                      __("Fuel"), __("Ammo"), __("Steel"), __("Bauxite"),
+                       __　("Development material"), __("Empty docks"), __("Flagship"),
+                       __("Headquarters Level")]
+resourceTableTab = ['No.', __("Time"), __("Fuel"), __("Ammo"), __("Steel"),
+                    __("Bauxite"), __("Fast Build Item"), __("Instant Repair Item"),
+                     __("Development material"), __("Improvement Materials")]
+senkaTableTab = [__("Ranking"), 'Lv.', __("Admiral Name"), __("Military rank"),
+                 __("Comment"), __("Victory"), __("Insignia")]
 
 getUseItem: (id)->
   switch id
@@ -767,13 +776,13 @@ AkashicRecordsArea = React.createClass
 
   render: ->
     <TabbedArea activeKey={@state.selectedKey} animation={false} onSelect={@handleSelectTab}>
-      <TabPane eventKey={0} tab='出击' ><AkashicLog indexKey={0} selectedKey={@state.selectedKey} data={@state.attackData} dataVersion={@state.dataVersion[0]} tableTab={attackTableTab} contentType={'attack'}/></TabPane>
-      <TabPane eventKey={1} tab='远征' ><AkashicLog indexKey={1} selectedKey={@state.selectedKey} data={@state.missionData} dataVersion={@state.dataVersion[1]} tableTab={missionTableTab} contentType={'mission'}/></TabPane>
-      <TabPane eventKey={2} tab='建造' ><AkashicLog indexKey={2} selectedKey={@state.selectedKey} data={@state.createShipData} dataVersion={@state.dataVersion[3]} tableTab={createShipTableTab} contentType={'createShip'}/></TabPane>
-      <TabPane eventKey={3} tab='开发' ><AkashicLog indexKey={3} selectedKey={@state.selectedKey} data={@state.createItemData} dataVersion={@state.dataVersion[2]} tableTab={createItemTableTab} contentType={'createItem'}/></TabPane>
-      <TabPane eventKey={4} tab='资源统计' ><AkashicResourceLog indexKey={4} selectedKey={@state.selectedKey} data={@state.resourceData} dataVersion={@state.dataVersion[4]} tableTab={resourceTableTab} mapShowFlag={@state.mapShowFlag} contentType={'resource'}/></TabPane>
-      <TabPane eventKey={5} tab='战果' ><AkashicSenkaLog indexKey={5} selectedKey={@state.selectedKey} memberId={@state.memberId} tableTab={senkaTableTab}  personalShowFlag={@state.personalShowFlag} contentType={'senka'}/></TabPane>
-      <TabPane eventKey={6} tab='高级' >
+      <TabPane eventKey={0} tab={__ "Sortie"} ><AkashicLog indexKey={0} selectedKey={@state.selectedKey} data={@state.attackData} dataVersion={@state.dataVersion[0]} tableTab={attackTableTab} contentType={'attack'}/></TabPane>
+      <TabPane eventKey={1} tab={__ "Expedition"} ><AkashicLog indexKey={1} selectedKey={@state.selectedKey} data={@state.missionData} dataVersion={@state.dataVersion[1]} tableTab={missionTableTab} contentType={'mission'}/></TabPane>
+      <TabPane eventKey={2} tab={__ "Construction"} ><AkashicLog indexKey={2} selectedKey={@state.selectedKey} data={@state.createShipData} dataVersion={@state.dataVersion[3]} tableTab={createShipTableTab} contentType={'createShip'}/></TabPane>
+      <TabPane eventKey={3} tab={__ "Development"} ><AkashicLog indexKey={3} selectedKey={@state.selectedKey} data={@state.createItemData} dataVersion={@state.dataVersion[2]} tableTab={createItemTableTab} contentType={'createItem'}/></TabPane>
+      <TabPane eventKey={4} tab={__ "Resource"} ><AkashicResourceLog indexKey={4} selectedKey={@state.selectedKey} data={@state.resourceData} dataVersion={@state.dataVersion[4]} tableTab={resourceTableTab} mapShowFlag={@state.mapShowFlag} contentType={'resource'}/></TabPane>
+      <TabPane eventKey={5} tab={__ "Victory"} ><AkashicSenkaLog indexKey={5} selectedKey={@state.selectedKey} memberId={@state.memberId} tableTab={senkaTableTab}  personalShowFlag={@state.personalShowFlag} contentType={'senka'}/></TabPane>
+      <TabPane eventKey={6} tab={__ "Others"} >
         <AkashicAdvancedModule
           tableTab={
             'attack': attackTableTab

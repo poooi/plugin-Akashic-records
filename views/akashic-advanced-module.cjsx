@@ -1,4 +1,4 @@
-{React, ReactBootstrap, ROOT, FontAwesome} = window
+{React, ReactBootstrap, ROOT, FontAwesome, __} = window
 {Grid, Row, Col, Input, Button, OverlayTrigger, Popover, Input} = ReactBootstrap
 
 fs = require 'fs-extra'
@@ -10,6 +10,9 @@ remote = require 'remote'
 dialog = remote.require 'dialog'
 
 {openExternal} = require 'shell'
+
+#i18n = require '../node_modules/i18n'
+# {__} = i18n
 
 duplicateRemoval = (arr) ->
   arr.sort (a, b)->
@@ -134,7 +137,7 @@ resolveFile = (fileContent, tableTab)->
         retData.push "#{logItem[2]}(#{tmpArray[0].substring(1)})"
         if logItem[4] is "ボス"
           tmp = "Boss点"
-        else 
+        else
           tmp = "道中"
         retData.push "#{tmpArray[1].substring(1)}(#{tmp})"
         if logItem[4] is "出撃"
@@ -169,7 +172,7 @@ resolveFile = (fileContent, tableTab)->
         retData.push "#{logItem[1]}(#{tmpArray[0].substring(1)})"
         if logItem[3] is "ボス"
           tmp = "Boss点"
-        else 
+        else
           tmp = "道中"
         retData.push "#{tmpArray[1].substring(1)}(#{tmp})"
         if logItem[3] is "出撃"
@@ -298,7 +301,7 @@ resolveFile = (fileContent, tableTab)->
           retData.push "失败"
           retData.push ""
           retData.push ""
-        else 
+        else
           retData.push "成功"
           retData.push logItem[2]
           retData.push logItem[3]
@@ -323,7 +326,7 @@ resolveFile = (fileContent, tableTab)->
           retData.push "失败"
           retData.push ""
           retData.push ""
-        else 
+        else
           retData.push "成功"
           retData.push logItem[1]
           retData.push logItem[2]
@@ -429,7 +432,7 @@ resolveFile = (fileContent, tableTab)->
           retData.push "失败"
           retData.push ""
           retData.push ""
-        else 
+        else
           retData.push "成功"
           retData.push logItem[1]
           retData.push ""
@@ -489,9 +492,9 @@ resolveFile = (fileContent, tableTab)->
         log.length is 9
     else
       e = new Error()
-      e.message = "不支持的编码或文件格式！"
+      e.message = __ "The encoding or file is not supported"
       throw e
-  ret = 
+  ret =
     logType: logType
     data: data
     message: ""
@@ -541,7 +544,7 @@ AttackLog = React.createClass
           return
       if process.platform is 'win32'
         codeType = 'GB2312'
-      else 
+      else
         codeType = 'utf8'
       filename = dialog.showSaveDialog
         title: "保存#{@state.typeChoosed}记录"
@@ -629,9 +632,9 @@ AttackLog = React.createClass
     else
       @showMessage '请先登录再导入数据！'
 
-      
+
     # console.log "import log"
-    
+
   render: ->
     <div className="advancedmodule">
       <Grid>
@@ -674,11 +677,11 @@ AttackLog = React.createClass
         <Row>
           <Col xs={4}>
             <Input type="select" ref="type" value={@state.typeChoosed} onChange={@handleSetType}>
-              <option key={0} value={'出击'}>出击</option>
-              <option key={1} value={'远征'}>远征</option>
-              <option key={2} value={'建造'}>建造</option>
-              <option key={3} value={'开发'}>开发</option>
-              <option key={4} value={'资源'}>资源</option>
+              <option key={0} value={'出击'}>{__ "Sortie"}</option>
+              <option key={1} value={'远征'}>{__ "Expedition"}</option>
+              <option key={2} value={'建造'}>{__ "Construction"}</option>
+              <option key={3} value={'开发'}>{__ "Development"}</option>
+              <option key={4} value={'资源'}>{__ "Resource"}</option>
             </Input>
           </Col>
           <Col xs={4}>
