@@ -25,7 +25,7 @@ dateToString = (date)->
     second = "0#{second}"
   "#{date.getFullYear()}/#{month}/#{day} #{hour}:#{minute}:#{second}"
 
-configList = [__("Show head"), __("Show filter-box"), __("Auto-selected"), __("Disable filtering while hiding filter-box")]
+configList = [__("Show Header"), __("Show Filter-box"), __("Auto-selected"), __("Disable filtering while hiding filter-box")]
 
 AkashicLog = React.createClass
   getInitialState: ->

@@ -235,12 +235,12 @@ AkashicRecordsCheckboxArea = React.createClass
         <Row>
           <Col xs={2}>
             <ButtonGroup justified>
-              <DropdownButton bsSize='xsmall' center eventKey={4} title={__ "View newer %s", @props.showAmount} block>
-                <MenuItem center eventKey=10 onSelect={@handleShowAmountSelect}>{__ "View newer %s", "10"}</MenuItem>
-                <MenuItem eventKey=20 onSelect={@handleShowAmountSelect}>{__ "View newer %s", "20"}</MenuItem>
-                <MenuItem eventKey=50 onSelect={@handleShowAmountSelect}>{__ "View newer %s", "50"}</MenuItem>
+              <DropdownButton bsSize='xsmall' center eventKey={4} title={__ "Newer %s", @props.showAmount} block>
+                <MenuItem center eventKey=10 onSelect={@handleShowAmountSelect}>{__ "Newer %s", "10"}</MenuItem>
+                <MenuItem eventKey=20 onSelect={@handleShowAmountSelect}>{__ "Newer %s", "20"}</MenuItem>
+                <MenuItem eventKey=50 onSelect={@handleShowAmountSelect}>{__ "Newer %s", "50"}</MenuItem>
                 <MenuItem divider />
-                <MenuItem eventKey=999999 onSelect={@handleShowAmountSelect}>{__ "View all"}</MenuItem>
+                <MenuItem eventKey=999999 onSelect={@handleShowAmountSelect}>{__ "View All"}</MenuItem>
               </DropdownButton>
             </ButtonGroup>
           </Col>
@@ -277,7 +277,7 @@ AkashicRecordsCheckboxArea = React.createClass
         <Row>
           <Col xs={12}>
             <div onClick={@handleStatisticsPaneShow}>
-              <Divider text={__ "statistics"} icon={true} hr={true} show={@state.statisticsPaneShow}/>
+              <Divider text={__ "Statistics"} icon={true} hr={true} show={@state.statisticsPaneShow}/>
             </div>
           </Col>
         </Row>
@@ -291,7 +291,7 @@ AkashicRecordsCheckboxArea = React.createClass
                   <th style={verticalAlign: 'middle'}>
                     <OverlayTrigger trigger='click' rootClose={true} placement='right' overlay={
                       <Popover title={__ "Tips"}>
-                        <li>{__ "Support the %s RegExp object %s of JavaScript", <a onClick={openExternal.bind(this, "http://www.w3school.com.cn/jsref/jsref_obj_regexp.asp")}>, </a>}</li>
+                        <li>{__ "Support the Javascript's "}<a onClick={openExternal.bind(this, "http://www.w3school.com.cn/jsref/jsref_obj_regexp.asp")}>{"RegExp"}</a></li>
                       </Popover>
                       }>
                       <FontAwesome name='question-circle'/>
@@ -301,7 +301,7 @@ AkashicRecordsCheckboxArea = React.createClass
                   <th>{__ "Base on"}</th>
                   <th>{__ "Keywords"}</th>
                   <th>{__ "Result"}</th>
-                  <th>{__ "Sample size"}</th>
+                  <th>{__ "Sample Size"}</th>
                   <th>{__ "Percentage"}</th>
                 </tr>
               </thead>
@@ -318,12 +318,12 @@ AkashicRecordsCheckboxArea = React.createClass
                     <td>{index+1}</td>
                     <td>
                       <Input type="select" ref="baseOn#{index}" groupClassName='search-area' value={"#{@state.searchArgv[index].searchBaseOn}"} onChange={@handleSearchChange}>
-                        <option key={-2} value={-2}>{__ "All data"}</option>
+                        <option key={-2} value={-2}>{__ "All Data"}</option>
                         <option key={-1} value={-1}>{__ "Filtered"}</option>
                         {
                           for i in [0..@state.searchArgv.length-1]
                             break if i >= index
-                            <option key={i} value={i}>{__ "Search result No. %s", i+1}</option>
+                            <option key={i} value={i}>{__ "Search Result No. %s", i+1}</option>
                         }
                       </Input>
                     </td>
@@ -346,10 +346,10 @@ AkashicRecordsCheckboxArea = React.createClass
                 <tr>
                   <th></th>
                   <th>No.</th>
-                  <th>{__ "Molecular"}</th>
+                  <th>{__ "Numerator"}</th>
                   <th>{__ "Denominator"}</th>
-                  <th>{__ "Molecular number"}</th>
-                  <th>{__ "Denominator number"}</th>
+                  <th>{__ "Numerator Number"}</th>
+                  <th>{__ "Denominator Number"}</th>
                   <th>{__ "Percentage"}</th>
                 </tr>
               </thead>
@@ -366,22 +366,22 @@ AkashicRecordsCheckboxArea = React.createClass
                     <td>{index+1}</td>
                     <td>
                       <Input type="select" ref="numerator#{index}" groupClassName='search-area' value={"#{@state.compareArgv[index]['numerator']}"} onChange={@handleCompareChange}>
-                        <option key={-2} value={-2}>{__ "All data"}</option>
+                        <option key={-2} value={-2}>{__ "All Data"}</option>
                         <option key={-1} value={-1}>{__ "Filtered"}</option>
                         {
                           for i in [0..@state.searchArgv.length-1]
-                            <option key={i} value={i}>{__ "Search result No. %s", i+1}</option>
+                            <option key={i} value={i}>{__ "Search Result No. %s", i+1}</option>
                         }
                         <option key={-3} value={-3}>{__ "Custom"}</option>
                       </Input>
                     </td>
                     <td>
                       <Input type="select" ref="denominator#{index}" groupClassName='search-area' value={"#{@state.compareArgv[index]['denominator']}"} onChange={@handleCompareChange}>
-                        <option key={-2} value={-2}>{__ "All data"}</option>
+                        <option key={-2} value={-2}>{__ "All Data"}</option>
                         <option key={-1} value={-1}>{__ "Filtered"}</option>
                         {
                           for i in [0..@state.searchArgv.length-1]
-                            <option key={i} value={i}>{__ "Search result No. %s", i+1}</option>
+                            <option key={i} value={i}>{__ "Search Result No. %s", i+1}</option>
                         }
                         <option key={-3} value={-3}>{__ "Custom"}</option>
                       </Input>

@@ -91,7 +91,7 @@ AkashicResourceChart = React.createClass
             logdata.push data[index][1]
             if logdata[0] isnt data[index][0]
               error "data error! in ECharts's tooltip formatter()"
-          showString = "#{dateString}<br/>#{__("Fuel")}: #{logdata[1]}<br/>#{__("Ammo")}: #{logdata[2]}<br/>#{__("Steel")}: #{logdata[3]}<br/>#{__("Bauxite")}: #{logdata[4]}<br/>#{__("Fast Build Item")}: #{logdata[5]}<br/>#{__("Instant Repair Item")}: #{logdata[6]}<br/>#{__("Development material")}: #{logdata[7]}<br/>#{__("Improvement Materials")}: #{logdata[8]}"
+          showString = "#{dateString}<br/>#{__("Fuel")}: #{logdata[1]}<br/>#{__("Ammo")}: #{logdata[2]}<br/>#{__("Steel")}: #{logdata[3]}<br/>#{__("Bauxite")}: #{logdata[4]}<br/>#{__("Fast Build Item")}: #{logdata[5]}<br/>#{__("Instant Repair Item")}: #{logdata[6]}<br/>#{__("Development Material")}: #{logdata[7]}<br/>#{__("Improvement Materials")}: #{logdata[8]}"
       legend:
         data:['燃', '弹', '钢', '铝', '高速建造', '高速修复', '资材', '螺丝']
       toolbox:

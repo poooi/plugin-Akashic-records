@@ -109,7 +109,7 @@ AkashicRecordsTableArea = React.createClass
                             <OverlayTrigger trigger='click' rootClose={true} placement='right' overlay={
                               <Popover title={__ "Tips"}>
                                 <li>{__ "Disable filtering while hiding column"}</li>
-                                <li>{__ "Support the %s RegExp object %s of JavaScript", <a onClick={openExternal.bind(this, "http://www.w3school.com.cn/jsref/jsref_obj_regexp.asp")}>, </a>}</li>
+                                <li>{__ "Support the Javascript's "}<a onClick={openExternal.bind(this, "http://www.w3school.com.cn/jsref/jsref_obj_regexp.asp")}>{"RegExp"}</a></li>
                               </Popover>
                               }>
                               <FontAwesome name='question-circle'/>
@@ -141,7 +141,7 @@ AkashicRecordsTableArea = React.createClass
                             <OverlayTrigger trigger='click' rootClose={true} placement='right' overlay={
                               <Popover title={__ "Tips"}>
                                 <li>{__ "Disable filtering while hiding column"}</li>
-                                <li>{__ "Support the %s RegExp object %s of JavaScript", <a onClick={openExternal.bind(this, "http://www.w3school.com.cn/jsref/jsref_obj_regexp.asp")}>, </a>}</li>
+                                <li>{__ "Support the Javascript's "}<a onClick={openExternal.bind(this, "http://www.w3school.com.cn/jsref/jsref_obj_regexp.asp")}>{"RegExp"}</a></li>
                               </Popover>
                               }>
                               <FontAwesome name='question-circle'/>
@@ -180,7 +180,7 @@ AkashicRecordsTableArea = React.createClass
                             <OverlayTrigger trigger='click' rootClose={true} placement='right' overlay={
                               <Popover title={__ "Tips"}>
                                 <li>{__ "Disable filtering while hiding column"}</li>
-                                <li>{__ "Support the %s RegExp object %s of JavaScript", <a onClick={openExternal.bind(this, "http://www.w3school.com.cn/jsref/jsref_obj_regexp.asp")}>, </a>}</li>
+                                <li>{__ "Support the Javascript's "}<a onClick={openExternal.bind(this, "http://www.w3school.com.cn/jsref/jsref_obj_regexp.asp")}>{"RegExp"}</a></li>
                               </Popover>
                               }>
                               <FontAwesome name='question-circle'/>

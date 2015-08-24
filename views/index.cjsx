@@ -124,25 +124,25 @@ senkaDateToString = ->
     time = "14"
   "#{year}#{month}#{day}#{time}"
 
-attackTableTab = ['No.', __("Time"), __("World"), __("Node"), __("Sortie type"),
-                  __("BattleResult"), __("Enemy Encounters"), __("Drop"),
-                  __("Heavily damaged ship"), __("Flagship"),
-                  "#{__("Flagship")}（#{__("Second fleet")}）", 'MVP',
-                  "MVP(#{__("Second fleet")})"]
+attackTableTab = ['No.', __("Time"), __("World"), __("Node"), __("Sortie Type"),
+                  __("Battle Result"), __("Enemy Encounters"), __("Drop"),
+                  __("Heavily damaged"), __("Flagship"),
+                  "#{__("Flagship")} (#{__("Second Fleet")})", 'MVP',
+                  "MVP (#{__("Second Fleet")})"]
 missionTableTab = ['No.', __("Time"), __("Type"), __("Result"), __("Fuel"),
-                  __("Ammo"), __("Steel"), __("Bauxite"), "#{__("Item")}1",
-                   __("Number"), "#{__("Item")}2", __("Number")]
+                  __("Ammo"), __("Steel"), __("Bauxite"), "#{__("Item")} 1",
+                   __("Number"), "#{__("Item")} 2", __("Number")]
 createItemTableTab = ['No.', __("Time"), __("Result"), __("Development Item"),
                       __("Type"), __("Fuel"), __("Ammo"), __("Steel"),
                       __("Bauxite"), __("Flagship"), __("Headquarters Level")]
-createShipTableTab = ['No.', __("Time"), __("Type"), __("Ship"), __("Ship type"),
+createShipTableTab = ['No.', __("Time"), __("Type"), __("Ship"), __("Ship Type"),
                       __("Fuel"), __("Ammo"), __("Steel"), __("Bauxite"),
-                       __　("Development material"), __("Empty docks"), __("Flagship"),
+                       __　("Development Material"), __("Empty Docks"), __("Flagship"),
                        __("Headquarters Level")]
 resourceTableTab = ['No.', __("Time"), __("Fuel"), __("Ammo"), __("Steel"),
                     __("Bauxite"), __("Fast Build Item"), __("Instant Repair Item"),
-                     __("Development material"), __("Improvement Materials")]
-senkaTableTab = [__("Ranking"), 'Lv.', __("Admiral Name"), __("Military rank"),
+                     __("Development Material"), __("Improvement Materials")]
+senkaTableTab = [__("Ranking"), 'Lv.', __("Admiral Name"), __("Military Rank"),
                  __("Comment"), __("Victory"), __("Insignia")]
 
 getUseItem: (id)->
@@ -554,25 +554,25 @@ AkashicRecordsArea = React.createClass
           dataItem.push "#{@apiNo}(Boss点)"
         else dataItem.push "#{@apiNo}(道中)"
         if @isStart
-          dataItem.push "出击"
-        else dataItem.push "进击"
+          dataItem.push "出撃"
+        else dataItem.push "進撃"
         @isStart = false
         switch body.api_win_rank
           when 'S'
             # need fix
             if @notDemageFlag
-              dataItem.push '完全胜利!!!S'
-            else dataItem.push '胜利S'
+              dataItem.push '完全勝利!!!S'
+            else dataItem.push '勝利S'
           when 'A'
-            dataItem.push '胜利A'
+            dataItem.push '勝利A'
           when 'B'
-            dataItem.push '战术的胜利B'
+            dataItem.push '戦術的勝利B'
           when 'C'
-            dataItem.push '战术的败北C'
+            dataItem.push '戦術的敗北C'
           when 'D'
-            dataItem.push '败北D'
+            dataItem.push '敗北D'
           when 'E'
-            dataItem.push '败北E'
+            dataItem.push '敗北E'
           else
             dataItem.push "奇怪的战果？#{body.api_win_rank}"
         dataItem.push body.api_enemy_info.api_deck_name
@@ -609,7 +609,7 @@ AkashicRecordsArea = React.createClass
         dataItem.push body.api_quest_name
         switch body.api_clear_result
           when 0
-            dataItem.push "失败"
+            dataItem.push "失敗"
           when 1
             dataItem.push "成功"
           when 2
@@ -660,7 +660,7 @@ AkashicRecordsArea = React.createClass
         nowDate = new Date()
         dataItem.push nowDate.getTime()
         if body.api_create_flag is 0
-          dataItem.push "失败"
+          dataItem.push "失敗"
           itemId = parseInt(body.api_fdata.split(",")[1])
           dataItem.push $slotitems[itemId].api_name
           dataItem.push $slotitemTypes[$slotitems[itemId].api_type[2]].api_name

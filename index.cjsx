@@ -26,6 +26,7 @@ initialAkashicRecordsWindow = ->
     y: config.get 'poi.window.y', 0
     width: 820
     height: 650
+    realClose: true
     forceMinimize: forceMinimize
   window.akashicRecordsWindow.loadUrl "file://#{__dirname}/index.html"
   if process.env.DEBUG?
@@ -44,11 +45,13 @@ if config.get('plugin.Akashic.enable', true)
 module.exports =
   name: 'Akashic'
   priority: 10
-  displayName: <span><FontAwesome key={0} name='book' /> {__ "Akashic Records"}</span>
+  # displayName: <span><FontAwesome key={0} name='book' /> {__ "Akashic Records"}</span>
+  displayName: <span><FontAwesome key={0} name='book' /> 航海日志</span>
   description: '日志. 战果部分 by rui'
   author: 'W.G.'
   link: 'https://github.com/JenningsWu'
   version: '1.2.0'
   handleClick: ->
     # checkAkashicRecordsCrashed()
+    # initialAkashicRecordsWindow()
     window.akashicRecordsWindow.show()

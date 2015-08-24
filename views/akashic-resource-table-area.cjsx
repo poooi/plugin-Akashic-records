@@ -165,7 +165,7 @@ AkashicResourceTableArea = React.createClass
         <Row>
           <Col xs={3}>
             <ButtonGroup justified>
-              <DropdownButton center eventKey={4} title={__ "Show by %s", @state.showScale} block>
+              <DropdownButton center eventKey={4} title={__ "Show by %s", "#{@state.showScale}"} block>
                 <MenuItem center eventKey=0 onSelect={@handleShowScaleSelect}>{__ "Show by %s", __ "Hour"}</MenuItem>
                 <MenuItem eventKey=1 onSelect={@handleShowScaleSelect}>{__ "Show by %s", __ "Day"}</MenuItem>
               </DropdownButton>
@@ -173,22 +173,22 @@ AkashicResourceTableArea = React.createClass
           </Col>
           <Col xs={3}>
             <ButtonGroup justified>
-              <DropdownButton center eventKey={4} title={__ "View newer %s", @state.showAmount} block>
-                <MenuItem center eventKey=10 onSelect={@handleShowAmountSelect}>{__ "View newer %s", "10"}</MenuItem>
-                <MenuItem eventKey=20 onSelect={@handleShowAmountSelect}>{__ "View newer %s", "20"}</MenuItem>
-                <MenuItem eventKey=50 onSelect={@handleShowAmountSelect}>{__ "View newer %s", "50"}</MenuItem>
+              <DropdownButton center eventKey={4} title={__ "Newer %s", "#{@state.showAmount}"} block>
+                <MenuItem center eventKey=10 onSelect={@handleShowAmountSelect}>{__ "Newer %s", "10"}</MenuItem>
+                <MenuItem eventKey=20 onSelect={@handleShowAmountSelect}>{__ "Newer %s", "20"}</MenuItem>
+                <MenuItem eventKey=50 onSelect={@handleShowAmountSelect}>{__ "Newer %s", "50"}</MenuItem>
                 <MenuItem divider />
-                <MenuItem eventKey=999999 onSelect={@handleShowAmountSelect}>{__ "View all"}</MenuItem>
+                <MenuItem eventKey=999999 onSelect={@handleShowAmountSelect}>{__ "View All"}</MenuItem>
               </DropdownButton>
             </ButtonGroup>
           </Col>
           <Col xs={3}>
             <ButtonGroup justified>
-              <DropdownButton eventKey={4} title={__ "Page %s", @props.activePage} block>
+              <DropdownButton eventKey={4} title={__ "Page %s", "#{@props.activePage}"} block>
               {
                 if @state.dataShow.length isnt 0
                   for index in [1..Math.ceil(@state.dataShow.length/@state.showAmount)]
-                    <MenuItem key={index} eventKey={index} onSelect={@handleShowPageSelect}>{__ "Page %s", index}</MenuItem>
+                    <MenuItem key={index} eventKey={index} onSelect={@handleShowPageSelect}>{__ "Page %s", "#{index}"}</MenuItem>
               }
               </DropdownButton>
             </ButtonGroup>

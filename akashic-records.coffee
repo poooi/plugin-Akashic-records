@@ -12,7 +12,7 @@ i18n.configure
   indent: '\t'
   extension: '.json'
 
-window.language = config.get 'poi.language', 'zh_CN'
+window.language = config.get 'poi.language', 'en_US'
 i18n.setLocale(window.language)
 window.__ = i18n.__
 
