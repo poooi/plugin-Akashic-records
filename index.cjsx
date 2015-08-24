@@ -26,7 +26,6 @@ initialAkashicRecordsWindow = ->
     y: config.get 'poi.window.y', 0
     width: 820
     height: 650
-    realClose: true
     forceMinimize: forceMinimize
   window.akashicRecordsWindow.loadUrl "file://#{__dirname}/index.html"
   if process.env.DEBUG?
