@@ -93,7 +93,8 @@ AkashicResourceChart = React.createClass
               error "data error! in ECharts's tooltip formatter()"
           showString = "#{dateString}<br/>#{__("Fuel")}: #{logdata[1]}<br/>#{__("Ammo")}: #{logdata[2]}<br/>#{__("Steel")}: #{logdata[3]}<br/>#{__("Bauxite")}: #{logdata[4]}<br/>#{__("Fast Build Item")}: #{logdata[5]}<br/>#{__("Instant Repair Item")}: #{logdata[6]}<br/>#{__("Development Material")}: #{logdata[7]}<br/>#{__("Improvement Materials")}: #{logdata[8]}"
       legend:
-        data:['燃', '弹', '钢', '铝', '高速建造', '高速修复', '资材', '螺丝']
+        data:[__('Fuel'), __('Ammo'), __('Steel'), __('Bauxite'),
+          __('Fast Build Item'), __('Instant Repair Item'), __('Development Material'), __('Improvement Materials')]
       toolbox:
         show: true
         feature:
@@ -102,6 +103,7 @@ AkashicResourceChart = React.createClass
             readOnly: true
           restore:
             show: true
+            title: __("Restore")
           saveAsImage:
             show: false
           showScale: ((showAsDay)=>
@@ -217,7 +219,7 @@ AkashicResourceChart = React.createClass
         yAxis.push JSON.parse JSON.stringify item
         yAxis)(@sleepMode)
       series:[
-        {name:"燃"
+        {name: __('Fuel')
         type:"line"
         yAxisIndex: 0
         itemStyle:
@@ -230,7 +232,7 @@ AkashicResourceChart = React.createClass
             data.push [logitem[0], logitem[1], index]
           data
           )(@showData)},
-        {name:"弹"
+        {name:__('Ammo')
         type:"line"
         yAxisIndex: 0
         itemStyle:
@@ -243,7 +245,7 @@ AkashicResourceChart = React.createClass
             data.push [logitem[0], logitem[2], index]
           data
           )(@showData)},
-        {name:"钢"
+        {name:__('Steel')
         type:"line"
         yAxisIndex: 0
         itemStyle:
@@ -256,7 +258,7 @@ AkashicResourceChart = React.createClass
             data.push [logitem[0], logitem[3], index]
           data
           )(@showData)},
-        {name:"铝"
+        {name:__('Bauxite')
         type:"line"
         yAxisIndex: 0
         itemStyle:
@@ -269,7 +271,7 @@ AkashicResourceChart = React.createClass
             data.push [logitem[0], logitem[4], index]
           data
           )(@showData)},
-        {name:"高速建造"
+        {name:__('Fast Build Item')
         type:"line"
         yAxisIndex: 1
         itemStyle:
@@ -282,7 +284,7 @@ AkashicResourceChart = React.createClass
             data.push [logitem[0], logitem[5], index]
           data
           )(@showData)},
-        {name:"高速修复"
+        {name:__('Instant Repair Item')
         type:"line"
         yAxisIndex: 1
         itemStyle:
@@ -295,7 +297,7 @@ AkashicResourceChart = React.createClass
             data.push [logitem[0], logitem[6], index]
           data
           )(@showData)},
-        {name:"资材"
+        {name:__('Development Material')
         type:"line"
         yAxisIndex: 1
         itemStyle:
@@ -308,7 +310,7 @@ AkashicResourceChart = React.createClass
             data.push [logitem[0], logitem[7], index]
           data
           )(@showData)},
-        {name:"螺丝"
+        {name:__('Improvement Materials')
         type:"line"
         yAxisIndex: 1
         itemStyle:

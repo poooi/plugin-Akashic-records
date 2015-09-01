@@ -11,9 +11,6 @@ dialog = remote.require 'dialog'
 
 {openExternal} = require 'shell'
 
-#i18n = require '../node_modules/i18n'
-# {__} = i18n
-
 duplicateRemoval = (arr) ->
   arr.sort (a, b)->
     if isNaN a[0]
@@ -691,7 +688,7 @@ AttackLog = React.createClass
           </Col>
         </Row>
         <Row style={marginTop:"10px"}>
-          <Col xs={0}>
+          <Col xs={12} style={display: 'none'}>
             <div>
               <OverlayTrigger trigger='click' rootClose={true} placement='right' overlay={
                 <Popover title=''>

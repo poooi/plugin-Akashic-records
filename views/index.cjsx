@@ -137,7 +137,7 @@ createItemTableTab = ['No.', __("Time"), __("Result"), __("Development Item"),
                       __("Bauxite"), __("Flagship"), __("Headquarters Level")]
 createShipTableTab = ['No.', __("Time"), __("Type"), __("Ship"), __("Ship Type"),
                       __("Fuel"), __("Ammo"), __("Steel"), __("Bauxite"),
-                       __　("Development Material"), __("Empty Docks"), __("Flagship"),
+                       __("Development Material"), __("Empty Docks"), __("Flagship"),
                        __("Headquarters Level")]
 resourceTableTab = ['No.', __("Time"), __("Fuel"), __("Ammo"), __("Steel"),
                     __("Bauxite"), __("Fast Build Item"), __("Instant Repair Item"),
