@@ -126,7 +126,7 @@ senkaDateToString = ->
 
 attackTableTab = ['No.', __("Time"), __("World"), __("Node"), __("Sortie Type"),
                   __("Battle Result"), __("Enemy Encounters"), __("Drop"),
-                  __("Heavily damaged"), __("Flagship"),
+                  __("Heavily Damaged"), __("Flagship"),
                   "#{__("Flagship")} (#{__("Second Fleet")})", 'MVP',
                   "MVP (#{__("Second Fleet")})"]
 missionTableTab = ['No.', __("Time"), __("Type"), __("Result"), __("Fuel"),
