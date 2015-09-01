@@ -1,4 +1,4 @@
-{React, ReactBootstrap, jQuery, config} = window
+{React, ReactBootstrap, jQuery, config, __} = window
 {Grid, Col, ButtonGroup, Button, Row, Input, option, Alert} = ReactBootstrap
 glob = require 'glob'
 path = require 'path-extra'
@@ -11,6 +11,9 @@ AkashicSenkaServerTable = require './akashic-senka-server-table'
 AkashicSenkaServerSelect = require './akashic-senka-server-select'
 
 {openExternal} = require 'shell'
+
+#i18n = require '../node_modules/i18n'
+# {__} = i18n
 
 dateToString = ->
   date = new Date()
@@ -194,22 +197,22 @@ AkashicSenkaServer = React.createClass
           {
             if @state.serverId is 0
               <Alert className="akashic-senka-alert">
-                <h4>请选择镇守府</h4>
+                <h4>{__ "Please select the server."}</h4>
               </Alert>
             else if @state.downloadingFailFlag
               <Alert className="akashic-senka-alert">
-                <h4>数据获取失败</h4>
+                <h4>{__ "Failed to retrieve data from the internet."}</h4>
               </Alert>
             else if @state.downloadingFlag
               <Alert className="akashic-senka-alert">
-                <h4>downloading...</h4>
+                <h4>{__ "downloading..."}</h4>
               </Alert>
             else
               <AkashicSenkaServerTable tableTab={@props.tableTab} data={@state.tableData}/>
           }
         </Col>
         <Col xs={12} md={12}>
-          数据来源： <a onClick={openExternal.bind(this, "https://www.senka.me/")}>战果基地</a>
+          {__ "The data of information comes from:"} <a onClick={openExternal.bind(this, "https://www.senka.me/")}>戦果基地</a>
         </Col>
       </Row>
     </Grid>

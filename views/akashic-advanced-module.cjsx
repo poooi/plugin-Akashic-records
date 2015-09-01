@@ -1,4 +1,4 @@
-{React, ReactBootstrap, ROOT, FontAwesome} = window
+{React, ReactBootstrap, ROOT, FontAwesome, __} = window
 {Grid, Row, Col, Input, Button, OverlayTrigger, Popover, Input} = ReactBootstrap
 
 fs = require 'fs-extra'
@@ -134,13 +134,13 @@ resolveFile = (fileContent, tableTab)->
         retData.push "#{logItem[2]}(#{tmpArray[0].substring(1)})"
         if logItem[4] is "ボス"
           tmp = "Boss点"
-        else 
+        else
           tmp = "道中"
         retData.push "#{tmpArray[1].substring(1)}(#{tmp})"
         if logItem[4] is "出撃"
-          tmp = "出击"
+          tmp = "出撃"
         else
-          tmp = "进击"
+          tmp = "進撃"
         retData.push tmp
         retData.push logItem[5]
         retData.push logItem[6]
@@ -169,13 +169,13 @@ resolveFile = (fileContent, tableTab)->
         retData.push "#{logItem[1]}(#{tmpArray[0].substring(1)})"
         if logItem[3] is "ボス"
           tmp = "Boss点"
-        else 
+        else
           tmp = "道中"
         retData.push "#{tmpArray[1].substring(1)}(#{tmp})"
         if logItem[3] is "出撃"
-          tmp = "出击"
+          tmp = "出撃"
         else
-          tmp = "进击"
+          tmp = "出撃"
         retData.push tmp
         retData.push logItem[4]
         retData.push logItem[5]
@@ -298,7 +298,7 @@ resolveFile = (fileContent, tableTab)->
           retData.push "失败"
           retData.push ""
           retData.push ""
-        else 
+        else
           retData.push "成功"
           retData.push logItem[2]
           retData.push logItem[3]
@@ -323,7 +323,7 @@ resolveFile = (fileContent, tableTab)->
           retData.push "失败"
           retData.push ""
           retData.push ""
-        else 
+        else
           retData.push "成功"
           retData.push logItem[1]
           retData.push logItem[2]
@@ -429,7 +429,7 @@ resolveFile = (fileContent, tableTab)->
           retData.push "失败"
           retData.push ""
           retData.push ""
-        else 
+        else
           retData.push "成功"
           retData.push logItem[1]
           retData.push ""
@@ -489,9 +489,9 @@ resolveFile = (fileContent, tableTab)->
         log.length is 9
     else
       e = new Error()
-      e.message = "不支持的编码或文件格式！"
+      e.message = __ "The encoding or file is not supported"
       throw e
-  ret = 
+  ret =
     logType: logType
     data: data
     message: ""
@@ -514,8 +514,8 @@ AttackLog = React.createClass
   showMessage: (message)->
     dialog.showMessageBox
       type: 'info'
-      buttons: ['确定']
-      title: '提醒'
+      buttons: ['OK']
+      title: 'Warning'
       message: message
   saveLogHandle: ->
     nickNameId = window._nickNameId
@@ -540,8 +540,8 @@ AttackLog = React.createClass
           @showMessage '发生错误！请报告开发者'
           return
       if process.platform is 'win32'
-        codeType = 'GB2312'
-      else 
+        codeType = 'SHIFT_JIS'
+      else
         codeType = 'utf8'
       filename = dialog.showSaveDialog
         title: "保存#{@state.typeChoosed}记录"
@@ -629,39 +629,38 @@ AttackLog = React.createClass
     else
       @showMessage '请先登录再导入数据！'
 
-      
+
     # console.log "import log"
-    
+
   render: ->
     <div className="advancedmodule">
       <Grid>
         <Row className="title">
           <Col xs={12}>
-            <span style={{fontSize: "24px"}}>数据导入导出</span>
+            <span style={{fontSize: "24px"}}>{__ "Importing/Exporting"}</span>
             <OverlayTrigger trigger='click' rootClose={true} placement='right' overlay={
-              <Popover title='说明'>
-                <h5>导出</h5>
+              <Popover title={__ "About"}>
+                <h5>{__ "Exporting"}</h5>
                 <ul>
-                  <li>需选择导出类型</li>
-                  <li>根据平台决定导出编码格式，win为GB2312，其他均为utf8</li>
+                  <li>{__ "Choose the data you want to export"}</li>
+                  <li>{__ "The file's encoding is determined by the OS. Win -> GB2312, Others -> utf8"}</li>
                 </ul>
-                <h5>导入</h5>
+                <h5>{__ "Importing"}</h5>
                 <ul>
-                  <li>自动判断编码格式与类型</li>
-                  <li>支持：
+                  <li>{__ "Support List"}
                     <ul>
                       <li>阿克夏记录</li>
                       <li>航海日誌 拡張版</li>
-                      <li>KCV yuyuvn版</li>
+                      <li>KCV-yuyuvn</li>
                     </ul>
                   </li>
                 </ul>
-                <h5>想要增加更多的导入支持？</h5>
+                <h5>{__ "Need more?"}</h5>
                 <ul>
                   <li>
-                    <a onClick={openExternal.bind(this, "https://github.com/yudachi/plugin-Akashic-records")}>github项目</a>上提出issue。
+                    <a onClick={openExternal.bind(this, "https://github.com/poooi/plugin-Akashic-records/issues/new")}>{__ "open a new issue on github"}</a>
                   </li>
-                  <li style={"whiteSpace": "nowrap"}>或邮件联系 jenningswu@gmail.com 。</li>
+                  <li style={"whiteSpace": "nowrap"}>{__ "or email"} jenningswu@gmail.com </li>
                 </ul>
               </Popover>
               }>
@@ -674,22 +673,22 @@ AttackLog = React.createClass
         <Row>
           <Col xs={4}>
             <Input type="select" ref="type" value={@state.typeChoosed} onChange={@handleSetType}>
-              <option key={0} value={'出击'}>出击</option>
-              <option key={1} value={'远征'}>远征</option>
-              <option key={2} value={'建造'}>建造</option>
-              <option key={3} value={'开发'}>开发</option>
-              <option key={4} value={'资源'}>资源</option>
+              <option key={0} value={'出击'}>{__ "Sortie"}</option>
+              <option key={1} value={'远征'}>{__ "Expedition"}</option>
+              <option key={2} value={'建造'}>{__ "Construction"}</option>
+              <option key={3} value={'开发'}>{__ "Development"}</option>
+              <option key={4} value={'资源'}>{__ "Resource"}</option>
             </Input>
           </Col>
           <Col xs={4}>
-             <Button bsStyle='primary' style={width: '100%'} onClick={@saveLogHandle}>导出</Button>
+             <Button bsStyle='primary' style={width: '100%'} onClick={@saveLogHandle}>{__ "Export"}</Button>
           </Col>
           <Col xs={4}>
-             <Button bsStyle='primary' style={width: '100%'} onClick={@importLogHandle}>导入</Button>
+             <Button bsStyle='primary' style={width: '100%'} onClick={@importLogHandle}>{__ "Import"}</Button>
           </Col>
         </Row>
         <Row style={marginTop:"10px"}>
-          <Col xs={12}>
+          <Col xs={12} style={display: 'none'}>
             <div>
               <OverlayTrigger trigger='click' rootClose={true} placement='right' overlay={
                 <Popover title=''>
@@ -702,9 +701,11 @@ AttackLog = React.createClass
                 </Popover>
                 }>
                 <Button bsStyle='default'>常见问题：有关白屏与关闭/最小化插件</Button>
-              </OverlayTrigger>
-              <a style={marginLeft: "30px"} onClick={openExternal.bind(this, "https://github.com/yudachi/plugin-Akashic-records")}>Bug汇报</a>
+              </OverlayTrigger>              
             </div>
+          </Col>
+          <Col xs={12}>
+            <a style={marginLeft: "30px"} onClick={openExternal.bind(this, "https://github.com/yudachi/plugin-Akashic-records")}>{__ "Bug Report & Suggestion"}</a>
           </Col>
         </Row>
       </Grid>

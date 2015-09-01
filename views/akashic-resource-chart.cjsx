@@ -1,7 +1,10 @@
 path = require 'path-extra'
-{React, ReactBootstrap, $, err, config, ROOT} = window
+{React, ReactBootstrap, $, err, config, ROOT, __} = window
 {Grid, Row, Col, ButtonGroup, DropdownButton, MenuItem} = ReactBootstrap
 {error} = require path.join(ROOT, 'lib/utils')
+
+#i18n = require '../node_modules/i18n'
+# {__} = i18n
 
 require '../assets/echarts-all'
 dark = require '../assets/themes/dark'
@@ -22,7 +25,7 @@ toDateLabel = (datetime) ->
   if minute < 10
     minute = "0#{minute}"
   "#{date.getFullYear()}-#{month}-#{day} #{hour}:#{minute}"
-  
+
 toDateString = (datetime)->
   date = new Date(datetime)
   "#{date.getFullYear()}/#{date.getMonth() + 1}/#{date.getDate()}"
@@ -61,7 +64,7 @@ AkashicResourceChart = React.createClass
       else
         true
   getEChartsOption: ->
-    option = 
+    option =
       tooltip:
         trigger: "item"
         show: true
@@ -88,27 +91,29 @@ AkashicResourceChart = React.createClass
             logdata.push data[index][1]
             if logdata[0] isnt data[index][0]
               error "data error! in ECharts's tooltip formatter()"
-          showString = "#{dateString}<br/>燃: #{logdata[1]}<br/>弹: #{logdata[2]}<br/>钢: #{logdata[3]}<br/>铝: #{logdata[4]}<br/>高速建造: #{logdata[5]}<br/>高速修复: #{logdata[6]}<br/>资材: #{logdata[7]}<br/>螺丝: #{logdata[8]}"
-      legend: 
-        data:['燃', '弹', '钢', '铝', '高速建造', '高速修复', '资材', '螺丝']
+          showString = "#{dateString}<br/>#{__("Fuel")}: #{logdata[1]}<br/>#{__("Ammo")}: #{logdata[2]}<br/>#{__("Steel")}: #{logdata[3]}<br/>#{__("Bauxite")}: #{logdata[4]}<br/>#{__("Fast Build Item")}: #{logdata[5]}<br/>#{__("Instant Repair Item")}: #{logdata[6]}<br/>#{__("Development Material")}: #{logdata[7]}<br/>#{__("Improvement Materials")}: #{logdata[8]}"
+      legend:
+        data:[__('Fuel'), __('Ammo'), __('Steel'), __('Bauxite'),
+          __('Fast Build Item'), __('Instant Repair Item'), __('Development Material'), __('Improvement Materials')]
       toolbox:
         show: true
         feature:
-          dataView: 
+          dataView:
             show: false
             readOnly: true
           restore:
             show: true
+            title: __("Restore")
           saveAsImage:
             show: false
           showScale: ((showAsDay)=>
             if showAsDay
-              title = '按天显示'
+              title = __("Show by %s", __("Day"))
               icon = './assets/echarts-day.png'
-            else 
-              title = '按小时显示'
+            else
+              title = __("Show by %s", __("Hour"))
               icon = './assets/echarts-hour.png'
-            showScale = 
+            showScale =
               show: true
               title: title
               icon: icon
@@ -118,7 +123,7 @@ AkashicResourceChart = React.createClass
                 @dataLength = @showData.length
                 @showData.reverse()
                 if @showData.length isnt 0
-                  if not @resourceChart.getSeries()? 
+                  if not @resourceChart.getSeries()?
                     @resourceChart.hideLoading()
                   @resourceChart.setOption @getEChartsOption(), true
                 config.set "plugin.Akashic.resource.chart.showAsDay", @showAsDay
@@ -126,15 +131,15 @@ AkashicResourceChart = React.createClass
           showType: ((showAllSymbol)=>
             if @sleepMode
               suffix = "-sleepmode"
-            else 
+            else
               suffix = ""
             if showAllSymbol
-              title = '显示节点'
+              title = __ "Show node"
               icon = "./assets/echarts-with-node#{suffix}.png"
             else
-              title = '隐藏节点'
+              title = __ "Hide node"
               icon = "./assets/echarts-no-node#{suffix}.png"
-            showType = 
+            showType =
               show: true
               title: title
               icon: icon
@@ -148,12 +153,12 @@ AkashicResourceChart = React.createClass
             )(@showAllSymbol)
           themeMode: ((sleepMode)=>
             if sleepMode
-              title = '睡眠模式'
+              title = __ "Sleep mode"
               icon = './assets/echarts-moon.png'
             else
-              title = '日光模式'
+              title = __ "Light mode"
               icon = './assets/echarts-sun.png'
-            showType = 
+            showType =
               show: true
               title: title
               icon: icon
@@ -161,7 +166,7 @@ AkashicResourceChart = React.createClass
                 @sleepMode = not @sleepMode
                 if @sleepMode
                   @resourceChart.setTheme dark
-                else 
+                else
                   @resourceChart.setTheme macarons
                 @resourceChart.setOption @getEChartsOption(), true
                 config.set "plugin.Akashic.resource.chart.sleepMode", @sleepMode
@@ -179,7 +184,7 @@ AkashicResourceChart = React.createClass
         else
           labelColor = '#333'
           splitColor = '#eee'
-        item = 
+        item =
           type: 'time'
           splitNumber: 10
           axisLabel:
@@ -198,7 +203,7 @@ AkashicResourceChart = React.createClass
         else
           labelColor = '#333'
           splitColor = '#eee'
-        item = 
+        item =
           type: 'value'
           axisLine:
             lineStyle:
@@ -214,7 +219,7 @@ AkashicResourceChart = React.createClass
         yAxis.push JSON.parse JSON.stringify item
         yAxis)(@sleepMode)
       series:[
-        {name:"燃"
+        {name: __('Fuel')
         type:"line"
         yAxisIndex: 0
         itemStyle:
@@ -227,7 +232,7 @@ AkashicResourceChart = React.createClass
             data.push [logitem[0], logitem[1], index]
           data
           )(@showData)},
-        {name:"弹"
+        {name:__('Ammo')
         type:"line"
         yAxisIndex: 0
         itemStyle:
@@ -240,7 +245,7 @@ AkashicResourceChart = React.createClass
             data.push [logitem[0], logitem[2], index]
           data
           )(@showData)},
-        {name:"钢"
+        {name:__('Steel')
         type:"line"
         yAxisIndex: 0
         itemStyle:
@@ -253,7 +258,7 @@ AkashicResourceChart = React.createClass
             data.push [logitem[0], logitem[3], index]
           data
           )(@showData)},
-        {name:"铝"
+        {name:__('Bauxite')
         type:"line"
         yAxisIndex: 0
         itemStyle:
@@ -266,7 +271,7 @@ AkashicResourceChart = React.createClass
             data.push [logitem[0], logitem[4], index]
           data
           )(@showData)},
-        {name:"高速建造"
+        {name:__('Fast Build Item')
         type:"line"
         yAxisIndex: 1
         itemStyle:
@@ -279,7 +284,7 @@ AkashicResourceChart = React.createClass
             data.push [logitem[0], logitem[5], index]
           data
           )(@showData)},
-        {name:"高速修复"
+        {name:__('Instant Repair Item')
         type:"line"
         yAxisIndex: 1
         itemStyle:
@@ -292,7 +297,7 @@ AkashicResourceChart = React.createClass
             data.push [logitem[0], logitem[6], index]
           data
           )(@showData)},
-        {name:"资材"
+        {name:__('Development Material')
         type:"line"
         yAxisIndex: 1
         itemStyle:
@@ -305,7 +310,7 @@ AkashicResourceChart = React.createClass
             data.push [logitem[0], logitem[7], index]
           data
           )(@showData)},
-        {name:"螺丝"
+        {name:__('Improvement Materials')
         type:"line"
         yAxisIndex: 1
         itemStyle:
@@ -329,7 +334,7 @@ AkashicResourceChart = React.createClass
     option = @getEChartsOption()
     @resourceChart.setOption option
   # componentDidMount: ->
-    # 
+    #
   componentDidUpdate: ->
     if  @resourceChart is 0 and @props.mapShowFlag
       @showData = @dataFilter @props.data
@@ -343,7 +348,7 @@ AkashicResourceChart = React.createClass
     else if nextProps.data.length > @wholeDataLength
       if @wholeDataLength > 0
         dateString = toDateString nextProps.data[nextProps.data.length-@wholeDataLength][0]
-      else 
+      else
         dateString = ""
       if @resourceChart.getSeries()?
         if not @showAsDay
@@ -375,7 +380,7 @@ AkashicResourceChart = React.createClass
       @dataLength = @showData.length
       @wholeDataLength = nextProps.data.length
       false
-    else 
+    else
       false
   render: ->
     <Grid>

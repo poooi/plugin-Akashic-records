@@ -1,8 +1,11 @@
 path = require 'path-extra'
 
-{React, ReactBootstrap, ROOT} = window
+{React, ReactBootstrap, ROOT, __} = window
 {Grid, Row, Col, Table, ButtonGroup, DropdownButton, MenuItem, Input, Pagination} = ReactBootstrap
 {log, warn, error} = require path.join(ROOT, 'lib/utils')
+
+# i18n = require '../node_modules/i18n'
+# {__} = i18n
 
 dateToString = (date)->
   month = date.getMonth() + 1
@@ -33,13 +36,13 @@ AkashicResourceTableTbodyItem = React.createClass
           else
             if @props.rowChooseChecked[index+1]
               if @props.lastFlag
-                <td key={index}>{item}</td> 
+                <td key={index}>{item}</td>
               else
                 flag = ""
                 diff = item - @props.nextdata[index]
                 if diff > 0
                   diff = "+#{diff}"
-                <td key={index}>{"#{item}(#{diff})"}</td> 
+                <td key={index}>{"#{item}(#{diff})"}</td>
       }
     </tr>
 
@@ -58,7 +61,7 @@ AkashicResourceTableArea = React.createClass
   filterAsScale: (data, showScale)->
     if showScale is "小时"
       data
-    else 
+    else
       dateString = ""
       data.filter (dataitem)->
         tmp = dateToDateString dataitem[0]
@@ -87,7 +90,7 @@ AkashicResourceTableArea = React.createClass
       activePage = 1
     if activePage > Math.ceil(dataShow.length/@state.showAmount)
       activePage = Math.ceil(dataShow.length/@state.showAmount)
-    @setState 
+    @setState
       dataShow: dataShow
       filterKey: keyWord
       activePage: activePage
@@ -100,7 +103,7 @@ AkashicResourceTableArea = React.createClass
     else activePage = 0
     showAmount = config.get "plugin.Akashic.resource.table.showAmount", 10
     showScale = config.get "plugin.Akashic.resource.table.showScale", "天"
-    @setState 
+    @setState
       dataAsScale: @props.data
       dataShow: []
       filterKey: ''
@@ -119,7 +122,7 @@ AkashicResourceTableArea = React.createClass
       dataShow: dataShow
       activePage: activePage
   handleShowAmountSelect: (selectedKey)->
-    {activePage} = @state    
+    {activePage} = @state
     if activePage < 0
       activePage = 1
     if activePage > Math.ceil(@state.dataShow.length/selectedKey)
@@ -143,7 +146,7 @@ AkashicResourceTableArea = React.createClass
     @setState
       activePage: selectedEvent.eventKey
   handleShowScaleSelect: (selectedKey)->
-    {activePage} = @state    
+    {activePage} = @state
     showScale = "小时"
     if selectedKey isnt 0
       showScale = "天"
@@ -162,31 +165,31 @@ AkashicResourceTableArea = React.createClass
         <Row>
           <Col xs={3}>
             <ButtonGroup justified>
-              <DropdownButton center eventKey={4} title={"显示#{@state.showScale}显示"} block>
-                <MenuItem center eventKey=0 onSelect={@handleShowScaleSelect}>{"按小时显示"}</MenuItem>
-                <MenuItem eventKey=1 onSelect={@handleShowScaleSelect}>{"按天显示"}</MenuItem>
+              <DropdownButton center eventKey={4} title={__ "Show by %s", "#{@state.showScale}"} block>
+                <MenuItem center eventKey=0 onSelect={@handleShowScaleSelect}>{__ "Show by %s", __ "Hour"}</MenuItem>
+                <MenuItem eventKey=1 onSelect={@handleShowScaleSelect}>{__ "Show by %s", __ "Day"}</MenuItem>
               </DropdownButton>
             </ButtonGroup>
           </Col>
           <Col xs={3}>
             <ButtonGroup justified>
-              <DropdownButton center eventKey={4} title={"显示#{@state.showAmount}条"} block>
-                <MenuItem center eventKey=10 onSelect={@handleShowAmountSelect}>{"显示10条"}</MenuItem>
-                <MenuItem eventKey=20 onSelect={@handleShowAmountSelect}>{"显示20条"}</MenuItem>
-                <MenuItem eventKey=50 onSelect={@handleShowAmountSelect}>{"显示50条"}</MenuItem>
+              <DropdownButton center eventKey={4} title={__ "Newer %s", "#{@state.showAmount}"} block>
+                <MenuItem center eventKey=10 onSelect={@handleShowAmountSelect}>{__ "Newer %s", "10"}</MenuItem>
+                <MenuItem eventKey=20 onSelect={@handleShowAmountSelect}>{__ "Newer %s", "20"}</MenuItem>
+                <MenuItem eventKey=50 onSelect={@handleShowAmountSelect}>{__ "Newer %s", "50"}</MenuItem>
                 <MenuItem divider />
-                <MenuItem eventKey=999999 onSelect={@handleShowAmountSelect}>{"显示全部"}</MenuItem>
+                <MenuItem eventKey=999999 onSelect={@handleShowAmountSelect}>{__ "View All"}</MenuItem>
               </DropdownButton>
             </ButtonGroup>
           </Col>
           <Col xs={3}>
             <ButtonGroup justified>
-              <DropdownButton eventKey={4} title={"第#{@state.activePage}页"} block>
+              <DropdownButton eventKey={4} title={__ "Page %s", "#{@props.activePage}"} block>
               {
                 if @state.dataShow.length isnt 0
                   for index in [1..Math.ceil(@state.dataShow.length/@state.showAmount)]
-                    <MenuItem key={index} eventKey={index} onSelect={@handleShowPageSelect}>第{index}页</MenuItem>
-              } 
+                    <MenuItem key={index} eventKey={index} onSelect={@handleShowPageSelect}>{__ "Page %s", "#{index}"}</MenuItem>
+              }
               </DropdownButton>
             </ButtonGroup>
           </Col>
@@ -194,7 +197,7 @@ AkashicResourceTableArea = React.createClass
             <Input
               type='text'
               value={@state.filterKey}
-              placeholder='关键词'
+              placeholder={__ "Keywords"}
               hasFeedback
               ref='input'
               onChange={@handleKeyWordChange} />
@@ -221,10 +224,10 @@ AkashicResourceTableArea = React.createClass
                     else
                       lastFlag = true
                       nextItem = []
-                    <AkashicResourceTableTbodyItem 
+                    <AkashicResourceTableTbodyItem
                       key = {index}
                       index = {(@state.activePage-1)*@state.showAmount+index+1};
-                      data={item} 
+                      data={item}
                       nextdata={nextItem}
                       lastFlag={lastFlag}
                       rowChooseChecked={@props.rowChooseChecked}

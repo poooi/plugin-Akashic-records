@@ -1,8 +1,11 @@
-{React, ReactBootstrap, ROOT, config} = window
+{React, ReactBootstrap, ROOT, config, __} = window
 {Grid, Row, Col, Table, ButtonGroup, DropdownButton, MenuItem, Input, Pagination, OverlayTrigger, Popover} = ReactBootstrap
 path = require 'path-extra'
 {log, warn, error} = require path.join(ROOT, 'lib/utils')
 {openExternal} = require 'shell'
+
+#i18n = require '../node_modules/i18n'
+# {__} = i18n
 
 dateToString = (date)->
   month = date.getMonth() + 1
@@ -32,8 +35,8 @@ AkashicRecordsTableTbodyItem = React.createClass
             <td key={index}>{dateToString(new Date(item))}</td>
           else if @props.contentType is 'attack' and @props.tableTab[index+1] is '大破舰'
             <td key={index} className="enable-auto-newline">{item}</td> if @props.rowChooseChecked[8]
-          else 
-            <td key={index}>{item}</td> if @props.rowChooseChecked[index+1] 
+          else
+            <td key={index}>{item}</td> if @props.rowChooseChecked[index+1]
       }
     </tr>
 
@@ -63,7 +66,7 @@ AkashicRecordsTableArea = React.createClass
   #     activePage = 1
   #   if activePage > Math.ceil(dataShow.length/@state.showAmount)
   #     activePage = Math.ceil(dataShow.length/@state.showAmount)
-  #   @setState 
+  #   @setState
   #     dataShow: dataShow
   #     filterKey: keyWord
   #     activePage: activePage
@@ -104,9 +107,9 @@ AkashicRecordsTableArea = React.createClass
                         if index is 0
                           <th key={index}>
                             <OverlayTrigger trigger='click' rootClose={true} placement='right' overlay={
-                              <Popover title='筛选说明'>
-                                <li>隐藏的列自动取消筛选</li>
-                                <li>支持javascript的<a onClick={openExternal.bind(this, "http://www.w3school.com.cn/jsref/jsref_obj_regexp.asp")}>正则表达式</a></li>
+                              <Popover title={__ "Tips"}>
+                                <li>{__ "Disable filtering while hiding column"}</li>
+                                <li>{__ "Support the Javascript's "}<a onClick={openExternal.bind(this, "http://www.w3school.com.cn/jsref/jsref_obj_regexp.asp")}>{"RegExp"}</a></li>
                               </Popover>
                               }>
                               <FontAwesome name='question-circle'/>
@@ -136,9 +139,9 @@ AkashicRecordsTableArea = React.createClass
                         if index is 0
                           <th key={index}>
                             <OverlayTrigger trigger='click' rootClose={true} placement='right' overlay={
-                              <Popover title='筛选说明'>
-                                <li>隐藏的列自动取消筛选</li>
-                                <li>支持javascript的<a onClick={openExternal.bind(this, "http://www.w3school.com.cn/jsref/jsref_obj_regexp.asp")}>正则表达式</a></li>
+                              <Popover title={__ "Tips"}>
+                                <li>{__ "Disable filtering while hiding column"}</li>
+                                <li>{__ "Support the Javascript's "}<a onClick={openExternal.bind(this, "http://www.w3school.com.cn/jsref/jsref_obj_regexp.asp")}>{"RegExp"}</a></li>
                               </Popover>
                               }>
                               <FontAwesome name='question-circle'/>
@@ -175,9 +178,9 @@ AkashicRecordsTableArea = React.createClass
                         if index is 0
                           <th key={index}>
                             <OverlayTrigger trigger='click' rootClose={true} placement='right' overlay={
-                              <Popover title='筛选说明'>
-                                <li>隐藏的列自动取消筛选</li>
-                                <li>支持javascript的<a onClick={openExternal.bind(this, "http://www.w3school.com.cn/jsref/jsref_obj_regexp.asp")}>正则表达式</a></li>
+                              <Popover title={__ "Tips"}>
+                                <li>{__ "Disable filtering while hiding column"}</li>
+                                <li>{__ "Support the Javascript's "}<a onClick={openExternal.bind(this, "http://www.w3school.com.cn/jsref/jsref_obj_regexp.asp")}>{"RegExp"}</a></li>
                               </Popover>
                               }>
                               <FontAwesome name='question-circle'/>
@@ -195,15 +198,15 @@ AkashicRecordsTableArea = React.createClass
                           </th> if @props.rowChooseChecked[index]
                     }
                   </tr>
-              }  
+              }
               </thead>
               <tbody>
                 {
                   for item, index in @props.data
-                    <AkashicRecordsTableTbodyItem 
+                    <AkashicRecordsTableTbodyItem
                       key = {item[0]}
                       index = {(@props.activePage-1)*@props.showAmount+index+1};
-                      data={item} 
+                      data={item}
                       rowChooseChecked={@props.rowChooseChecked}
                       contentType={@props.contentType}
                       tableTab={@props.tableTab}
@@ -213,7 +216,7 @@ AkashicRecordsTableArea = React.createClass
             </Table>
           </Col>
         </Row>
-        <Row> 
+        <Row>
           <Col xs={12}>
             <Pagination className='akashic-table-pagination'
               prev={false}
