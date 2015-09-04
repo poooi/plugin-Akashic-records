@@ -36,8 +36,8 @@ AkashicRecordsCheckboxArea = React.createClass
       percent: 0
     ]
     compareArgv: [
-      numerator: -1
-      denominator: -1
+      numeratorBaseon: -1
+      denominatorBaseon: -1
     ]
   inputDataVersion: 0
   currentDataVersion: 0
@@ -103,18 +103,18 @@ AkashicRecordsCheckboxArea = React.createClass
   refreshCompareResult: (compareArgv, data, dataAfterFilter, searchArgv)->
     @compareResult = []
     for item, index in compareArgv
-      if item.numerator is -3
+      if item.numeratorBaseon is -3
         numerator = @refs["numerator#{index}"]?.getValue()
         if not numerator
           numerator = 0
       else
-        numerator = @getDataNum item.numerator, data, dataAfterFilter, searchArgv
-      if item.denominator is -3
+        numerator = @getDataNum item.numeratorBaseon, data, dataAfterFilter, searchArgv
+      if item.denominatorBaseon is -3
         denominator = @refs["denominator#{index}"]?.getValue()
         if not denominator
           denominator = 0
       else
-        denominator = @getDataNum item.denominator, data, dataAfterFilter, searchArgv
+        denominator = @getDataNum item.denominatorBaseon, data, dataAfterFilter, searchArgv
       if denominator isnt 0
         percent = Math.round(numerator*10000/denominator) / 100
       else
@@ -178,15 +178,15 @@ AkashicRecordsCheckboxArea = React.createClass
   handleCompareChange: ()->
     {compareArgv} = @state
     for index in [0..compareArgv.length-1]
-      compareArgv[index]['numerator'] = parseInt @refs["numerator#{index}"].getValue()
-      compareArgv[index]['denominator'] = parseInt @refs["denominator#{index}"].getValue()
+      compareArgv[index]['numeratorBaseon'] = parseInt @refs["numeratorBaseon#{index}"].getValue()
+      compareArgv[index]['denominatorBaseon'] = parseInt @refs["denominatorBaseon#{index}"].getValue()
     @setState
       compareArgv: compareArgv
   addCompareLine: ->
     {compareArgv} = @state
     compareArgv.push
-      numerator: -1
-      denominator: -1
+      numeratorBaseon: -1
+      denominatorBaseon: -1
     @setState
       compareArgv: compareArgv
   deleteCompareLine: (index)->
@@ -365,7 +365,7 @@ AkashicRecordsCheckboxArea = React.createClass
                     }
                     <td>{index+1}</td>
                     <td>
-                      <Input type="select" ref="numerator#{index}" groupClassName='search-area' value={"#{@state.compareArgv[index]['numerator']}"} onChange={@handleCompareChange}>
+                      <Input type="select" ref="numeratorBaseon#{index}" groupClassName='search-area' value={"#{@state.compareArgv[index]['numeratorBaseon']}"} onChange={@handleCompareChange}>
                         <option key={-2} value={-2}>{__ "All Data"}</option>
                         <option key={-1} value={-1}>{__ "Filtered"}</option>
                         {
@@ -376,7 +376,7 @@ AkashicRecordsCheckboxArea = React.createClass
                       </Input>
                     </td>
                     <td>
-                      <Input type="select" ref="denominator#{index}" groupClassName='search-area' value={"#{@state.compareArgv[index]['denominator']}"} onChange={@handleCompareChange}>
+                      <Input type="select" ref="denominatorBaseon#{index}" groupClassName='search-area' value={"#{@state.compareArgv[index]['denominatorBaseon']}"} onChange={@handleCompareChange}>
                         <option key={-2} value={-2}>{__ "All Data"}</option>
                         <option key={-1} value={-1}>{__ "Filtered"}</option>
                         {
@@ -387,12 +387,12 @@ AkashicRecordsCheckboxArea = React.createClass
                       </Input>
                     </td>
                     {
-                      if @state.compareArgv[index].numerator is -3
+                      if @state.compareArgv[index].numeratorBaseon is -3
                         <td>
                           <Input
-                            type='text'
+                            type='number'
                             placeholder={"0"}
-                            value={"0"}
+                            value={"#{@compareResult[index].numerator}"}
                             ref="numerator#{index}"
                             groupClassName='search-area'
                             onChange={@handleCompareChange} />
@@ -401,12 +401,12 @@ AkashicRecordsCheckboxArea = React.createClass
                         <td>{@compareResult[index].numerator}</td>
                     }
                     {
-                      if @state.compareArgv[index].denominator is -3
+                      if @state.compareArgv[index].denominatorBaseon is -3
                         <td>
                           <Input
-                            type='text'
+                            type='number'
                             placeholder={"0"}
-                            value={"0"}
+                            value={"#{@compareResult[index].denominator}"}
                             ref="denominator#{index}"
                             groupClassName='search-area'
                             onChange={@handleCompareChange} />

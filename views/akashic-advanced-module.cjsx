@@ -540,7 +540,7 @@ AttackLog = React.createClass
           @showMessage '发生错误！请报告开发者'
           return
       if process.platform is 'win32'
-        codeType = 'SHIFT_JIS'
+        codeType = 'GB2312'
       else
         codeType = 'utf8'
       filename = dialog.showSaveDialog
