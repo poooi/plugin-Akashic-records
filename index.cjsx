@@ -1,7 +1,7 @@
 remote = require 'remote'
 windowManager = remote.require './lib/window'
 path = require 'path-extra'
-i18n = require './node_modules/i18n'
+i18n = require 'i18n'
 {__} = i18n
 # i18n configure
 i18n.configure

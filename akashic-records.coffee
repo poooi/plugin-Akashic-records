@@ -1,7 +1,7 @@
 require 'coffee-react/register'
 require '../../views/env'
 
-i18n = require './node_modules/i18n'
+i18n = require 'i18n'
 {join} = require 'path-extra'
 
 i18n.configure
