@@ -184,7 +184,7 @@ AkashicResourceTableArea = React.createClass
           </Col>
           <Col xs={3}>
             <ButtonGroup justified>
-              <DropdownButton eventKey={4} title={__ "Page %s", "#{@props.activePage}"} block>
+              <DropdownButton eventKey={4} title={__ "Page %s", "#{@state.activePage}"} block>
               {
                 if @state.dataShow.length isnt 0
                   for index in [1..Math.ceil(@state.dataShow.length/@state.showAmount)]
