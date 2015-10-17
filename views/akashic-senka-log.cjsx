@@ -1,5 +1,5 @@
 {React, ReactBootstrap, __} = window
-{TabbedArea, TabPane} = ReactBootstrap
+{Tabs, Tab} = ReactBootstrap
 
 #i18n = require '../node_modules/i18n'
 # {__} = i18n
@@ -23,10 +23,10 @@ AkashicSenkaLog = React.createClass
         selectedKey: selectedKey
   render: ->
     <div>
-      <TabbedArea activeKey={@state.selectedKey} animation={false} onSelect={@handleSelectTab}>
-        <TabPane eventKey={0} tab={__ "Personal"} ><AkashicSenkaPersonal rankShowFlag={@state.personalShowFlag and @props.personalShowFlag}/></TabPane>
-        <TabPane eventKey={1} tab={__ "Server"} ><AkashicSenkaServer memberId={@props.memberId} tableTab={@props.tableTab} /></TabPane>
-      </TabbedArea>
+      <Tabs activeKey={@state.selectedKey} animation={false} onSelect={@handleSelectTab}>
+        <Tab eventKey={0} title={__ "Personal"} ><AkashicSenkaPersonal rankShowFlag={@state.personalShowFlag and @props.personalShowFlag}/></Tab>
+        <Tab eventKey={1} title={__ "Server"} ><AkashicSenkaServer memberId={@props.memberId} tableTabs{@props.tableTab} /></Tab>
+      </Tabs>
     </div>
 
 module.exports = AkashicSenkaLog

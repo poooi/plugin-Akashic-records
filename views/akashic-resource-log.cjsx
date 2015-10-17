@@ -1,5 +1,5 @@
 {React, ReactBootstrap, __} = window
-{TabbedArea, TabPane} = ReactBootstrap
+{Tabs, Tab} = ReactBootstrap
 
 #i18n = require '../node_modules/i18n'
 # {__} = i18n
@@ -23,10 +23,10 @@ AkashicResourceLog = React.createClass
         selectedKey: selectedKey
   render: ->
     <div>
-    <TabbedArea activeKey={@state.selectedKey} animation={false} onSelect={@handleSelectTab}>
-      <TabPane eventKey={0} tab={__ "Chart"} ><AkashicResourceChart data={@props.data} mapShowFlag={@state.mapShowFlag and @props.mapShowFlag}/></TabPane>
-      <TabPane eventKey={1} tab={__ "Table"} ><AkashicResourceTable data={@props.data} tableTab={@props.tableTab} /></TabPane>
-    </TabbedArea>
+    <Tabs activeKey={@state.selectedKey} animation={false} onSelect={@handleSelectTab}>
+      <Tab eventKey={0} title={__ "Chart"} ><AkashicResourceChart data={@props.data} mapShowFlag={@state.mapShowFlag and @props.mapShowFlag}/></Tab>
+      <Tab eventKey={1} title={__ "Table"} ><AkashicResourceTable data={@props.data} tableTab={@props.tableTab} /></Tab>
+    </Tabs>
     </div>
 
 module.exports = AkashicResourceLog

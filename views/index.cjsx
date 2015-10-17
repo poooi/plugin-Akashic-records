@@ -1,7 +1,7 @@
 fs = require 'fs-extra'
 glob = require 'glob'
 {React, ReactBootstrap, $, ROOT, APPDATA_PATH, __} = window
-{TabbedArea, TabPane} = ReactBootstrap
+{Tabs, Tab} = ReactBootstrap
 path = require 'path-extra'
 {log, warn, error} = require path.join(ROOT, 'lib/utils')
 # AkashicRecordTab = require './item-info-table-area'
@@ -59,7 +59,7 @@ combinedOpenAttack = (combinedAfterHp, afterHp, openingAttack) ->
   if openingAttack.api_fdam?
     for damage, i in openingAttack.api_fdam
       damage = Math.floor(damage)
-      continue if damage <= 0 or 
+      continue if damage <= 0 or
       combinedAfterHp[i - 1] -= damage
   [combinedAfterHp, afterHp]
 
@@ -202,7 +202,7 @@ AkashicRecordsArea = React.createClass
   $slotitems: []
   timeString: ""
   mapLv: []
-  
+
   # 建造
   createShipFlag: false   #注意！之后要用config处理关于建造中正好猫了导致log数据遗失的问题！
   largeFlag: false
@@ -585,7 +585,7 @@ AkashicRecordsArea = React.createClass
         if not @combinedFlag
           dataItem.push "#{@_ships[@_deckShip[0]].api_name}(Lv.#{@_ships[@_deckShip[0]].api_lv})", ''
           dataItem.push "#{@_ships[@_deckShip[body.api_mvp-1]].api_name}(Lv.#{@_ships[@_deckShip[body.api_mvp-1]].api_lv})", ''
-        else 
+        else
           dataItem.push "#{@_ships[@_decks[0].api_ship[0]].api_name}(Lv.#{@_ships[@_decks[0].api_ship[0]].api_lv})", "#{@_ships[@_decks[1].api_ship[0]].api_name}(Lv.#{@_ships[@_decks[1].api_ship[0]].api_lv})"
           dataItem.push "#{@_ships[@_decks[0].api_ship[body.api_mvp-1]].api_name}(Lv.#{@_ships[@_decks[0].api_ship[body.api_mvp-1]].api_lv})", "#{@_ships[@_decks[1].api_ship[body.api_mvp_combined-1]].api_name}(Lv.#{@_ships[@_decks[1].api_ship[body.api_mvp_combined-1]].api_lv})"
         {attackData} = @state
@@ -775,14 +775,14 @@ AkashicRecordsArea = React.createClass
         selectedKey: selectedKey
 
   render: ->
-    <TabbedArea activeKey={@state.selectedKey} animation={false} onSelect={@handleSelectTab}>
-      <TabPane eventKey={0} tab={__ "Sortie"} ><AkashicLog indexKey={0} selectedKey={@state.selectedKey} data={@state.attackData} dataVersion={@state.dataVersion[0]} tableTab={attackTableTab} contentType={'attack'}/></TabPane>
-      <TabPane eventKey={1} tab={__ "Expedition"} ><AkashicLog indexKey={1} selectedKey={@state.selectedKey} data={@state.missionData} dataVersion={@state.dataVersion[1]} tableTab={missionTableTab} contentType={'mission'}/></TabPane>
-      <TabPane eventKey={2} tab={__ "Construction"} ><AkashicLog indexKey={2} selectedKey={@state.selectedKey} data={@state.createShipData} dataVersion={@state.dataVersion[3]} tableTab={createShipTableTab} contentType={'createShip'}/></TabPane>
-      <TabPane eventKey={3} tab={__ "Development"} ><AkashicLog indexKey={3} selectedKey={@state.selectedKey} data={@state.createItemData} dataVersion={@state.dataVersion[2]} tableTab={createItemTableTab} contentType={'createItem'}/></TabPane>
-      <TabPane eventKey={4} tab={__ "Resource"} ><AkashicResourceLog indexKey={4} selectedKey={@state.selectedKey} data={@state.resourceData} dataVersion={@state.dataVersion[4]} tableTab={resourceTableTab} mapShowFlag={@state.mapShowFlag} contentType={'resource'}/></TabPane>
-      <TabPane eventKey={5} tab={__ "Victory"} ><AkashicSenkaLog indexKey={5} selectedKey={@state.selectedKey} memberId={@state.memberId} tableTab={senkaTableTab}  personalShowFlag={@state.personalShowFlag} contentType={'senka'}/></TabPane>
-      <TabPane eventKey={6} tab={__ "Others"} >
+    <Tabs activeKey={@state.selectedKey} animation={false} onSelect={@handleSelectTab}>
+      <Tab eventKey={0} title={__ "Sortie"} ><AkashicLog indexKey={0} selectedKey={@state.selectedKey} data={@state.attackData} dataVersion={@state.dataVersion[0]} tableTab={attackTableTab} contentType={'attack'}/></Tab>
+      <Tab eventKey={1} title={__ "Expedition"} ><AkashicLog indexKey={1} selectedKey={@state.selectedKey} data={@state.missionData} dataVersion={@state.dataVersion[1]} tableTab={missionTableTab} contentType={'mission'}/></Tab>
+      <Tab eventKey={2} title={__ "Construction"} ><AkashicLog indexKey={2} selectedKey={@state.selectedKey} data={@state.createShipData} dataVersion={@state.dataVersion[3]} tableTab={createShipTableTab} contentType={'createShip'}/></Tab>
+      <Tab eventKey={3} title={__ "Development"} ><AkashicLog indexKey={3} selectedKey={@state.selectedKey} data={@state.createItemData} dataVersion={@state.dataVersion[2]} tableTab={createItemTableTab} contentType={'createItem'}/></Tab>
+      <Tab eventKey={4} title={__ "Resource"} ><AkashicResourceLog indexKey={4} selectedKey={@state.selectedKey} data={@state.resourceData} dataVersion={@state.dataVersion[4]} tableTab={resourceTableTab} mapShowFlag={@state.mapShowFlag} contentType={'resource'}/></Tab>
+      <Tab eventKey={5} title={__ "Victory"} ><AkashicSenkaLog indexKey={5} selectedKey={@state.selectedKey} memberId={@state.memberId} tableTab={senkaTableTab}  personalShowFlag={@state.personalShowFlag} contentType={'senka'}/></Tab>
+      <Tab eventKey={6} title={__ "Others"} >
         <AkashicAdvancedModule
           tableTab={
             'attack': attackTableTab
@@ -797,7 +797,7 @@ AkashicRecordsArea = React.createClass
           createShipData={@state.createShipData}
           resourceData={@state.resourceData}
           setDataHandler={@setDataHandler}/>
-      </TabPane>
-    </TabbedArea>
+      </Tab>
+    </Tabs>
 
 React.render <AkashicRecordsArea />, $('akashic-records')
