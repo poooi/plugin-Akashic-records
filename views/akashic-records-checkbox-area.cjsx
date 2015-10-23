@@ -43,15 +43,14 @@ AkashicRecordsCheckboxArea = React.createClass
   currentDataVersion: 0
   compareResult: []
   getDataNum: (type, data, dataAfterFilter, searchArgv)->
-    data = 0
     switch type
       when -2
-        data = data.length
+        dataNum = data.length
       when -1
-        data = dataAfterFilter.length
+        dataNum = dataAfterFilter.length
       else
-        data = @state.searchArgv[type].result.length
-    data
+        dataNum = @state.searchArgv[type].result.length
+    dataNum
   refreshSearchResult: (searchArgv, data, dataAfterFilter)->
     for index in [0..searchArgv.length-1]
       switch searchArgv[index].searchBaseOn
