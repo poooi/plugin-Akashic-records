@@ -145,9 +145,9 @@ AkashicRecordsCheckboxArea = React.createClass
     config.set "plugin.Akashic.#{@props.contentType}.checkbox", JSON.stringify rowChooseChecked
   handleClickConfigCheckbox: (index) ->
     @props.configCheckboxClick index
-  handleShowAmountSelect: (selectedKey)->
+  handleShowAmountSelect: (eventKey, selectedKey)->
     @props.showRules selectedKey, @props.activePage
-  handleShowPageSelect: (selectedKey)->
+  handleShowPageSelect: (eventKey, selectedKey)->
     @props.showRules @props.showAmount, selectedKey
   handleSearchChange: ()->
     {searchArgv} = @state
@@ -235,8 +235,8 @@ AkashicRecordsCheckboxArea = React.createClass
         <Row>
           <Col xs={2}>
             <ButtonGroup justified>
-              <DropdownButton bsSize='xsmall' center eventKey={4} title={__ "Newer %s", @props.showAmount} block>
-                <MenuItem center eventKey=10 onSelect={@handleShowAmountSelect}>{__ "Newer %s", "10"}</MenuItem>
+              <DropdownButton bsSize='xsmall' id="dropdown-showOption-selector" eventKey={4} title={__ "Newer %s", @props.showAmount}>
+                <MenuItem eventKey=10 onSelect={@handleShowAmountSelect}>{__ "Newer %s", "10"}</MenuItem>
                 <MenuItem eventKey=20 onSelect={@handleShowAmountSelect}>{__ "Newer %s", "20"}</MenuItem>
                 <MenuItem eventKey=50 onSelect={@handleShowAmountSelect}>{__ "Newer %s", "50"}</MenuItem>
                 <MenuItem divider />
@@ -246,7 +246,7 @@ AkashicRecordsCheckboxArea = React.createClass
           </Col>
           <Col xs={2}>
             <ButtonGroup justified>
-              <DropdownButton bsSize='xsmall' eventKey={4} title={__ "Page %s", @props.activePage} block>
+              <DropdownButton bsSize='xsmall' id="dropdown-page-selector" eventKey={4} title={__ "Page %s", @props.activePage}>
               {
                 if @props.dataShowLength isnt 0
                   for index in [1..Math.ceil(@props.dataShowLength/@props.showAmount)]
@@ -290,7 +290,7 @@ AkashicRecordsCheckboxArea = React.createClass
                 <tr>
                   <th style={verticalAlign: 'middle'}>
                     <OverlayTrigger trigger='click' rootClose={true} placement='right' overlay={
-                      <Popover title={__ "Tips"}>
+                      <Popover title={__ "Tips"} id={"regExp-Hint"}>
                         <li>{__ "Support the Javascript's "}<a onClick={openExternal.bind(this, "http://www.w3school.com.cn/jsref/jsref_obj_regexp.asp")}>{"RegExp"}</a></li>
                       </Popover>
                       }>

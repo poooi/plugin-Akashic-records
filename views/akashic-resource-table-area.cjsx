@@ -121,7 +121,7 @@ AkashicResourceTableArea = React.createClass
     @setState
       dataShow: dataShow
       activePage: activePage
-  handleShowAmountSelect: (selectedKey)->
+  handleShowAmountSelect: (eventKey, selectedKey)->
     {activePage} = @state
     if activePage < 0
       activePage = 1
@@ -131,7 +131,7 @@ AkashicResourceTableArea = React.createClass
     @setState
       showAmount: selectedKey
       activePage: activePage
-  handleShowPageSelect: (selectedKey)->
+  handleShowPageSelect: (eventKey, selectedKey)->
     # if selectedKey is 0
     #   selectedKey = 1
     # else if selectedKey is -1
@@ -145,7 +145,7 @@ AkashicResourceTableArea = React.createClass
   handlePaginationSelect: (event, selectedEvent)->
     @setState
       activePage: selectedEvent.eventKey
-  handleShowScaleSelect: (selectedKey)->
+  handleShowScaleSelect: (eventKey, selectedKey)->
     {activePage} = @state
     showScale = "小时"
     if selectedKey isnt 0
@@ -165,7 +165,7 @@ AkashicResourceTableArea = React.createClass
         <Row>
           <Col xs={3}>
             <ButtonGroup justified>
-              <DropdownButton center eventKey={4} title={__ "Show by %s", "#{@state.showScale}"} block>
+              <DropdownButton  id="dropdown-showScale-selector" center eventKey={4} title={__ "Show by %s", "#{@state.showScale}"}>
                 <MenuItem center eventKey=0 onSelect={@handleShowScaleSelect}>{__ "Show by %s", __ "Hour"}</MenuItem>
                 <MenuItem eventKey=1 onSelect={@handleShowScaleSelect}>{__ "Show by %s", __ "Day"}</MenuItem>
               </DropdownButton>
@@ -173,7 +173,7 @@ AkashicResourceTableArea = React.createClass
           </Col>
           <Col xs={3}>
             <ButtonGroup justified>
-              <DropdownButton center eventKey={4} title={__ "Newer %s", "#{@state.showAmount}"} block>
+              <DropdownButton center  id="dropdown-showOption-selector" eventKey={4} title={__ "Newer %s", "#{@state.showAmount}"}>
                 <MenuItem center eventKey=10 onSelect={@handleShowAmountSelect}>{__ "Newer %s", "10"}</MenuItem>
                 <MenuItem eventKey=20 onSelect={@handleShowAmountSelect}>{__ "Newer %s", "20"}</MenuItem>
                 <MenuItem eventKey=50 onSelect={@handleShowAmountSelect}>{__ "Newer %s", "50"}</MenuItem>
@@ -184,7 +184,7 @@ AkashicResourceTableArea = React.createClass
           </Col>
           <Col xs={3}>
             <ButtonGroup justified>
-              <DropdownButton eventKey={4} title={__ "Page %s", "#{@state.activePage}"} block>
+              <DropdownButton eventKey={4}  id="dropdown-page-selector" title={__ "Page %s", "#{@state.activePage}"}>
               {
                 if @state.dataShow.length isnt 0
                   for index in [1..Math.ceil(@state.dataShow.length/@state.showAmount)]
