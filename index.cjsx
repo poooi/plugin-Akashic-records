@@ -43,9 +43,9 @@ if config.get('plugin.Akashic.enable', true)
 module.exports =
   name: 'Akashic'
   priority: 10
-  displayName: <span><FontAwesome key={0} name='book' /> {__ "Akashic Records"}</span>
+  displayName: <span><FontAwesome key={0} name='book' /> {__ "Logbook"}</span>
   #displayName: <span><FontAwesome key={0} name='book' /> 航海日志</span>
-  description: "#{__ "Logbook"}. #{__ "Senka module is developed by rui"}."
+  description: "#{__ "Logs"}. #{__ "Senka module is developed by rui"}."
   author: 'W.G.'
   link: 'https://github.com/JenningsWu'
   version: '1.3.0'
