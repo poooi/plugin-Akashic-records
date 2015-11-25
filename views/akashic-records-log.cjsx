@@ -69,13 +69,13 @@ AkashicLog = React.createClass
       if rowChooseChecked[index+1]
         if keyWords[index+1] isnt ''
           if index is 0
-            testText = dateToString(new Date(item)).toLowerCase().trim()
+            testText = dateToString(new Date(item)).trim()
           else
-            testText = "#{item}".toLowerCase().trim()
+            testText = "#{item}".trim()
           if regFlag[index+1]
             match = filterKeys[index+1].test testText
           else
-            match = testText.indexOf(filterKeys[index+1].toLowerCase().trim()) >= 0
+            match = testText.toLowerCase().indexOf(filterKeys[index+1].toLowerCase().trim()) >= 0
           if not match
             return false
     return true
