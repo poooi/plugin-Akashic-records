@@ -11,6 +11,8 @@ AkashicResourceLog = require './akashic-resource-log'
 AkashicAdvancedModule = require './akashic-advanced-module'
 AkashicSenkaLog = require './akashic-senka-log'
 
+$('#font-awesome')?.setAttribute 'href', "#{ROOT}/components/font-awesome/css/font-awesome.min.css"
+
 getHp = (maxHps, nowHps)->
   maxHp = []
   nowHp = []
