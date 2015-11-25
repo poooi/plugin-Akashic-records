@@ -5,13 +5,6 @@ window.notifier = require 'node-notifier'
 # This part partly copy form ROOT/views/env.coffee
 # Environments ROOT: xxx/poi/
 
-window.remote = require 'remote'
-window.ROOT = path.join(__dirname, "..", "..")
-window.EXROOT = remote.getGlobal 'EXROOT'
-window.APPDATA_PATH = remote.getGlobal 'APPDATA_PATH'
-window.POI_VERSION = remote.getGlobal 'POI_VERSION'
-window.SERVER_HOSTNAME = remote.getGlobal 'SERVER_HOSTNAME'
-
 # Shortcuts and Components
 window._ = require 'underscore'
 window.$ = (param) -> document.querySelector(param)
@@ -233,4 +226,3 @@ proxy.addListener 'network.invalid.code', (code) ->
     detail:
       code: code
   window.dispatchEvent event
-
