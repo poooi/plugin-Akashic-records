@@ -13,16 +13,16 @@ a, table span.fa{
 	padding: 10px;
 }
 
-akashic-records nav ul {
+akashic-records .nav {
   display: flex;
 }
-akashic-records nav ul li {
+akashic-records .nav li {
   flex: 1;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-akashic-records nav ul li a {
+akashic-records .nav li a {
   text-align: center;
 }
 
