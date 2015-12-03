@@ -325,7 +325,7 @@ AkashicResourceChart = React.createClass
           )(@showData)}]
 
   renderChart: ->
-    node = @refs.chart.getDOMNode()
+    node = @refs.chart
     if @sleepMode
       theme = dark
     else
