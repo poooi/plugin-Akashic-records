@@ -1,7 +1,7 @@
 fs = require 'fs-extra'
 glob = require 'glob'
 {React, ReactDOM, ReactBootstrap, $, ROOT, APPDATA_PATH, __} = window
-{Tabs, Tab} = ReactBootstrap
+{Tabs, Tab, Label} = ReactBootstrap
 path = require 'path-extra'
 {log, warn, error} = require path.join(ROOT, 'lib/utils')
 # AkashicRecordTab = require './item-info-table-area'
@@ -13,96 +13,30 @@ AkashicSenkaLog = require './akashic-senka-log'
 
 $('#font-awesome')?.setAttribute 'href', "#{ROOT}/components/font-awesome/css/font-awesome.min.css"
 
-getHp = (maxHps, nowHps)->
-  maxHp = []
-  nowHp = []
-  for tmp, i in maxHps[1..6]
-    maxHp.push tmp
-    nowHp.push nowHps[i+1]
-  [maxHp, nowHp]
-
-koukuAttack = (afterHp, kouku) ->
-  if kouku.api_fdam?
-    for damage, i in kouku.api_fdam
-      damage = Math.floor(damage)
-      continue if damage <= 0
-      afterHp[i - 1] -= damage
-  afterHp
-
-openAttack = (afterHp, openingAttack) ->
-  if openingAttack.api_fdam?
-    for damage, i in openingAttack.api_fdam
-      damage = Math.floor(damage)
-      continue if damage <= 0
-      afterHp[i - 1] -= damage
-  afterHp
-
-hougekiAttack = (afterHp, hougeki) ->
-  for damageFrom, i in hougeki.api_at_list
-    continue if damageFrom == -1
-    for damage, j in hougeki.api_damage[i]
-      damage = Math.floor(damage)
-      damageTo = hougeki.api_df_list[i][j]
-      continue if damage <= 0 or damageTo >= 7
-      afterHp[damageTo - 1] -= damage
-  afterHp
-
-raigekiAttack = (afterHp, raigeki) ->
-  if raigeki.api_fdam?
-    for damage, i in raigeki.api_fdam
-      damage = Math.floor(damage)
-      continue if damage <= 0
-      afterHp[i - 1] -= damage
-  afterHp
-
-# combined attack
-
-combinedOpenAttack = (combinedAfterHp, afterHp, openingAttack) ->
-  if openingAttack.api_fdam?
-    for damage, i in openingAttack.api_fdam
-      damage = Math.floor(damage)
-      continue if damage <= 0 or
-      combinedAfterHp[i - 1] -= damage
-  [combinedAfterHp, afterHp]
-
-combinedHougekiAttack = (combinedAfterHp, afterHp, hougeki) ->
-  for damageFrom, i in hougeki.api_at_list
-    continue if damageFrom == -1
-    for damage, j in hougeki.api_damage[i]
-      damage = Math.floor(damage)
-      damageTo = hougeki.api_df_list[i][j]
-      continue if damage <= 0
-      if damageTo - 1 < 6
-        combinedAfterHp[damageTo - 1] -= damage
-  [combinedAfterHp, afterHp]
-
-combinedRaigekiAttack = (combinedAfterHp, afterHp, raigeki) ->
-  if raigeki.api_fdam?
-    for damage, i in raigeki.api_fdam
-      damage = Math.floor(damage)
-      continue if damage <= 0
-      combinedAfterHp[i - 1] -= damage
-  [combinedAfterHp, afterHp]
-
-judgeFace = (nowHp, afterHp) ->
-  notDemageFlag = true
+judgeIfDemage = (nowHp, beforeHp) ->
+  DemageFlag = false
   for hp, i in nowHp
-    if afterHp < nowHp
-      notDemageFlag = false
+    if hp < beforeHp[i]
+      notDemageFlag = true
   notDemageFlag
 
-judgeDanger = (afterHp, maxHp, _deckShip, _ships) ->
-  dangerFlag = false
+judgeDanger = (nowHp, deckShipId, _ships) ->
   dangerInfo = ""
-  for hp, i in afterHp
-    if hp / maxHp[i] < 0.250001
+  dangerFlag = false
+  for id, i in deckShipId
+    if id is -1
+      continue
+    if nowHp[i] / _ships[id].api_maxhp < 0.250001
       if dangerFlag
         dangerInfo = "#{dangerInfo} & "
-      dangerInfo = "#{dangerInfo}#{_ships[_deckShip[i]].api_name}"
+      dangerInfo = "#{dangerInfo}#{_ships[id].api_name}"
       dangerFlag = true
-  console.log "战斗结束后剩余HP：#{JSON.stringify afterHp}" if process.env.DEBUG?
-  [dangerFlag, dangerInfo]
-
+  console.log "战斗结束后剩余HP：#{JSON.stringify nowHp}" if process.env.DEBUG?
+  if dangerFlag
+    dangerInfo
+  else
+    "无"
+  
 timeToBString = (time) ->
   date = new Date(time)
   "#{date.getFullYear()}#{date.getMonth()}#{date.getDate()}#{date.getHours()}"
@@ -147,30 +81,30 @@ resourceTableTab = ['No.', __("Time"), __("Fuel"), __("Ammo"), __("Steel"),
 senkaTableTab = [__("Ranking"), 'Lv.', __("Admiral Name"), __("Military Rank"),
                  __("Comment"), __("Victory"), __("Insignia")]
 
-getUseItem: (id)->
-  switch id
-    when 10
-      "家具箱（小）"
-    when 11
-      "家具箱（中）"
-    when 12
-      "家具箱（大）"
-    when 50
-      "応急修理要員"
-    when 51
-      "応急修理女神"
-    when 54
-      "給糧艦「間宮」"
-    when 56
-      "艦娘からのチョコ"
-    when 57
-      "勲章"
-    when 59
-      "給糧艦「伊良湖」"
-    when 62
-      "菱餅"
-    else
-      "特殊的东西"
+# getUseItem: (id)->
+#   switch id
+#     when 10
+#       "家具箱（小）"
+#     when 11
+#       "家具箱（中）"
+#     when 12
+#       "家具箱（大）"
+#     when 50
+#       "応急修理要員"
+#     when 51
+#       "応急修理女神"
+#     when 54
+#       "給糧艦「間宮」"
+#     when 56
+#       "艦娘からのチョコ"
+#     when 57
+#       "勲章"
+#     when 59
+#       "給糧艦「伊良湖」"
+#     when 62
+#       "菱餅"
+#     else
+#       "特殊的东西"
 
 AkashicRecordsArea = React.createClass
   getInitialState: ->
@@ -183,19 +117,11 @@ AkashicRecordsArea = React.createClass
     selectedKey: 0
     dataVersion: [0, 0, 0, 0, 0]
     memberId: 0
+    warning: ''
+  nowDate: 0
   enableRecord: false
-  combinedFlag: false
   nickNameId: 0
-  mapAreaId: 0
-  mapInfoNo: 0
-  apiNo: 0
-  BosscellNo: -1
-  colorNo: 0
-  dangerousShip: null
-  flagShip: ['', '']
   isStart: true
-  notDemageFlag: true
-  _decks: []
   _deck: []
   _ships: []
   $useitems: []
@@ -351,14 +277,15 @@ AkashicRecordsArea = React.createClass
     urlpath = e.detail.path
     switch urlpath
       when '/kcsapi/api_get_member/basic'
-        @nickNameId = window._nickNameId
-        if @nickNameId isnt 0 or not @nickNameId?
-          config.set 'plugin.Akashic.nickNameId', @nickNameId
-        @getAttackData @nickNameId
-        @getMissionData @nickNameId
-        @getCreateItemData @nickNameId
-        @getCreateShipData @nickNameId
-        @getResourceData @nickNameId
+        if @nickNameId isnt window._nickNameId
+          @nickNameId = window._nickNameId
+          if @nickNameId isnt 0 or not @nickNameId?
+            config.set 'plugin.Akashic.nickNameId', @nickNameId
+            @getAttackData @nickNameId
+            @getMissionData @nickNameId
+            @getCreateItemData @nickNameId
+            @getCreateShipData @nickNameId
+            @getResourceData @nickNameId
         @setState
           memberId: body.api_member_id
       # Map selected rank
@@ -371,234 +298,20 @@ AkashicRecordsArea = React.createClass
       when '/kcsapi/api_req_map/select_eventmap_rank'
         @mapLv[parseInt(postBody.api_maparea_id) * 10 + parseInt(postBody.api_map_no)] = parseInt(postBody.api_rank)
       when '/kcsapi/api_req_map/start'
-        [@mapAreaId, @mapInfoNo, @apiNo, @BosscellNo, @colorNo] = [body.api_maparea_id, body.api_mapinfo_no, body.api_no, body.api_bosscell_no, body.api_color_no]
-        @combinedFlag = @deckCombinedFlag and (postBody.api_deck_id <= 2)
-        if @combinedFlag
-          @_deckShip = window._decks[0].api_ship.concat window._decks[1].api_ship
-        else
-          @_deckShip = window._decks[postBody.api_deck_id-1].api_ship
         @_ships = window._ships
         @isStart = true
-        @dangerousShip = '无'
-        @notDemageFlag = true
-      when '/kcsapi/api_req_map/next'
+      when '/kcsapi/api_req_map/next', \
+      '/kcsapi/api_req_sortie/battle', \
+      '/kcsapi/api_req_battle_midnight/sp_midnight', \
+      '/kcsapi/api_req_sortie/airbattle', \
+      '/kcsapi/api_req_battle_midnight/battle', \
+      '/kcsapi/api_req_combined_battle/airbattle', \
+      '/kcsapi/api_req_combined_battle/battle', \
+      '/kcsapi/api_req_combined_battle/midnight_battle', \
+      '/kcsapi/api_req_combined_battle/sp_midnight', \
+      '/kcsapi/api_req_combined_battle/battle_water'
         @_ships = window._ships
-        @_decks = window._decks
-        [@mapAreaId, @mapInfoNo, @apiNo, @BosscellNo, @colorNo] = [body.api_maparea_id, body.api_mapinfo_no, body.api_no, body.api_bosscell_no, body.api_color_no]
-        @dangerousShip = '无'
-        @notDemageFlag = true
-      when '/kcsapi/api_req_sortie/battle'
-        @_ships = window._ships
-        @_decks = window._decks
-        [maxHp, nowHp] = getHp body.api_maxhps, body.api_nowhps
-        afterHp = Object.clone nowHp
-        if body.api_kouku.api_stage3?
-          afterHp = koukuAttack afterHp, body.api_kouku.api_stage3
-        if body.api_opening_atack?
-          afterHp = openAttack afterHp, body.api_opening_atack
-        if body.api_hougeki1?
-          afterHp = hougekiAttack afterHp, body.api_hougeki1
-        if body.api_hougeki2?
-          afterHp = hougekiAttack afterHp, body.api_hougeki2
-        if body.api_hougeki3?
-          afterHp = hougekiAttack afterHp, body.api_hougeki3
-        if body.api_raigeki?
-          afterHp = raigekiAttack afterHp, body.api_raigeki
-        [dangerFlag, dangerInfo] = judgeDanger afterHp, maxHp, @_deckShip, @_ships
-        @dangerousShip = dangerInfo if dangerFlag
-        @notDemageFlag = @notDemageFlag and judgeFace nowHp, afterHp
-      when '/kcsapi/api_req_battle_midnight/sp_midnight'
-        @_ships = window._ships
-        @_decks = window._decks
-        [maxHp, nowHp] = getHp body.api_maxhps, body.api_nowhps
-        afterHp = Object.clone nowHp
-        if body.api_hougeki?
-          afterHp = hougekiAttack afterHp, body.api_hougeki
-        [dangerFlag, dangerInfo] = judgeDanger afterHp, maxHp, @_deckShip, @_ships
-        @dangerousShip = dangerInfo if dangerFlag
-        @notDemageFlag = @notDemageFlag and judgeFace nowHp, afterHp
-      when '/kcsapi/api_req_sortie/airbattle'
-        @_ships = window._ships
-        @_decks = window._decks
-        [maxHp, nowHp] = getHp body.api_maxhps, body.api_nowhps
-        afterHp = Object.clone nowHp
-        if body.api_kouku?
-          afterHp = koukuAttack afterHp, body.api_kouku.api_stage3
-        if body.api_kouku2?
-          afterHp = koukuAttack afterHp, body.api_kouku2.api_stage3
-        [dangerFlag, dangerInfo] = judgeDanger afterHp, maxHp, @_deckShip, @_ships
-        @dangerousShip = dangerInfo if dangerFlag
-        @notDemageFlag = @notDemageFlag and judgeFace nowHp, afterHp
-      when '/kcsapi/api_req_battle_midnight/battle'
-        @_ships = window._ships
-        @_decks = window._decks
-        [maxHp, nowHp] = getHp body.api_maxhps, body.api_nowhps
-        afterHp = Object.clone nowHp
-        if body.api_hougeki?
-          afterHp = hougekiAttack afterHp, body.api_hougeki
-        [dangerFlag, dangerInfo] = judgeDanger afterHp, maxHp, @_deckShip, @_ships
-        @dangerousShip = dangerInfo if dangerFlag
-        @notDemageFlag = @notDemageFlag and judgeFace nowHp, afterHp
-      when "/kcsapi/api_req_combined_battle/airbattle"
-        [maxHp, nowHp] = getHp body.api_maxhps, body.api_nowhps
-        [combinedMaxHp, combinedNowHp] = getHp body.api_maxhps_combined, body.api_nowhps_combined
-        afterHp = Object.clone nowHp
-        combinedAfterHp = Object.clone combinedNowHp
-        if body.api_kouku? && body.api_kouku.api_stage3?
-          afterHp = koukuAttack afterHp, body.api_kouku.api_stage3
-        if body.api_kouku? && body.api_kouku.api_stage3_combined?
-          combinedAfterHp = koukuAttack combinedAfterHp, body.api_kouku.api_stage3_combined
-        if body.api_kouku2? && body.api_kouku2.api_stage3?
-          afterHp = koukuAttack afterHp, body.api_kouku2.api_stage3
-        if body.api_kouku2? && body.api_kouku2.api_stage3_combined?
-          combinedAfterHp = koukuAttack combinedAfterHp, body.api_kouku2.api_stage3_combined
-        [dangerFlag, dangerInfo] = judgeDanger afterHp.concat(combinedAfterHp), maxHp.concat(combinedMaxHp), @_deckShip, @_ships
-        @dangerousShip = dangerInfo if dangerFlag
-        @notDemageFlag = @notDemageFlag and judgeFace nowHp.concat(combinedNowHp), afterHp.concat(combinedAfterHp)
-      when "/kcsapi/api_req_combined_battle/battle"
-        [maxHp, nowHp] = getHp body.api_maxhps, body.api_nowhps
-        [combinedMaxHp, combinedNowHp] = getHp body.api_maxhps_combined, body.api_nowhps_combined
-        afterHp = Object.clone nowHp
-        combinedAfterHp = Object.clone combinedNowHp
-        if body.api_kouku.api_stage3?
-          afterHp = koukuAttack afterHp, body.api_kouku.api_stage3
-        if body.api_kouku? && body.api_kouku.api_stage3_combined?
-          combinedAfterHp = koukuAttack combinedAfterHp, body.api_kouku.api_stage3_combined
-        if body.api_opening_atack?
-          [combinedAfterHp, afterHp] = combinedOpenAttack combinedAfterHp, afterHp, body.api_opening_atack
-        if body.api_hougeki1?
-          [combinedAfterHp, afterHp] = combinedHougekiAttack combinedAfterHp, afterHp, body.api_hougeki1
-        if body.api_hougeki2?
-          afterHp = hougekiAttack afterHp, body.api_hougeki2
-        if body.api_hougeki3?
-          afterHp = hougekiAttack afterHp, body.api_hougeki3
-        if body.api_raigeki?
-          [combinedAfterHp, afterHp] = combinedRaigekiAttack combinedAfterHp, afterHp, body.api_raigeki
-        [dangerFlag, dangerInfo] = judgeDanger afterHp.concat(combinedAfterHp), maxHp.concat(combinedMaxHp), @_deckShip, @_ships
-        @dangerousShip = dangerInfo if dangerFlag
-        @notDemageFlag = @notDemageFlag and judgeFace nowHp.concat(combinedNowHp), afterHp.concat(combinedAfterHp)
-      when "/kcsapi/api_req_combined_battle/midnight_battle"
-        [maxHp, nowHp] = getHp body.api_maxhps, body.api_nowhps
-        [combinedMaxHp, combinedNowHp] = getHp body.api_maxhps_combined, body.api_nowhps_combined
-        afterHp = Object.clone nowHp
-        combinedAfterHp = Object.clone combinedNowHp
-        if body.api_hougeki?
-          [combinedAfterHp, afterHp] = combinedHougekiAttack combinedAfterHp, afterHp, body.api_hougeki
-        [dangerFlag, dangerInfo] = judgeDanger afterHp.concat(combinedAfterHp), maxHp.concat(combinedMaxHp), @_deckShip, @_ships
-        @dangerousShip = dangerInfo if dangerFlag
-        @notDemageFlag = @notDemageFlag and judgeFace nowHp.concat(combinedNowHp), afterHp.concat(combinedAfterHp)
-      when "/kcsapi/api_req_combined_battle/sp_midnight"
-        for tmp, i in shipLv
-          shipLv[i] = -1
-        for tmp, i in combinedLv
-          combinedLv[i] = -1
-        {_decks} = window
-        flag = true
-        getShip = null
-        [shipName, shipLv] = getInfo shipName, shipLv, _decks[0].api_ship, body.api_ship_ke, body.api_ship_lv, 0
-        [combinedName, combinedLv] = getCombinedInfo combinedName, combinedLv, _decks[1].api_ship
-        [maxHp, nowHp] = getHp maxHp, nowHp, body.api_maxhps, body.api_nowhps
-        [combinedMaxHp, combinedNowHp] = getHp combinedMaxHp, combinedNowHp, body.api_maxhps_combined, body.api_nowhps_combined
-        afterHp = Object.clone nowHp
-        combinedAfterHp = Object.clone combinedNowHp
-        if body.api_formation?
-          enemyFormation = body.api_formation[1]
-          enemyIntercept = body.api_formation[2]
-        if body.api_hougeki?
-          [combinedAfterHp, afterHp] = combinedHougekiAttack combinedAfterHp, afterHp, body.api_hougeki
-        [dangerFlag, dangerInfo] = judgeDanger afterHp.concat(combinedAfterHp), maxHp.concat(combinedMaxHp), @_deckShip, @_ships
-        @dangerousShip = dangerInfo if dangerFlag
-        @notDemageFlag = @notDemageFlag and judgeFace nowHp.concat(combinedNowHp), afterHp.concat(combinedAfterHp)
-      when "/kcsapi/api_req_combined_battle/battle_water"
-        [maxHp, nowHp] = getHp body.api_maxhps, body.api_nowhps
-        [combinedMaxHp, combinedNowHp] = getHp body.api_maxhps_combined, body.api_nowhps_combined
-        afterHp = Object.clone nowHp
-        combinedAfterHp = Object.clone combinedNowHp
-        if body.api_kouku.api_stage3?
-          afterHp = koukuAttack afterHp, body.api_kouku.api_stage3
-        if body.api_kouku? && body.api_kouku.api_stage3_combined?
-          combinedAfterHp = koukuAttack combinedAfterHp, body.api_kouku.api_stage3_combined
-        if body.api_opening_atack?
-          [combinedAfterHp, afterHp] = combinedOpenAttack combinedAfterHp, afterHp, body.api_opening_atack
-        if body.api_hougeki1?
-          afterHp = hougekiAttack afterHp, body.api_hougeki1
-        if body.api_hougeki2?
-          afterHp = hougekiAttack afterHp, body.api_hougeki2
-        if body.api_hougeki3?
-          [combinedAfterHp, afterHp] = combinedHougekiAttack combinedAfterHp, afterHp, body.api_hougeki3
-        if body.api_raigeki?
-          [combinedAfterHp, afterHp] = combinedRaigekiAttack combinedAfterHp, afterHp, body.api_raigeki
-        [dangerFlag, dangerInfo] = judgeDanger afterHp.concat(combinedAfterHp), maxHp.concat(combinedMaxHp), @_deckShip, @_ships
-        @dangerousShip = dangerInfo if dangerFlag
-        @notDemageFlag = @notDemageFlag and judgeFace nowHp.concat(combinedNowHp), afterHp.concat(combinedAfterHp)
-      when '/kcsapi/api_req_sortie/battleresult',  '/kcsapi/api_req_combined_battle/battleresult'
-        if not @enableRecord
-          break
-        @_ships = window._ships
-        @_decks = window._decks
-        dataItem = []
-        nowDate = new Date()
-        # dataItem.push "#{nowDate.toLocaleDateString()} #{nowDate.toTimeString()}"
-        dataItem.push nowDate.getTime()
-        switch @mapLv[@mapAreaId * 10 + @mapInfoNo]
-          when 0
-            selectedRank = ""
-          when 1
-            selectedRank = " 丙"
-          when 2
-            selectedRank = " 乙"
-          when 3
-            selectedRank = " 甲"
-          else
-            selectedRank = ""
-        dataItem.push "#{body.api_quest_name}(#{@mapAreaId}-#{@mapInfoNo}#{selectedRank})"
-        if @apiNo is @BosscellNo or @colorNo is 5
-          dataItem.push "#{@apiNo}(Boss点)"
-        else dataItem.push "#{@apiNo}(道中)"
-        if @isStart
-          dataItem.push "出撃"
-        else dataItem.push "進撃"
-        @isStart = false
-        switch body.api_win_rank
-          when 'S'
-            # need fix
-            if @notDemageFlag
-              dataItem.push '完全勝利!!!S'
-            else dataItem.push '勝利S'
-          when 'A'
-            dataItem.push '勝利A'
-          when 'B'
-            dataItem.push '戦術的勝利B'
-          when 'C'
-            dataItem.push '戦術的敗北C'
-          when 'D'
-            dataItem.push '敗北D'
-          when 'E'
-            dataItem.push '敗北E'
-          else
-            dataItem.push "奇怪的战果？#{body.api_win_rank}"
-        dataItem.push body.api_enemy_info.api_deck_name
-        if body.api_get_ship?
-          dataItem.push body.api_get_ship.api_ship_name
-        else if body.api_get_useitem
-          dataItem.push getUseItem body.api_get_ship.api_get_useitem_id
-        else dataItem.push ""
-        dataItem.push @dangerousShip
-        if not @combinedFlag
-          dataItem.push "#{@_ships[@_deckShip[0]].api_name}(Lv.#{@_ships[@_deckShip[0]].api_lv})", ''
-          dataItem.push "#{@_ships[@_deckShip[body.api_mvp-1]].api_name}(Lv.#{@_ships[@_deckShip[body.api_mvp-1]].api_lv})", ''
-        else
-          dataItem.push "#{@_ships[@_decks[0].api_ship[0]].api_name}(Lv.#{@_ships[@_decks[0].api_ship[0]].api_lv})", "#{@_ships[@_decks[1].api_ship[0]].api_name}(Lv.#{@_ships[@_decks[1].api_ship[0]].api_lv})"
-          dataItem.push "#{@_ships[@_decks[0].api_ship[body.api_mvp-1]].api_name}(Lv.#{@_ships[@_decks[0].api_ship[body.api_mvp-1]].api_lv})", "#{@_ships[@_decks[1].api_ship[body.api_mvp_combined-1]].api_name}(Lv.#{@_ships[@_decks[1].api_ship[body.api_mvp_combined-1]].api_lv})"
-        {attackData} = @state
-        attackData.unshift dataItem
-        # log "save and show new data"
-        @saveAttackLog dataItem
-        {dataVersion} = @state
-        dataVersion[0] += 1
-        @setState
-          attackData: attackData
-          dataVersion: dataVersion
+        @nowDate = new Date().getTime()
 
       # 远征
       when '/kcsapi/api_req_mission/result'
@@ -726,6 +439,7 @@ AkashicRecordsArea = React.createClass
             createShipData: createShipData
             dataVersion: dataVersion
           @createShipFlag = false
+
       # 资源
       when '/kcsapi/api_port/port'
         @enableRecord = true
@@ -746,8 +460,83 @@ AkashicRecordsArea = React.createClass
             resourceData: resourceData
             dataVersion: dataVersion
 
+  handleBattleResultResponse: (e) ->
+    {map, quest, boss, mapCell, rank, deckHp, deckShipId, enemy, dropShipId, combined, mvp} = e.detail
+    if not @enableRecord
+      return
+    if not combined?
+      @setState
+        warning: "Your POI is out of date! You may need to visit http://0u0.moe/poi to get POI's latest release."
+      return
+    dataItem = []
+    dataItem.push @nowDate
+    switch @mapLv[map]
+      when 0
+        selectedRank = ""
+      when 1
+        selectedRank = " 丙"
+      when 2
+        selectedRank = " 乙"
+      when 3
+        selectedRank = " 甲"
+      else
+        selectedRank = ""
+    dataItem.push "#{quest}(#{map // 10}-#{map % 10}#{selectedRank})"
+    if boss
+      dataItem.push "#{mapCell}(Boss点)"
+    else dataItem.push "#{mapCell}(道中)"
+    if @isStart
+      dataItem.push "出撃"
+    else dataItem.push "進撃"
+    @isStart = false
+    beforeHp = deckShipId.map (id) =>
+      if id isnt -1
+        @_ships[id].api_nowhp
+      else
+        -1
+    switch rank
+      when 'S'
+        # need fix
+        if judgeIfDemage deckHp, beforeHp
+          dataItem.push '勝利S'
+        else dataItem.push '完全勝利!!!S'
+      when 'A'
+        dataItem.push '勝利A'
+      when 'B'
+        dataItem.push '戦術的勝利B'
+      when 'C'
+        dataItem.push '戦術的敗北C'
+      when 'D'
+        dataItem.push '敗北D'
+      when 'E'
+        dataItem.push '敗北E'
+      else
+        dataItem.push "奇怪的战果？#{rank}"
+    dataItem.push enemy
+    if dropShipId isnt -1
+      dataItem.push window.$ships[dropShipId].api_name
+    else dataItem.push ""
+    dataItem.push judgeDanger deckHp, deckShipId, @_ships
+    tmp = ['', '', '', '']
+    tmp[0] = "#{@_ships[deckShipId[0]].api_name}(Lv.#{@_ships[deckShipId[0]].api_lv})"
+    tmp[2] = "#{@_ships[deckShipId[mvp[0]]].api_name}(Lv.#{@_ships[deckShipId[mvp[0]]].api_lv})"
+    if combined
+      tmp[1] = "#{@_ships[deckShipId[6]].api_name}(Lv.#{@_ships[deckShipId[6]].api_lv})"
+      tmp[3] = "#{@_ships[deckShipId[6 + mvp[1]]].api_name}(Lv.#{@_ships[deckShipId[6 + mvp[1]]].api_lv})"
+    dataItem = dataItem.concat tmp
+    {attackData} = @state
+    attackData.unshift dataItem
+    # log "save and show new data"
+    @saveAttackLog dataItem
+    {dataVersion} = @state
+    dataVersion[0] += 1
+    @setState
+      attackData: attackData
+      dataVersion: dataVersion
+
   componentDidMount: ->
     window.addEventListener 'game.response', @handleResponse
+    window.addEventListener 'battle.result', @handleBattleResultResponse
   componentWillMount: ->
     @nickNameId = window._nickNameId
     if @nickNameId is 0 or not @nickNameId?
@@ -777,29 +566,34 @@ AkashicRecordsArea = React.createClass
         selectedKey: selectedKey
 
   render: ->
-    <Tabs activeKey={@state.selectedKey} animation={false} onSelect={@handleSelectTab}>
-      <Tab eventKey={0} title={__ "Sortie"} ><AkashicLog indexKey={0} selectedKey={@state.selectedKey} data={@state.attackData} dataVersion={@state.dataVersion[0]} tableTab={attackTableTab} contentType={'attack'}/></Tab>
-      <Tab eventKey={1} title={__ "Expedition"} ><AkashicLog indexKey={1} selectedKey={@state.selectedKey} data={@state.missionData} dataVersion={@state.dataVersion[1]} tableTab={missionTableTab} contentType={'mission'}/></Tab>
-      <Tab eventKey={2} title={__ "Construction"} ><AkashicLog indexKey={2} selectedKey={@state.selectedKey} data={@state.createShipData} dataVersion={@state.dataVersion[3]} tableTab={createShipTableTab} contentType={'createShip'}/></Tab>
-      <Tab eventKey={3} title={__ "Development"} ><AkashicLog indexKey={3} selectedKey={@state.selectedKey} data={@state.createItemData} dataVersion={@state.dataVersion[2]} tableTab={createItemTableTab} contentType={'createItem'}/></Tab>
-      <Tab eventKey={4} title={__ "Resource"} ><AkashicResourceLog indexKey={4} selectedKey={@state.selectedKey} data={@state.resourceData} dataVersion={@state.dataVersion[4]} tableTab={resourceTableTab} mapShowFlag={@state.mapShowFlag} contentType={'resource'}/></Tab>
-      <Tab eventKey={5} title={__ "Victory"} ><AkashicSenkaLog indexKey={5} selectedKey={@state.selectedKey} memberId={@state.memberId} tableTab={senkaTableTab}  personalShowFlag={@state.personalShowFlag} contentType={'senka'}/></Tab>
-      <Tab eventKey={6} title={__ "Others"} >
-        <AkashicAdvancedModule
-          tableTab={
-            'attack': attackTableTab
-            'mission': missionTableTab
-            'createItem': createItemTableTab
-            'createShip': createShipTableTab
-            'resource': resourceTableTab
-          }
-          attackData={@state.attackData}
-          missionData={@state.missionData}
-          createItemData={@state.createItemData}
-          createShipData={@state.createShipData}
-          resourceData={@state.resourceData}
-          setDataHandler={@setDataHandler}/>
-      </Tab>
-    </Tabs>
+    <div>
+      <div  style={'fontSize': 18}>
+        <Label bsStyle="danger">{@state.warning}</Label>
+      </div>
+      <Tabs activeKey={@state.selectedKey} animation={false} onSelect={@handleSelectTab}>
+        <Tab eventKey={0} title={__ "Sortie"} ><AkashicLog indexKey={0} selectedKey={@state.selectedKey} data={@state.attackData} dataVersion={@state.dataVersion[0]} tableTab={attackTableTab} contentType={'attack'}/></Tab>
+        <Tab eventKey={1} title={__ "Expedition"} ><AkashicLog indexKey={1} selectedKey={@state.selectedKey} data={@state.missionData} dataVersion={@state.dataVersion[1]} tableTab={missionTableTab} contentType={'mission'}/></Tab>
+        <Tab eventKey={2} title={__ "Construction"} ><AkashicLog indexKey={2} selectedKey={@state.selectedKey} data={@state.createShipData} dataVersion={@state.dataVersion[3]} tableTab={createShipTableTab} contentType={'createShip'}/></Tab>
+        <Tab eventKey={3} title={__ "Development"} ><AkashicLog indexKey={3} selectedKey={@state.selectedKey} data={@state.createItemData} dataVersion={@state.dataVersion[2]} tableTab={createItemTableTab} contentType={'createItem'}/></Tab>
+        <Tab eventKey={4} title={__ "Resource"} ><AkashicResourceLog indexKey={4} selectedKey={@state.selectedKey} data={@state.resourceData} dataVersion={@state.dataVersion[4]} tableTab={resourceTableTab} mapShowFlag={@state.mapShowFlag} contentType={'resource'}/></Tab>
+        <Tab eventKey={5} title={__ "Victory"} ><AkashicSenkaLog indexKey={5} selectedKey={@state.selectedKey} memberId={@state.memberId} tableTab={senkaTableTab}  personalShowFlag={@state.personalShowFlag} contentType={'senka'}/></Tab>
+        <Tab eventKey={6} title={__ "Others"} >
+          <AkashicAdvancedModule
+            tableTab={
+              'attack': attackTableTab
+              'mission': missionTableTab
+              'createItem': createItemTableTab
+              'createShip': createShipTableTab
+              'resource': resourceTableTab
+            }
+            attackData={@state.attackData}
+            missionData={@state.missionData}
+            createItemData={@state.createItemData}
+            createShipData={@state.createShipData}
+            resourceData={@state.resourceData}
+            setDataHandler={@setDataHandler}/>
+        </Tab>
+      </Tabs>
+    </div>
 
 ReactDOM.render <AkashicRecordsArea />, $('akashic-records')
