@@ -1,6 +1,6 @@
 fs = require 'fs-extra'
 glob = require 'glob'
-{React, ReactBootstrap, $, ROOT, APPDATA_PATH, __} = window
+{React, ReactDOM, ReactBootstrap, $, ROOT, APPDATA_PATH, __} = window
 {Tabs, Tab} = ReactBootstrap
 path = require 'path-extra'
 {log, warn, error} = require path.join(ROOT, 'lib/utils')
@@ -802,4 +802,4 @@ AkashicRecordsArea = React.createClass
       </Tab>
     </Tabs>
 
-React.render <AkashicRecordsArea />, $('akashic-records')
+ReactDOM.render <AkashicRecordsArea />, $('akashic-records')
