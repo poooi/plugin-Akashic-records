@@ -4,6 +4,10 @@
   "description": "logbook plugin for poi",
   "main": "index.js",
   "scripts": {
+    "win-publish": "cjsx -cb . && del /s \"*.cjsx\" && npm publish",
+    "win-prerelease": "cjsx -cb . && del /s \"*.cjsx\" && npm publish --tag beta",
+    "win-build": "cjsx -cb . && del /s \"*.cjsx\"",
+    "compile": "cjsx -cb .",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
