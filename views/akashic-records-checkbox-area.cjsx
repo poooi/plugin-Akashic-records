@@ -80,10 +80,11 @@ AkashicRecordsCheckboxArea = React.createClass
         result = data.filter (log)=>
           match = false
           for item, i in log
+            searchText = item
             if i is 0
-              searchText = dateToString(new Date(item)).toLowerCase().trim()
-            else
-              searchText = "#{item}".toLowerCase().trim()
+              searchText = dateToString(new Date(searchText))
+            else if not regFlag
+              searchText = "#{searchText}".toLowerCase().trim()
             if regFlag
               match = filterKey.test searchText
             else

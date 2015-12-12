@@ -73,6 +73,7 @@ AkashicLog = React.createClass
             regFlag = true
           catch e
             console.log "Failed to resolve RegExp #{keyWords[index]}." if process.env.DEBUG?
+            regFlag = false
         if regFlag
           retData = @_filterReg retData, index - 1, reg
         else
