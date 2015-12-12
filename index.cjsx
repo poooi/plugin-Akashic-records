@@ -48,7 +48,7 @@ module.exports =
   description: "#{__ "Logs"}. #{__ "Senka module is developed by rui"}."
   author: 'W.G.'
   link: 'https://github.com/JenningsWu'
-  version: '2.0.0'
+  version: '2.1.0'
   handleClick: ->
     # checkAkashicRecordsCrashed()
     # initialAkashicRecordsWindow()
