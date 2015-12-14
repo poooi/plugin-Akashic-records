@@ -26,7 +26,7 @@ initialAkashicRecordsWindow = ->
     width: 820
     height: 650
     # forceMinimize: forceMinimize
-  window.akashicRecordsWindow.loadUrl "file://#{__dirname}/index.html"
+  window.akashicRecordsWindow.loadURL "file://#{__dirname}/index.html"
   if process.env.DEBUG?
     window.akashicRecordsWindow.openDevTools
       detach: true
