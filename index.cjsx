@@ -1,17 +1,18 @@
 remote = require 'remote'
 windowManager = remote.require './lib/window'
 path = require 'path-extra'
-i18n = require 'i18n'
-{__} = i18n
+
 # i18n configure
-i18n.configure
+i18n = new (require 'i18n-2')
   locales: ['en-US', 'ja-JP', 'zh-CN', 'zh-TW'],
   defaultLocale: 'zh-CN',
   directory: path.join(__dirname, 'i18n'),
   updateFiles: false,
   indent: '\t',
-  extension: '.json'
+  extension: '.json',
+  devMode: false
 i18n.setLocale(window.language)
+__ = i18n.__.bind(i18n)
 
 
 window.akashicRecordsWindow = null
@@ -48,7 +49,7 @@ module.exports =
   description: "#{__ "Logs"}. #{__ "Senka module is developed by rui"}."
   author: 'W.G.'
   link: 'https://github.com/JenningsWu'
-  version: '2.1.1'
+  version: '2.1.2'
   handleClick: ->
     # checkAkashicRecordsCrashed()
     # initialAkashicRecordsWindow()
