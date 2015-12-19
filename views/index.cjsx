@@ -60,6 +60,25 @@ senkaDateToString = ->
     time = "14"
   "#{year}#{month}#{day}#{time}"
 
+attackTableTabEn = ['No.', 'Time', 'World', "Node", "Sortie Type",
+                  "Battle Result", "Enemy Encounters", "Drop",
+                  "Heavily Damaged", "Flagship",
+                  "Flagship (Second Fleet)", 'MVP',
+                  "MVP (Second Fleet)"]
+missionTableTabEn = ['No.', "Time", "Type", "Result", "Fuel",
+                  "Ammo", "Steel", "Bauxite", "Item 1",
+                   "Number", "Item 2", "Number"]
+createItemTableTabEn = ['No.', "Time", "Result", "Development Item",
+                      "Type", "Fuel", "Ammo", "Steel",
+                      "Bauxite", "Flagship", "Headquarters Level"]
+createShipTableTabEn = ['No.', "Time"), "Type", "Ship", "Ship Type",
+                      "Fuel", "Ammo", "Steel", "Bauxite",
+                       "Development Material", "Empty Docks", "Flagship",
+                       "Headquarters Level"]
+resourceTableTabEn = ['No.', "Time", "Fuel", "Ammo", "Steel",
+                    "Bauxite", "Fast Build Item", "Instant Repair Item",
+                     "Development Material", "Improvement Materials"]
+
 attackTableTab = ['No.', __("Time"), __("World"), __("Node"), __("Sortie Type"),
                   __("Battle Result"), __("Enemy Encounters"), __("Drop"),
                   __("Heavily Damaged"), __("Flagship"),
