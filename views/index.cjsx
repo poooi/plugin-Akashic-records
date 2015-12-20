@@ -1,6 +1,6 @@
 fs = require 'fs-extra'
 glob = require 'glob'
-{React, ReactDOM, ReactBootstrap, $, ROOT, APPDATA_PATH, __} = window
+{React, ReactDOM, ReactBootstrap, $, ROOT, APPDATA_PATH, __, translate} = window
 {Tabs, Tab, Label} = ReactBootstrap
 path = require 'path-extra'
 {log, warn, error} = require path.join(ROOT, 'lib/utils')
@@ -71,7 +71,7 @@ missionTableTabEn = ['No.', "Time", "Type", "Result", "Fuel",
 createItemTableTabEn = ['No.', "Time", "Result", "Development Item",
                       "Type", "Fuel", "Ammo", "Steel",
                       "Bauxite", "Flagship", "Headquarters Level"]
-createShipTableTabEn = ['No.', "Time"), "Type", "Ship", "Ship Type",
+createShipTableTabEn = ['No.', "Time", "Type", "Ship", "Ship Type",
                       "Fuel", "Ammo", "Steel", "Bauxite",
                        "Development Material", "Empty Docks", "Flagship",
                        "Headquarters Level"]
@@ -79,26 +79,24 @@ resourceTableTabEn = ['No.', "Time", "Fuel", "Ammo", "Steel",
                     "Bauxite", "Fast Build Item", "Instant Repair Item",
                      "Development Material", "Improvement Materials"]
 
-attackTableTab = ['No.', __("Time"), __("World"), __("Node"), __("Sortie Type"),
-                  __("Battle Result"), __("Enemy Encounters"), __("Drop"),
-                  __("Heavily Damaged"), __("Flagship"),
-                  "#{__("Flagship")} (#{__("Second Fleet")})", 'MVP',
-                  "MVP (#{__("Second Fleet")})"]
-missionTableTab = ['No.', __("Time"), __("Type"), __("Result"), __("Fuel"),
-                  __("Ammo"), __("Steel"), __("Bauxite"), "#{__("Item")} 1",
-                   __("Number"), "#{__("Item")} 2", __("Number")]
-createItemTableTab = ['No.', __("Time"), __("Result"), __("Development Item"),
-                      __("Type"), __("Fuel"), __("Ammo"), __("Steel"),
-                      __("Bauxite"), __("Flagship"), __("Headquarters Level")]
-createShipTableTab = ['No.', __("Time"), __("Type"), __("Ship"), __("Ship Type"),
-                      __("Fuel"), __("Ammo"), __("Steel"), __("Bauxite"),
-                       __("Development Material"), __("Empty Docks"), __("Flagship"),
-                       __("Headquarters Level")]
-resourceTableTab = ['No.', __("Time"), __("Fuel"), __("Ammo"), __("Steel"),
-                    __("Bauxite"), __("Fast Build Item"), __("Instant Repair Item"),
-                     __("Development Material"), __("Improvement Materials")]
+attackTableTab = attackTableTabEn.map (tab) ->
+  __(tab)
+
+missionTableTab = missionTableTabEn.map (tab) ->
+  __(tab)
+
+createItemTableTab =createItemTableTabEn.map (tab) ->
+  __(tab)
+  
+createShipTableTab = createShipTableTabEn.map (tab) ->
+  __(tab)
+
+resourceTableTab = resourceTableTabEn.map (tab) ->
+  __(tab)
+
 senkaTableTab = [__("Ranking"), 'Lv.', __("Admiral Name"), __("Military Rank"),
                  __("Comment"), __("Victory"), __("Insignia")]
+
 
 # getUseItem: (id)->
 #   switch id

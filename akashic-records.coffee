@@ -16,6 +16,7 @@ i18n = new (require 'i18n-2')
 
 i18n.setLocale(window.language)
 window.__ = i18n.__.bind(i18n)
+window.translate = i18n.translate.bind(i18n)
 
 window.theme = config.get 'poi.theme', '__default__'
 if theme == '__default__'
