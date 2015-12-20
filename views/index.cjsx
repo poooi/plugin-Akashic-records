@@ -87,7 +87,7 @@ missionTableTab = missionTableTabEn.map (tab) ->
 
 createItemTableTab =createItemTableTabEn.map (tab) ->
   __(tab)
-  
+
 createShipTableTab = createShipTableTabEn.map (tab) ->
   __(tab)
 
@@ -597,11 +597,11 @@ AkashicRecordsArea = React.createClass
         <Tab eventKey={6} title={__ "Others"} >
           <AkashicAdvancedModule
             tableTab={
-              'attack': attackTableTab
-              'mission': missionTableTab
-              'createItem': createItemTableTab
-              'createShip': createShipTableTab
-              'resource': resourceTableTab
+              'attack': attackTableTabEn
+              'mission': missionTableTabEn
+              'createItem': createItemTableTabEn
+              'createShip': createShipTableTabEn
+              'resource': resourceTableTabEn
             }
             attackData={@state.attackData}
             missionData={@state.missionData}

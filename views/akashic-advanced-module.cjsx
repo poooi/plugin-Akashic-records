@@ -1,4 +1,4 @@
-{React, ReactBootstrap, ROOT, FontAwesome, __} = window
+{React, ReactBootstrap, ROOT, FontAwesome, __, translate} = window
 {Grid, Row, Col, Input, Button, OverlayTrigger, Popover, Input} = ReactBootstrap
 
 fs = require 'fs-extra'
@@ -66,11 +66,28 @@ toDateLabel = (datetime) ->
     second = "0#{second}"
   "#{date.getFullYear()}/#{month}/#{day} #{hour}:#{minute}:#{second}"
 
-resolveFile = (fileContent, tableTab)->
+translateTableTab = (tableTabEn, locale) ->
+  tableTab = {}
+  for key, tabs of tableTabEn
+    tableTab[key] = tabs.map (tab) ->
+      translate locale, tab
+  tableTab
+
+resolveFile = (fileContent, tableTabEn)->
+  tableTab = {}
+  tableTab['en-US'] = tableTabEn
+  for key in ['ja-JP', 'zh-CN', 'zh-TW']
+    tableTab[key] = translateTableTab tableTabEn, key
+  for key, tabs of tableTab
+    for type, t of tabs
+      tableTab[key][type] = t.slice(1).join(',')
   logs = fileContent.split "\n"
   logs[0] = logs[0].trim()
   switch logs[0]
-    when "#{tableTab['attack'].slice(1).join(',')}"
+    when tableTab['en-US']['attack'], \
+    tableTab['ja-JP']['attack'], \
+    tableTab['zh-CN']['attack'], \
+    tableTab['zh-TW']['attack']
       logType = "attack"
       data = logs.slice(1).map (logItem) ->
         logItem = logItem.split ','
@@ -80,7 +97,10 @@ resolveFile = (fileContent, tableTab)->
         logItem
       data = data.filter (log) ->
         log.length is 12
-    when "#{tableTab['mission'].slice(1).join(',')}"
+    when tableTab['en-US']['mission'], \
+    tableTab['ja-JP']['mission'], \
+    tableTab['zh-CN']['mission'], \
+    tableTab['zh-TW']['mission']
       logType = "mission"
       data = logs.slice(1).map (logItem) ->
         logItem = logItem.split ','
@@ -90,7 +110,10 @@ resolveFile = (fileContent, tableTab)->
         logItem
       data = data.filter (log) ->
         log.length is 11
-    when "#{tableTab['createShip'].slice(1).join(',')}"
+    when tableTab['en-US']['createShip'], \
+    tableTab['ja-JP']['createShip'], \
+    tableTab['zh-CN']['createShip'], \
+    tableTab['zh-TW']['createShip']
       logType = "createShip"
       data = logs.slice(1).map (logItem) ->
         logItem = logItem.split ','
@@ -100,7 +123,10 @@ resolveFile = (fileContent, tableTab)->
         logItem
       data = data.filter (log) ->
         log.length is 12
-    when "#{tableTab['createItem'].slice(1).join(',')}"
+    when tableTab['en-US']['createItem'], \
+    tableTab['ja-JP']['createItem'], \
+    tableTab['zh-CN']['createItem'], \
+    tableTab['zh-TW']['createItem']
       logType = "createItem"
       data = logs.slice(1).map (logItem) ->
         logItem = logItem.split ','
@@ -110,7 +136,10 @@ resolveFile = (fileContent, tableTab)->
         logItem
       data = data.filter (log) ->
         log.length is 10
-    when "#{tableTab['resource'].slice(1).join(',')}"
+    when tableTab['en-US']['resource'], \
+    tableTab['ja-JP']['resource'], \
+    tableTab['zh-CN']['resource'], \
+    tableTab['zh-TW']['resource']
       logType = "resource"
       data = logs.slice(1).map (logItem) ->
         logItem = logItem.split ','
@@ -547,7 +576,9 @@ AttackLog = React.createClass
         title: "保存#{@state.typeChoosed}记录"
         defaultPath: "#{nickNameId}-#{logType}.csv"
       if filename?
-        saveData = "#{@props.tableTab[logType].slice(1).join(',')}\n"
+        saveTableTab = @props.tableTab[logType].map (tab) ->
+          __ tab
+        saveData = "#{saveTableTab.slice(1).join(',')}\n"
         for item in data
           saveData = "#{saveData}#{toDateLabel item[0]},#{item.slice(1).join(',')}\n"
         if codeType is 'GB2312'
