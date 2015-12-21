@@ -28,7 +28,7 @@ initialAkashicRecordsWindow = ->
     height: 650
     # forceMinimize: forceMinimize
   window.akashicRecordsWindow.loadURL "file://#{__dirname}/index.html"
-  if process.env.DEBUG?
+  if process.env.DEBUG_PLUGIN is 'logbook'
     window.akashicRecordsWindow.openDevTools
       detach: true
 
