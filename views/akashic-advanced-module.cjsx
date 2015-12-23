@@ -3,7 +3,10 @@
 
 fs = require 'fs-extra'
 iconv = require 'iconv-lite'
+
 jschardet = require 'jschardet'
+jschardet.Constants.MINIMUM_THRESHOLD = 0.10
+
 path = require 'path-extra'
 
 remote = require 'remote'
