@@ -87,7 +87,7 @@ td.table-search{
   padding-right: 1px !important;
 }
 
-.form-group.search-area, .form-group.filter-area{
+.form-group.select-area, .form-group.search-area, .form-group.filter-area{
   margin: 0px;
   max-width: 150px;
 }
@@ -101,7 +101,7 @@ td.table-search{
   font-size: 13px;
 }
 
-.form-group.search-area input.form-control, .form-group.search-area select.form-control{
+.form-group.select-area input.form-control, .form-group.search-area input.form-control, .form-group.search-area select.form-control{
   height: 20px;
   padding-top: 1px;
   padding-bottom: 1px;

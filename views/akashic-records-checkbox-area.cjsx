@@ -147,8 +147,11 @@ AkashicRecordsCheckboxArea = React.createClass
     @props.configCheckboxClick index
   handleShowAmountSelect: (eventKey, selectedKey)->
     @props.showRules selectedKey, @props.activePage
-  handleShowPageSelect: (eventKey, selectedKey)->
-    @props.showRules @props.showAmount, selectedKey
+  handleShowPageSelect: ()->
+    val = parseInt @refs.pageSelected.getValue()
+    if !val or val < 1
+      val = 1
+    @props.showRules @props.showAmount, val
   handleSearchChange: ()->
     {searchArgv} = @state
     for index in [0..searchArgv.length-1]
@@ -244,16 +247,18 @@ AkashicRecordsCheckboxArea = React.createClass
                   </DropdownButton>
                 </ButtonGroup>
               </Col>
-              <Col xs={2}>
-                <ButtonGroup justified>
-                  <DropdownButton bsSize='xsmall' id="dropdown-page-selector" eventKey={4} title={__ "Page %s", @props.activePage}>
-                  {
-                    if @props.dataShowLength isnt 0
-                      for index in [1..Math.ceil(@props.dataShowLength/@props.showAmount)]
-                        <MenuItem key={index} eventKey={index} onSelect={@handleShowPageSelect}>{__ "Page %s", index}</MenuItem>
-                  }
-                  </DropdownButton>
-                </ButtonGroup>
+              <Col xs={2} style={display: 'flex', textAlign: 'right'}>
+                <div style={flex: 1, paddingRight: 10, paddingTop: 2}>
+                  {__ "Jump to"}
+                </div>
+                <div style={flex: 1, minWidth: 64}>
+                  <Input
+                    type='number'
+                    placeholder={"#{__ "Page %s", @props.activePage}"}
+                    ref='pageSelected'
+                    groupClassName='select-area'
+                    onChange={@handleShowPageSelect}/>
+                </div>
               </Col>
               <Col xs={5}>
               {
