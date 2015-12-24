@@ -1,5 +1,5 @@
 {React, ReactBootstrap, jQuery, config, __} = window
-{Panel, Button, Col, Input, Grid, Row, ButtonGroup, DropdownButton, MenuItem, Table, OverlayTrigger, Popover} = ReactBootstrap
+{Panel, Button, Col, Input, Grid, Row, ButtonGroup, DropdownButton, MenuItem, Table, OverlayTrigger, Popover, Collapse, Well} = ReactBootstrap
 Divider = require './divider'
 {openExternal} = require 'shell'
 
@@ -220,60 +220,60 @@ AkashicRecordsCheckboxArea = React.createClass
             </div>
           </Col>
         </Row>
-      </Grid>
-      <Grid className='akashic-records-filter' style={if @state.filterPaneShow then {display: 'block'} else {display: 'none'} }>
-        <Row>
-        {
-          for checkedVal, index in @props.tableTab
-            continue if !index
-            <Col key={index} xs={2}>
-              <Input type='checkbox' value={index} onChange={@handleClickCheckbox.bind(@, index)} checked={@props.rowChooseChecked[index]} style={verticalAlign: 'middle'} label={checkedVal} />
-            </Col>
-        }
-        </Row>
-        <hr/>
-        <Row>
-          <Col xs={2}>
-            <ButtonGroup justified>
-              <DropdownButton bsSize='xsmall' id="dropdown-showOption-selector" eventKey={4} title={__ "Newer %s", @props.showAmount}>
-                <MenuItem eventKey=10 onSelect={@handleShowAmountSelect}>{__ "Newer %s", "10"}</MenuItem>
-                <MenuItem eventKey=20 onSelect={@handleShowAmountSelect}>{__ "Newer %s", "20"}</MenuItem>
-                <MenuItem eventKey=50 onSelect={@handleShowAmountSelect}>{__ "Newer %s", "50"}</MenuItem>
-                <MenuItem divider />
-                <MenuItem eventKey=999999 onSelect={@handleShowAmountSelect}>{__ "View All"}</MenuItem>
-              </DropdownButton>
-            </ButtonGroup>
-          </Col>
-          <Col xs={2}>
-            <ButtonGroup justified>
-              <DropdownButton bsSize='xsmall' id="dropdown-page-selector" eventKey={4} title={__ "Page %s", @props.activePage}>
-              {
-                if @props.dataShowLength isnt 0
-                  for index in [1..Math.ceil(@props.dataShowLength/@props.showAmount)]
-                    <MenuItem key={index} eventKey={index} onSelect={@handleShowPageSelect}>{__ "Page %s", index}</MenuItem>
-              }
-              </DropdownButton>
-            </ButtonGroup>
-          </Col>
-          <Col xs={5}>
-          {
-            for checkedVal, index in @props.configList
-              continue if index is 3
-              <Col key={index} xs={4}>
-                <Input type='checkbox' value={index} onChange={@handleClickConfigCheckbox.bind(@, index)} checked={@props.configChecked[index]} style={verticalAlign: 'middle'} label={checkedVal} />
+        <Collapse className='akashic-records-filter' in={@state.filterPaneShow}>
+          <div>
+            <Row>
+            {
+              for checkedVal, index in @props.tableTab
+                continue if !index
+                <Col key={index} xs={2}>
+                  <Input type='checkbox' value={index} onChange={@handleClickCheckbox.bind(@, index)} checked={@props.rowChooseChecked[index]} style={verticalAlign: 'middle'} label={checkedVal} />
+                </Col>
+            }
+            </Row>
+            <hr/>
+            <Row>
+              <Col xs={2}>
+                <ButtonGroup justified>
+                  <DropdownButton bsSize='xsmall' id="dropdown-showOption-selector" eventKey={4} title={__ "Newer %s", @props.showAmount}>
+                    <MenuItem eventKey=10 onSelect={@handleShowAmountSelect}>{__ "Newer %s", "10"}</MenuItem>
+                    <MenuItem eventKey=20 onSelect={@handleShowAmountSelect}>{__ "Newer %s", "20"}</MenuItem>
+                    <MenuItem eventKey=50 onSelect={@handleShowAmountSelect}>{__ "Newer %s", "50"}</MenuItem>
+                    <MenuItem divider />
+                    <MenuItem eventKey=999999 onSelect={@handleShowAmountSelect}>{__ "View All"}</MenuItem>
+                  </DropdownButton>
+                </ButtonGroup>
               </Col>
-          }
-          </Col>
-          <Col xs={3}>
-          {
-            index = 3
-            checkedVal = @props.configList[index]
-            <Input type='checkbox' value={index} onChange={@handleClickConfigCheckbox.bind(@, index)} checked={@props.configChecked[index]} style={verticalAlign: 'middle'} label={checkedVal} />
-          }
-          </Col>
-        </Row>
-      </Grid>
-      <Grid>
+              <Col xs={2}>
+                <ButtonGroup justified>
+                  <DropdownButton bsSize='xsmall' id="dropdown-page-selector" eventKey={4} title={__ "Page %s", @props.activePage}>
+                  {
+                    if @props.dataShowLength isnt 0
+                      for index in [1..Math.ceil(@props.dataShowLength/@props.showAmount)]
+                        <MenuItem key={index} eventKey={index} onSelect={@handleShowPageSelect}>{__ "Page %s", index}</MenuItem>
+                  }
+                  </DropdownButton>
+                </ButtonGroup>
+              </Col>
+              <Col xs={5}>
+              {
+                for checkedVal, index in @props.configList
+                  continue if index is 3
+                  <Col key={index} xs={4}>
+                    <Input type='checkbox' value={index} onChange={@handleClickConfigCheckbox.bind(@, index)} checked={@props.configChecked[index]} style={verticalAlign: 'middle'} label={checkedVal} />
+                  </Col>
+              }
+              </Col>
+              <Col xs={3}>
+              {
+                index = 3
+                checkedVal = @props.configList[index]
+                <Input type='checkbox' value={index} onChange={@handleClickConfigCheckbox.bind(@, index)} checked={@props.configChecked[index]} style={verticalAlign: 'middle'} label={checkedVal} />
+              }
+              </Col>
+            </Row>
+          </div>
+        </Collapse>
         <Row>
           <Col xs={12}>
             <div onClick={@handleStatisticsPaneShow}>
@@ -281,146 +281,148 @@ AkashicRecordsCheckboxArea = React.createClass
             </div>
           </Col>
         </Row>
-      </Grid>
-      <Grid className='akashic-records-statistics' style={if @state.statisticsPaneShow then {display: 'block'} else {display: 'none'} }>
-        <Row>
-          <Col xs={12}>
-            <Table bordered responsive>
-              <thead>
-                <tr>
-                  <th style={verticalAlign: 'middle'}>
-                    <OverlayTrigger trigger='click' rootClose={true} placement='right' overlay={
-                      <Popover title={__ "Tips"} id={"regExp-Hint"}>
-                        <li>{__ "Support the Javascript's "}<a onClick={openExternal.bind(this, "http://www.w3school.com.cn/jsref/jsref_obj_regexp.asp")}>{"RegExp"}</a></li>
-                      </Popover>
-                      }>
-                      <FontAwesome name='question-circle'/>
-                    </OverlayTrigger>
-                  </th>
-                  <th>No.</th>
-                  <th>{__ "Base on"}</th>
-                  <th>{__ "Keywords"}</th>
-                  <th>{__ "Result"}</th>
-                  <th>{__ "Sample Size"}</th>
-                  <th>{__ "Percentage"}</th>
-                </tr>
-              </thead>
-              <tbody>
-              {
-                for index in [0..@state.searchArgv.length-1]
-                  <tr key={index}>
-                    {
-                      if index is 0
-                        <td style={verticalAlign: 'middle'}><FontAwesome name='plus-circle' onClick={@addSearchLine}/></td>
-                      else
-                        <td style={verticalAlign: 'middle'}><FontAwesome name='minus-circle' onClick={@deleteSearchLine.bind(@, index)}/></td>
-                    }
-                    <td>{index+1}</td>
-                    <td>
-                      <Input type="select" ref="baseOn#{index}" groupClassName='search-area' value={"#{@state.searchArgv[index].searchBaseOn}"} onChange={@handleSearchChange}>
-                        <option key={-2} value={-2}>{__ "All Data"}</option>
-                        <option key={-1} value={-1}>{__ "Filtered"}</option>
+        <Collapse className='akashic-records-statistics' in={@state.statisticsPaneShow}>
+          <div>
+            <Row>
+              <Col xs={12}>
+                <Table bordered responsive>
+                  <thead>
+                    <tr>
+                      <th style={verticalAlign: 'middle'}>
+                        <OverlayTrigger trigger='click' rootClose={true} placement='right' overlay={
+                          <Popover title={__ "Tips"} id={"regExp-Hint"}>
+                            <li>{__ "Support the Javascript's "}<a onClick={openExternal.bind(this, "http://www.w3school.com.cn/jsref/jsref_obj_regexp.asp")}>{"RegExp"}</a></li>
+                          </Popover>
+                          }>
+                          <FontAwesome name='question-circle'/>
+                        </OverlayTrigger>
+                      </th>
+                      <th>No.</th>
+                      <th>{__ "Base on"}</th>
+                      <th>{__ "Keywords"}</th>
+                      <th>{__ "Result"}</th>
+                      <th>{__ "Sample Size"}</th>
+                      <th>{__ "Percentage"}</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                  {
+                    for index in [0..@state.searchArgv.length-1]
+                      <tr key={index}>
                         {
-                          for i in [0..@state.searchArgv.length-1]
-                            break if i >= index
-                            <option key={i} value={i}>{__ "Search Result No. %s", i+1}</option>
+                          if index is 0
+                            <td style={verticalAlign: 'middle'}><FontAwesome name='plus-circle' onClick={@addSearchLine}/></td>
+                          else
+                            <td style={verticalAlign: 'middle'}><FontAwesome name='minus-circle' onClick={@deleteSearchLine.bind(@, index)}/></td>
                         }
-                      </Input>
-                    </td>
-                    <td>
-                       <Input
-                          type='text'
-                          value={@state.searchArgv[index].filterKey}
-                          placeholder={__ "Keywords"}
-                          ref="search#{index}"
-                          groupClassName='search-area'
-                          onChange={@handleSearchChange} />
-                    </td>
-                    <td>{@state.searchArgv[index]['result'].length}</td>
-                    <td>{@state.searchArgv[index]['num']}</td>
-                    <td>{"#{@state.searchArgv[index]['percent']}%"}</td>
-                  </tr>
-              }
-              </tbody>
-              <thead>
-                <tr>
-                  <th></th>
-                  <th>No.</th>
-                  <th>{__ "Numerator"}</th>
-                  <th>{__ "Denominator"}</th>
-                  <th>{__ "Numerator Number"}</th>
-                  <th>{__ "Denominator Number"}</th>
-                  <th>{__ "Percentage"}</th>
-                </tr>
-              </thead>
-              <tbody>
-              {
-                for index in [0..@state.compareArgv.length-1]
-                  <tr key={index}>
-                    {
-                      if index is 0
-                        <td style={verticalAlign: 'middle'}><FontAwesome name='plus-circle' onClick={@addCompareLine}/></td>
-                      else
-                        <td style={verticalAlign: 'middle'}><FontAwesome name='minus-circle' onClick={@deleteCompareLine.bind(@, index)}/></td>
-                    }
-                    <td>{index+1}</td>
-                    <td>
-                      <Input type="select" ref="numeratorBaseon#{index}" groupClassName='search-area' value={"#{@state.compareArgv[index]['numeratorBaseon']}"} onChange={@handleCompareChange}>
-                        <option key={-2} value={-2}>{__ "All Data"}</option>
-                        <option key={-1} value={-1}>{__ "Filtered"}</option>
-                        {
-                          for i in [0..@state.searchArgv.length-1]
-                            <option key={i} value={i}>{__ "Search Result No. %s", i+1}</option>
-                        }
-                        <option key={-3} value={-3}>{__ "Custom"}</option>
-                      </Input>
-                    </td>
-                    <td>
-                      <Input type="select" ref="denominatorBaseon#{index}" groupClassName='search-area' value={"#{@state.compareArgv[index]['denominatorBaseon']}"} onChange={@handleCompareChange}>
-                        <option key={-2} value={-2}>{__ "All Data"}</option>
-                        <option key={-1} value={-1}>{__ "Filtered"}</option>
-                        {
-                          for i in [0..@state.searchArgv.length-1]
-                            <option key={i} value={i}>{__ "Search Result No. %s", i+1}</option>
-                        }
-                        <option key={-3} value={-3}>{__ "Custom"}</option>
-                      </Input>
-                    </td>
-                    {
-                      if @state.compareArgv[index].numeratorBaseon is -3
+                        <td>{index+1}</td>
                         <td>
-                          <Input
-                            type='number'
-                            placeholder={"0"}
-                            value={"#{@compareResult[index].numerator}"}
-                            ref="numerator#{index}"
-                            groupClassName='search-area'
-                            onChange={@handleCompareChange} />
+                          <Input type="select" ref="baseOn#{index}" groupClassName='search-area' value={"#{@state.searchArgv[index].searchBaseOn}"} onChange={@handleSearchChange}>
+                            <option key={-2} value={-2}>{__ "All Data"}</option>
+                            <option key={-1} value={-1}>{__ "Filtered"}</option>
+                            {
+                              for i in [0..@state.searchArgv.length-1]
+                                break if i >= index
+                                <option key={i} value={i}>{__ "Search Result No. %s", i+1}</option>
+                            }
+                          </Input>
                         </td>
-                      else
-                        <td>{@compareResult[index].numerator}</td>
-                    }
-                    {
-                      if @state.compareArgv[index].denominatorBaseon is -3
                         <td>
-                          <Input
-                            type='number'
-                            placeholder={"0"}
-                            value={"#{@compareResult[index].denominator}"}
-                            ref="denominator#{index}"
-                            groupClassName='search-area'
-                            onChange={@handleCompareChange} />
+                           <Input
+                              type='text'
+                              value={@state.searchArgv[index].filterKey}
+                              placeholder={__ "Keywords"}
+                              ref="search#{index}"
+                              groupClassName='search-area'
+                              onChange={@handleSearchChange} />
                         </td>
-                      else
-                        <td>{@compareResult[index].denominator}</td>
-                    }
-                    <td>{"#{@compareResult[index].percent}%"}</td>
-                  </tr>
-              }
-              </tbody>
-            </Table>
-          </Col>
-        </Row>
+                        <td>{@state.searchArgv[index]['result'].length}</td>
+                        <td>{@state.searchArgv[index]['num']}</td>
+                        <td>{"#{@state.searchArgv[index]['percent']}%"}</td>
+                      </tr>
+                  }
+                  </tbody>
+                  <thead>
+                    <tr>
+                      <th></th>
+                      <th>No.</th>
+                      <th>{__ "Numerator"}</th>
+                      <th>{__ "Denominator"}</th>
+                      <th>{__ "Numerator Number"}</th>
+                      <th>{__ "Denominator Number"}</th>
+                      <th>{__ "Percentage"}</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                  {
+                    for index in [0..@state.compareArgv.length-1]
+                      <tr key={index}>
+                        {
+                          if index is 0
+                            <td style={verticalAlign: 'middle'}><FontAwesome name='plus-circle' onClick={@addCompareLine}/></td>
+                          else
+                            <td style={verticalAlign: 'middle'}><FontAwesome name='minus-circle' onClick={@deleteCompareLine.bind(@, index)}/></td>
+                        }
+                        <td>{index+1}</td>
+                        <td>
+                          <Input type="select" ref="numeratorBaseon#{index}" groupClassName='search-area' value={"#{@state.compareArgv[index]['numeratorBaseon']}"} onChange={@handleCompareChange}>
+                            <option key={-2} value={-2}>{__ "All Data"}</option>
+                            <option key={-1} value={-1}>{__ "Filtered"}</option>
+                            {
+                              for i in [0..@state.searchArgv.length-1]
+                                <option key={i} value={i}>{__ "Search Result No. %s", i+1}</option>
+                            }
+                            <option key={-3} value={-3}>{__ "Custom"}</option>
+                          </Input>
+                        </td>
+                        <td>
+                          <Input type="select" ref="denominatorBaseon#{index}" groupClassName='search-area' value={"#{@state.compareArgv[index]['denominatorBaseon']}"} onChange={@handleCompareChange}>
+                            <option key={-2} value={-2}>{__ "All Data"}</option>
+                            <option key={-1} value={-1}>{__ "Filtered"}</option>
+                            {
+                              for i in [0..@state.searchArgv.length-1]
+                                <option key={i} value={i}>{__ "Search Result No. %s", i+1}</option>
+                            }
+                            <option key={-3} value={-3}>{__ "Custom"}</option>
+                          </Input>
+                        </td>
+                        {
+                          if @state.compareArgv[index].numeratorBaseon is -3
+                            <td>
+                              <Input
+                                type='number'
+                                placeholder={"0"}
+                                value={"#{@compareResult[index].numerator}"}
+                                ref="numerator#{index}"
+                                groupClassName='search-area'
+                                onChange={@handleCompareChange} />
+                            </td>
+                          else
+                            <td>{@compareResult[index].numerator}</td>
+                        }
+                        {
+                          if @state.compareArgv[index].denominatorBaseon is -3
+                            <td>
+                              <Input
+                                type='number'
+                                placeholder={"0"}
+                                value={"#{@compareResult[index].denominator}"}
+                                ref="denominator#{index}"
+                                groupClassName='search-area'
+                                onChange={@handleCompareChange} />
+                            </td>
+                          else
+                            <td>{@compareResult[index].denominator}</td>
+                        }
+                        <td>{"#{@compareResult[index].percent}%"}</td>
+                      </tr>
+                  }
+                  </tbody>
+                </Table>
+              </Col>
+            </Row>
+          </div>
+        </Collapse>
       </Grid>
     </div>
 
