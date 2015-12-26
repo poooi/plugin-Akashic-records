@@ -478,7 +478,7 @@ AkashicRecordsArea = React.createClass
             dataVersion: dataVersion
 
   handleBattleResultResponse: (e) ->
-    {map, quest, boss, mapCell, rank, deckHp, deckShipId, enemy, dropShipId, combined, mvp} = e.detail
+    {map, quest, boss, mapCell, rank, deckHp, deckShipId, enemy, dropItem, dropShipId, combined, mvp} = e.detail
     if not @enableRecord
       return
     if not combined?
@@ -530,9 +530,16 @@ AkashicRecordsArea = React.createClass
       else
         dataItem.push "奇怪的战果？#{rank}"
     dataItem.push enemy
+    
     if dropShipId isnt -1
-      dataItem.push window.$ships[dropShipId].api_name
-    else dataItem.push ""
+      dropData = window.$ships[dropShipId].api_name
+    else 
+      dropData = ""
+    if window.$useitems[dropItem?.api_useitem_id]?.api_name
+      if dropData isnt ""
+        dropData = "#{dropData} & "
+      dropData = "#{dropData}#{window.$useitems[dropItem?.api_useitem_id]?.api_name}"
+    dataItem.push dropData
     dataItem.push judgeDanger deckHp, deckShipId, @_ships
     tmp = ['', '', '', '']
     tmp[0] = "#{@_ships[deckShipId[0]].api_name}(Lv.#{@_ships[deckShipId[0]].api_lv})"
