@@ -68,6 +68,7 @@ akashic-records .container {
 #question-btn {
   padding: 0 5px;
   background-color: transparent;
+  vertical-align: text-bottom;
 }
 
 .advancedmodule .title {
