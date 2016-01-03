@@ -36,3 +36,4 @@ catch e
 
 
 require './views'
+require './views/modal'
