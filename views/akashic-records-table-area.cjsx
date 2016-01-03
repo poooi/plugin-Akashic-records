@@ -26,12 +26,20 @@ dateToString = (date)->
   "#{date.getFullYear()}/#{month}/#{day} #{hour}:#{minute}:#{second}"
 
 showBattleDetail = (timestamp) ->
-  if window.ipc?
+  try
+    if not window.ipc?
+      throw "#{__ "Your POI is out of date! You may need to visit http://0u0.moe/poi to get POI's latest release."}"
+
     battleDetail = ipc.access 'BattleDetail'
-    if battleDetail?.showBattleWithTimestamp?
-      timestamp = (new Date(timestamp)).getTime()
-      battleDetail.showBattleWithTimestamp timestamp, (message) =>
-        console.log message if message?
+    if not battleDetail?.showBattleWithTimestamp?
+      throw "#{__ "In order to find the detailed battle log, you need to download the latest battle-detail plugin and enable it."}"
+
+    timestamp = (new Date(timestamp)).getTime()
+    battleDetail.showBattleWithTimestamp timestamp, (message) =>
+      if message?
+        window.toggleModal "#{__ 'Tip'}", message
+  catch e
+    window.toggleModal "#{__ 'Tip'}", e
 
 AkashicRecordsTableTbodyItem = React.createClass
   render: ->
