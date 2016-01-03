@@ -1,4 +1,4 @@
-{React, ReactBootstrap, ROOT, config, __} = window
+{React, ReactBootstrap, ROOT, config, __, FontAwesome} = window
 {Grid, Row, Col, Table, ButtonGroup, DropdownButton, MenuItem, Input, Pagination, OverlayTrigger, Popover} = ReactBootstrap
 path = require 'path-extra'
 {log, warn, error} = require path.join(ROOT, 'lib/utils')
@@ -25,10 +25,24 @@ dateToString = (date)->
     second = "0#{second}"
   "#{date.getFullYear()}/#{month}/#{day} #{hour}:#{minute}:#{second}"
 
+showBattleDetail = (timestamp) ->
+  if window.ipc?
+    battleDetail = ipc.access 'BattleDetail'
+    if battleDetail?.showBattleWithTimestamp?
+      timestamp = (new Date(timestamp)).getTime()
+      battleDetail.showBattleWithTimestamp timestamp, (message) =>
+        console.log message if message?
+
 AkashicRecordsTableTbodyItem = React.createClass
   render: ->
     <tr>
-      <td>{@props.index}</td>
+      <td>
+      {
+        if @props.contentType is 'attack'
+          <FontAwesome name='info-circle' style={marginRight: 3} onClick={showBattleDetail.bind @, @props.data[0]}/>
+      }
+      {@props.index}
+      </td>
       {
         for item,index in @props.data
           if index is 0 and @props.rowChooseChecked[1]

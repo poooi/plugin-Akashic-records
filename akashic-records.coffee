@@ -28,4 +28,11 @@ window.addEventListener 'theme.change', (e) ->
   else
     $('#bootstrap-css')?.setAttribute 'href', "file://#{ROOT}/assets/themes/#{theme}/css/#{theme}.css"
 
+try
+  {remote} = window
+  window.ipc = ipc = remote.require './lib/ipc'
+catch e
+  console.log e if process.env.DEBUG is 1
+
+
 require './views'
