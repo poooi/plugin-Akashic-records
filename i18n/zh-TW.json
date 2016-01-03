@@ -101,5 +101,8 @@
   "or email": "或信箱連絡",
   "Need more?": "想要支援增加更多匯入？",
   "open a new issue on github": "在 github 新增一個 issue",
-  "Bug Report & Suggestion": "Bug 回報 & 建議"
+  "Bug Report & Suggestion": "Bug 回報 & 建議",
+  "Battle Detail": "戰鬥詳情",
+  "Your POI is out of date! You may need to visit http://0u0.moe/poi to get POI's latest release.": "當前 poi 版本過低，不支持查看戰鬥詳情功能，請至 htp://0u0.moe/poi 下載最新版本。",
+  "In order to find the detailed battle log, you need to download the latest battle-detail plugin and enable it.": "欲查看戰鬥詳情，請先下載並啓用「戰鬥詳情」插件。"
 }

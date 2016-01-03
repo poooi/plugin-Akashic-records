@@ -37,9 +37,9 @@ showBattleDetail = (timestamp) ->
     timestamp = (new Date(timestamp)).getTime()
     battleDetail.showBattleWithTimestamp timestamp, (message) =>
       if message?
-        window.toggleModal "#{__ 'Tip'}", message
+        window.toggleModal "Warning", "#{__ 'Battle Detail'}: #{message}"
   catch e
-    window.toggleModal "#{__ 'Tip'}", e
+    window.toggleModal "Warning", e
 
 AkashicRecordsTableTbodyItem = React.createClass
   render: ->

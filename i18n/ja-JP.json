@@ -101,5 +101,8 @@
   "or email": "またはメールでご連絡を",
   "Need more?": "他の導入支持は",
   "open a new issue on github": "#githubでイシューを発表します",
-  "Bug Report & Suggestion": "バグ報告とアドバイス"
+  "Bug Report & Suggestion": "バグ報告とアドバイス",
+  "Battle Detail": "戦闘詳細",
+  "Your POI is out of date! You may need to visit http://0u0.moe/poi to get POI's latest release.": "Your POI is out of date! You may need to visit http://0u0.moe/poi to get POI's latest release.",
+  "In order to find the detailed battle log, you need to download the latest battle-detail plugin and enable it.": "In order to find the detailed battle log, you need to download the latest battle-detail plugin and enable it."
 }
