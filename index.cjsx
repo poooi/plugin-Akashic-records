@@ -47,7 +47,7 @@ module.exports =
   displayName: <span><FontAwesome key={0} name='book' /> {__ "Logbook"}</span>
   #displayName: <span><FontAwesome key={0} name='book' /> 航海日志</span>
   description: "#{__ "Logs"}. #{__ "Senka module is developed by rui"}."
-  author: 'W.G.'
+  author: 'Jennings Wu'
   link: 'https://github.com/JenningsWu'
   version: '2.3.0'
   handleClick: ->
