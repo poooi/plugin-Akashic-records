@@ -13,7 +13,7 @@ i18n = new (require 'i18n-2')
   devMode: false
 
 i18n.setLocale(window.language)
-window.__ = i18n.__.bind(i18n)
+window.__ = __ = i18n.__.bind(i18n)
 window.translate = i18n.translate.bind(i18n)
 
 window.theme = config.get 'poi.theme', '__default__'
@@ -35,6 +35,17 @@ if not window.ipc?
   catch e
     console.log e if process.env.DEBUG is 1
 
+switch window.language
+  when 'ja-JP'
+    windowTitle = 'アカシックレコード'
+  when 'zh-CN'
+    windowTitle = '阿克夏记录'
+  when 'zh-TW'
+    windowTitle = '阿克夏紀錄'
+  else
+    windowTitle = 'Akashic Records'
+
+document.title = windowTitle
 
 require './views'
 require './views/modal'
