@@ -158,3 +158,7 @@ post :Object
 /kcsapi/api_port/port
 :Object
 	- api_material :Array[8] 	//燃弹钢铝高速建造高速修复开发资材螺丝
+
+Useful Link:
+	https://github.com/andanteyk/ElectronicObserver/blob/develop/ElectronicObserver/Other/Information/apilist.txt?ts=4
+Thanks for andanteyk's work!
