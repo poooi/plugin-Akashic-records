@@ -78,7 +78,7 @@ translateTableTab = (tableTabEn, locale) ->
 
 resolveFile = (fileContent, tableTabEn)->
   tableTab = {}
-  tableTab['en-US'] = tableTabEn
+  tableTab['en-US'] = Object.clone tableTabEn
   for key in ['ja-JP', 'zh-CN', 'zh-TW']
     tableTab[key] = translateTableTab tableTabEn, key
   for key, tabs of tableTab
