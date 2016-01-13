@@ -689,7 +689,7 @@ AttackLog = React.createClass
                   <li>{__ "Support List"}
                     <ul>
                       <li>阿克夏记录</li>
-                      <li>航海日誌 拡張版</li>
+                      <li>航海日誌 拡張版 (某些版本)</li>
                       <li>KCV-yuyuvn</li>
                     </ul>
                   </li>
