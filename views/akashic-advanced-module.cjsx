@@ -14,13 +14,15 @@ dialog = remote.require 'dialog'
 
 {openExternal} = require 'shell'
 
+dateCmp = (a, b)->
+  if isNaN a[0]
+    a[0] = (new Date(a[0])).getTime()
+  if isNaN b[0]
+    b[0] = (new Date(b[0])).getTime()
+  b[0] - a[0]
+
 duplicateRemoval = (arr) ->
-  arr.sort (a, b)->
-    if isNaN a[0]
-      a[0] = (new Date(a[0])).getTime()
-    if isNaN b[0]
-      b[0] = (new Date(b[0])).getTime()
-    b[0] - a[0]
+  arr.sort dateCmp
   @lastTmp = 0
   arr.filter (log) =>
     flag = true
@@ -33,12 +35,7 @@ duplicateRemoval = (arr) ->
     flag
 
 duplicateResourceRemoval = (arr) ->
-  arr.sort (a, b)->
-    if isNaN a[0]
-      a[0] = (new Date(a[0])).getTime()
-    if isNaN b[0]
-      b[0] = (new Date(b[0])).getTime()
-    b[0] - a[0]
+  arr.sort dateCmp
   @lastTmp = 0
   arr.filter (log) =>
     flag = true
