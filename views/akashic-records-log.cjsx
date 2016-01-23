@@ -1,4 +1,4 @@
-{React, ReactBootstrap, jQuery, __} = window
+{React, ReactBootstrap, jQuery, __, CONST} = window
 {Grid, Col, Table} = ReactBootstrap
 
 AkashicRecordsCheckboxArea = require './akashic-records-checkbox-area'
@@ -6,6 +6,8 @@ AkashicRecordsTableArea = require './akashic-records-table-area'
 
 #i18n = require '../node_modules/i18n'
 # {__} = i18n
+
+dataManager = require '../lib/data-manager'
 
 dateToString = (date)->
   month = date.getMonth() + 1
@@ -27,112 +29,62 @@ dateToString = (date)->
 
 configList = [__("Show Headings"), __("Show Filter-box"), __("Auto-selected"), __("Disable filtering while hiding filter-box")]
 
+boundActivePageNum = (activePage, logLength, showAmount) ->
+  activePage = Math.min activePage, Math.ceil(logLength/showAmount)
+  activePage = Math.max activePage, 1
+
 AkashicLog = React.createClass
   getInitialState: ->
     rowChooseChecked: [true, true, true, true, true, true, true, true, true, true, true, true,
                       true, true]
     configChecked: [true, true, false, false]
-    filterKeys:['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '']
     showAmount: 10
-    activePage: 0
-    filterVersion: 0
-    showRulesVersion: 0
+    activePage: 1
     dataShow: []
-    dataAfterFilter: []
-    dataAfterFilterLength: 0
-  filterVersion: 0
-  showRulesVersion: 0
-  dataVersion: -1
   configChecked: [true, true, false, false]
   rowChooseChecked: [true, true, true, true, true, true, true, true, true, true, true, true,
                       true, true]
 
-  _filterReg: (data, index, reg)->
-    data.filter (row)=>
-      if index is 0
-        reg.test dateToString(new Date(row[0]))
-      else
-        reg.test "#{row[index]}"
-  _filterString: (data, index, keyword)->
-    data.filter (row)=>
-      if index is 0
-        dateToString(new Date(row[0])).toLowerCase().trim().indexOf(keyword) >= 0
-      else
-        "#{row[index]}".toLowerCase().trim().indexOf(keyword) >= 0
-  _filter: (rawData, keyWords)->
-    {rowChooseChecked} = @state
-    retData = rawData
-    for item, index in @props.tableTab
-      continue if index is 0
-      if rowChooseChecked[index] and keyWords[index] isnt ''
-        regFlag = false
-        res = keyWords[index].match /^\/(.+)\/([gim]*)$/
-        if res?
-          try
-            reg = new RegExp res[1], res[2]
-            regFlag = true
-          catch e
-            console.log "Failed to resolve RegExp #{keyWords[index]}." if process.env.DEBUG?
-            regFlag = false
-        if regFlag
-          retData = @_filterReg retData, index - 1, reg
-        else
-          retData = @_filterString retData, index - 1, keyWords[index].toLowerCase().trim()
-    retData
-  refreshDataShow: (data, filterKeys, activePage, showAmount)->
-    dataAfterFilter = @_filter data, filterKeys
-    dataAfterFilterLength = dataAfterFilter.length
-    if activePage < 1
-      activePage = 1
-    if activePage > Math.ceil(dataAfterFilterLength/showAmount)
-      activePage = Math.ceil(dataAfterFilterLength/showAmount)
+  getVisibleData: (filteredData, activePage, showAmount)->
+    dataAfterFilterLength = filteredData.length
+    activePage = boundActivePageNum activePage, dataAfterFilterLength, showAmount
     if dataAfterFilterLength > 0
-      dataShow = dataAfterFilter.slice((activePage - 1) * showAmount, activePage * showAmount)
+      dataShow = filteredData.slice((activePage - 1) * showAmount, activePage * showAmount)
     else
       dataShow = []
-    {dataShow, dataAfterFilter, dataAfterFilterLength, activePage}
+    {dataShow, activePage}
 
   ## about tab checkbox
   tabFilterRules: (checked) ->
-    {dataShow, dataAfterFilter, dataAfterFilterLength, activePage} = @refreshDataShow @props.data, @state.filterKeys, @state.activePage, @state.showAmount
+    keys = dataManager.getFilterKeys @props.contentType, true
+    for item, index in keys
+      if not checked[index+1]
+        keys[index] = ''
+    dataManager.setFilterKeys @props.contentType, keys, true
+    activePage = boundActivePageNum @state.activePage,
+      dataManager.getFilteredData(@props.contentType).length, @state.showAmount
     @setState
       rowChooseChecked: checked
-      dataAfterFilter: dataAfterFilter
-      dataAfterFilterLength: dataAfterFilterLength
-      dataShow: dataShow
-      activePage: activePage
-
-  #about filter
-  filterRules: (filterKeys) ->
-    {dataShow, dataAfterFilter, dataAfterFilterLength, activePage} = @refreshDataShow @props.data, filterKeys, @state.activePage, @state.showAmount
-    @setState
-      filterKeys: filterKeys
-      filterVersion: @state.filterVersion + 1
-      dataAfterFilter: dataAfterFilter
-      dataAfterFilterLength: dataAfterFilterLength
-      dataShow: dataShow
       activePage: activePage
 
   #about the amount of data showed and active page
   showRules: (showAmount, activePage)->
-    if activePage > Math.ceil(@state.dataAfterFilterLength/showAmount)
-      activePage = Math.ceil(@state.dataAfterFilterLength/showAmount)
+    activePage = boundActivePageNum activePage, dataManager.getFilteredData(@props.contentType).length, showAmount
     if showAmount isnt @state.showAmount
       config.set "plugin.Akashic.#{@props.contentType}.showAmount", showAmount
     if showAmount isnt @state.showAmount or activePage isnt @state.activePage
-      dataShow = @state.dataAfterFilter.slice((activePage - 1) * showAmount, activePage * showAmount)
+      dataShow = dataManager.getFilteredData(@props.contentType).slice((activePage - 1) * showAmount, activePage * showAmount)
       @setState
         showAmount: showAmount
         activePage: activePage
-        showRulesVersion: @state.showRulesVersion + 1
         dataShow: dataShow
+
   handlePageChange: (activePage)->
     if activePage isnt @state.activePage
-      dataShow = @state.dataAfterFilter.slice((activePage - 1) * @state.showAmount, activePage * @state.showAmount)
+      dataShow = dataManager.getFilteredData(@props.contentType).slice((activePage - 1) * @state.showAmount, activePage * @state.showAmount)
       @setState
         activePage: activePage
         dataShow: dataShow
-        showRulesVersion: @state.showRulesVersion + 1
 
   #click config checkbox
   configCheckboxClick: (index)->
@@ -145,59 +97,49 @@ AkashicLog = React.createClass
     @setState
       configChecked: configChecked
 
+  filteredDataChangeCB: ->
+    {dataShow, activePage} = @getVisibleData dataManager.getFilteredData(@props.contentType), @state.activePage, @state.showAmount
+    @setState
+      dataShow: dataShow
+      activePage: activePage
+
   componentWillMount: ->
     {activePage} = @state
     @rowChooseChecked = JSON.parse config.get "plugin.Akashic.#{@props.contentType}.checkbox", JSON.stringify @state.rowChooseChecked
-    rowChooseChecked = JSON.parse JSON.stringify @rowChooseChecked
+    rowChooseChecked = Object.clone @rowChooseChecked
     @configChecked = JSON.parse config.get "plugin.Akashic.#{@props.contentType}.configChecked", JSON.stringify @state.configChecked
-    configChecked = JSON.parse JSON.stringify @configChecked
+    configChecked = Object.clone @configChecked
     showAmount = config.get "plugin.Akashic.#{@props.contentType}.showAmount", @state.showAmount
-    dataAfterFilter = @_filter @props.data, @state.filterKeys
-    dataAfterFilterLength = dataAfterFilter.length
-    if dataAfterFilterLength > 0
-      if activePage < 1
-        activePage = 1
-      dataShow = dataAfterFilter.slice((activePage - 1) * showAmount, activePage * showAmount)
-    else
-      dataShow = []
+    dataAfterFilter = dataManager.getFilteredData @props.contentType
+    {dataShow, activePage} = @getVisibleData dataAfterFilter, activePage, showAmount
     @setState
       rowChooseChecked: rowChooseChecked
       configChecked: configChecked
       showAmount: showAmount
       dataAfterFilter: dataAfterFilter
-      dataAfterFilterLength: dataAfterFilterLength
       dataShow: dataShow
       activePage: activePage
-  componentWillReceiveProps: (nextProps)->
-    if nextProps.indexKey is nextProps.selectedKey
-      if @dataVersion isnt nextProps.dataVersion
-        {dataShow, dataAfterFilter, dataAfterFilterLength, activePage} = @refreshDataShow nextProps.data, @state.filterKeys, @state.activePage, @state.showAmount
-        @setState
-          dataAfterFilter: dataAfterFilter
-          dataAfterFilterLength: dataAfterFilterLength
-          dataShow: dataShow
-          activePage: activePage
+    @filteredDataChangelistener = dataManager.addListener @props.contentType, CONST.eventList.filteredDataChange, @filteredDataChangeCB
+
+  componentWillUnmount: ->
+    if @filteredDataChangelistener?
+      dataManager.removeListener @props.contentType, CONST.eventList.filteredDataChange, @filteredDataChangelistener
+
+  # componentWillReceiveProps: (nextProps)->
+  #   if nextProps.indexKey is nextProps.selectedKey
+  #     if @dataVersion isnt nextProps.dataVersion
+  #       {dataShow, dataAfterFilter, dataAfterFilterLength, activePage} = @refreshDataShow nextProps.data, @state.filterKeys, @state.activePage, @state.showAmount
+  #       @setState
+  #         dataAfterFilter: dataAfterFilter
+  #         dataAfterFilterLength: dataAfterFilterLength
+  #         dataShow: dataShow
+  #         activePage: activePage
+
   shouldComponentUpdate: (nextProps, nextState)->
-    refreshFlag = false
     if nextProps.indexKey is nextProps.selectedKey
-      if @dataVersion isnt nextProps.dataVersion
-        @dataVersion = nextProps.dataVersion
-        refreshFlag = true
-      for item, i in @rowChooseChecked
-        if item isnt nextState.rowChooseChecked[i]
-          @rowChooseChecked[i] = nextState.rowChooseChecked[i]
-          refreshFlag = true
-      for item, i in @configChecked
-        if item isnt nextState.configChecked[i]
-          @configChecked[i] = nextState.configChecked[i]
-          refreshFlag = true
-      if @filterVersion isnt nextState.filterVersion
-        @filterVersion = nextState.filterVersion
-        refreshFlag = true
-      if @showRulesVersion isnt nextState.showRulesVersion
-        @showRulesVersion = nextState.showRulesVersion
-        refreshFlag = true
-    refreshFlag
+      true
+    else
+      false
 
   render: ->
     <div>
@@ -207,8 +149,7 @@ AkashicLog = React.createClass
         tabFilterRules={@tabFilterRules}
         rowChooseChecked={@state.rowChooseChecked}
         data={@props.data}
-        dataAfterFilter={@state.dataAfterFilter}
-        dataShowLength={@state.dataAfterFilterLength}
+        dataShowLength={@state.dataShow.length}
         showRules={@showRules}
         showAmount={@state.showAmount}
         activePage={@state.activePage}
@@ -222,8 +163,8 @@ AkashicLog = React.createClass
         rowChooseChecked={@state.rowChooseChecked}
         filterKeys={@state.filterKeys}
         filterRules={@filterRules}
-        paginationItems={Math.ceil(@state.dataAfterFilterLength/@state.showAmount)}
-        paginationMaxButtons={if Math.ceil(@state.dataAfterFilterLength/@state.showAmount)>5 then 5 else Math.ceil(@state.dataAfterFilterLength/@state.showAmount)}
+        paginationItems={Math.ceil(dataManager.getFilteredData(@props.contentType).length/@state.showAmount)}
+        paginationMaxButtons={Math.min(Math.ceil(dataManager.getFilteredData(@props.contentType).length/@state.showAmount), 5)}
         activePage={@state.activePage}
         showAmount={@state.showAmount}
         handlePageChange={@handlePageChange}

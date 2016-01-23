@@ -14,32 +14,23 @@ i18n = new (require 'i18n-2')
 i18n.setLocale(window.language)
 __ = i18n.__.bind(i18n)
 
+devMode = false
 
 window.akashicRecordsWindow = null
 initialAkashicRecordsWindow = ->
-  # if config.get "plugin.Akashic.forceMinimize", false
-  #   forceMinimize = true
-  # else
-  #   forceMinimize = false
   window.akashicRecordsWindow = windowManager.createWindow
     x: config.get 'poi.window.x', 0
     y: config.get 'poi.window.y', 0
     width: 820
     height: 650
-    # forceMinimize: forceMinimize
+    realClose: devMode
   window.akashicRecordsWindow.loadURL "file://#{__dirname}/index.html"
-  if process.env.DEBUG?
+  if process.env.DEBUG? or devMode
     window.akashicRecordsWindow.openDevTools
       detach: true
 
-checkAkashicRecordsCrashed = ->
-  if window.akashicRecordsWindow.isCrashed() and config.get('plugin.Akashic.enable', true)
-    window.akashicRecordsWindow.destroy()
-    initialAkashicRecordsWindow()
-
-if config.get('plugin.Akashic.enable', true)
+if config.get('plugin.Akashic.enable', true) and not devMode
   initialAkashicRecordsWindow()
-  # setInterval checkAkashicRecordsCrashed, 2000
 
 module.exports =
   name: 'Akashic'
@@ -51,6 +42,6 @@ module.exports =
   link: 'https://github.com/JenningsWu'
   version: '2.3.2'
   handleClick: ->
-    # checkAkashicRecordsCrashed()
-    # initialAkashicRecordsWindow()
+    if devMode
+      initialAkashicRecordsWindow()
     window.akashicRecordsWindow.show()

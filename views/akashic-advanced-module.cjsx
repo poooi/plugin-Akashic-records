@@ -1,4 +1,4 @@
-{React, ReactBootstrap, ROOT, FontAwesome, __, translate} = window
+{React, ReactBootstrap, ROOT, FontAwesome, __, translate, CONST} = window
 {Grid, Row, Col, Input, Button, OverlayTrigger, Popover, Input} = ReactBootstrap
 
 fs = require 'fs-extra'
@@ -13,6 +13,8 @@ remote = require 'remote'
 dialog = remote.require 'dialog'
 
 {openExternal} = require 'shell'
+
+dataManager = require '../lib/data-manager'
 
 dateCmp = (a, b)->
   if isNaN a[0]
@@ -84,11 +86,11 @@ resolveFile = (fileContent, tableTabEn)->
   logs = fileContent.split "\n"
   logs[0] = logs[0].trim()
   switch logs[0]
-    when tableTab['en-US']['attack'], \
-    tableTab['ja-JP']['attack'], \
-    tableTab['zh-CN']['attack'], \
-    tableTab['zh-TW']['attack']
-      logType = "attack"
+    when tableTab['en-US'][CONST.typeList.attack], \
+    tableTab['ja-JP'][CONST.typeList.attack], \
+    tableTab['zh-CN'][CONST.typeList.attack], \
+    tableTab['zh-TW'][CONST.typeList.attack]
+      logType = CONST.typeList.attack
       data = logs.slice(1).map (logItem) ->
         logItem = logItem.split ','
         if logItem.length isnt 12
@@ -551,23 +553,24 @@ AttackLog = React.createClass
     if nickNameId and nickNameId isnt 0
       switch @state.typeChoosed
         when '出击'
-          logType = 'attack'
+          logType = CONST.typeList.attack
           data = @props.attackData
         when '远征'
-          logType = 'mission'
+          logType = CONST.typeList.mission
           data = @props.missionData
         when '建造'
-          logType = 'createShip'
+          logType = CONST.typeList.createShip
           data = @props.createShipData
         when '开发'
-          logType = 'createItem'
+          logType = CONST.typeList.createItem
           data = @props.createItemData
         when '资源'
-          logType = 'resource'
+          logType = CONST.typeList.resource
           data = @props.resourceData
         else
           @showMessage '发生错误！请报告开发者'
           return
+      data = dataManager.getRawData logType
       if process.platform is 'win32'
         if window.language is 'ja-JP'
           codeType = 'shiftjis'
@@ -622,30 +625,25 @@ AttackLog = React.createClass
           {logType, data} = resolveFile fileContent, @props.tableTab
           saveType = -1
           switch logType
-            when 'attack'
+            when CONST.typeList.attack
               hint = '出击'
-              oldData = @props.attackData
               saveType = 0
-            when 'mission'
+            when CONST.typeList.mission
               hint = '远征'
-              oldData = @props.missionData
               saveType = 1
-            when 'createShip'
+            when CONST.typeList.createShip
               hint = '建造'
-              oldData = @props.createShipData
               saveType = 3
-            when 'createItem'
+            when CONST.typeList.createItem
               hint = '开发'
-              oldData = @props.createItemData
               saveType = 2
-            when 'resource'
+            when CONST.typeList.resource
               hint = '资源'
-              oldData = @props.resourceData
               saveType = 4
-          oldData = duplicateRemoval oldData
+          oldData = duplicateRemoval dataManager.getRawData logType
           oldLength = oldData.length
           newData = oldData.concat data
-          if logType is "resource"
+          if logType is CONST.typeList.resource
             newData = duplicateResourceRemoval newData
           else
             newData = duplicateRemoval newData
@@ -657,7 +655,7 @@ AttackLog = React.createClass
           fs.writeFile path.join(APPDATA_PATH, 'akashic-records', "tmp", "data"), saveData
           fs.emptyDirSync path.join(APPDATA_PATH, 'akashic-records', nickNameId.toString(), logType.toLowerCase())
           fs.writeFile path.join(APPDATA_PATH, 'akashic-records', nickNameId.toString(), logType.toLowerCase(), "data"), saveData
-          @props.setDataHandler saveType, newData
+          # @props.setDataHandler saveType, newData
           @showMessage "新导入#{newLength - oldLength}条#{hint}记录！"
         catch e
           @showMessage e.message

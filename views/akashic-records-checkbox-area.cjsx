@@ -1,10 +1,13 @@
-{React, ReactBootstrap, jQuery, config, __} = window
-{Panel, Button, Col, Input, Grid, Row, ButtonGroup, DropdownButton, MenuItem, Table, OverlayTrigger, Popover, Collapse, Well} = ReactBootstrap
+{React, ReactBootstrap, jQuery, config, __, CONST} = window
+{Panel, Button, Col, Input, Grid, Row, ButtonGroup, DropdownButton,
+  MenuItem, Table, OverlayTrigger, Popover, Collapse, Well} = ReactBootstrap
 Divider = require './divider'
 {openExternal} = require 'shell'
 
 #i18n = require '../node_modules/i18n'
 # {__} = i18n
+
+dataManager = require '../lib/data-manager'
 
 dateToString = (date)->
   month = date.getMonth() + 1
@@ -24,124 +27,90 @@ dateToString = (date)->
     second = "0#{second}"
   "#{date.getFullYear()}/#{month}/#{day} #{hour}:#{minute}:#{second}"
 
+class SearchArgv
+  constructor: ->
+    @filterKey = ''
+    @searchBaseOn = CONST.search.filteredDataIndex
+    @res = 0
+    @total = 0
+    @percent = 0
+
+class CompareArgv
+  constructor: ->
+    @numerator =
+      baseOn: CONST.search.filteredDataIndex
+      num: 0
+    @denominator =
+      baseOn: CONST.search.filteredDataIndex
+      num: 0
+    @percent = 0
+
+calPercent = (num, de) ->
+  if de != 0
+    "#{Math.round(num*10000/de) / 100}%"
+  else
+    "0"
+
 AkashicRecordsCheckboxArea = React.createClass
   getInitialState: ->
     filterPaneShow: true
     statisticsPaneShow: true
     searchArgv:[
-      filterKey: ''
-      searchBaseOn: -1
-      result: []
-      num: 0
-      percent: 0
+      new SearchArgv()
     ]
     compareArgv: [
-      numeratorBaseon: -1
-      denominatorBaseon: -1
+      new CompareArgv()
     ]
   inputDataVersion: 0
   currentDataVersion: 0
-  compareResult: []
-  getDataNum: (type, data, dataAfterFilter, searchArgv)->
-    switch type
-      when -2
-        dataNum = data.length
-      when -1
-        dataNum = dataAfterFilter.length
-      else
-        dataNum = @state.searchArgv[type].result.length
-    dataNum
-  refreshSearchResult: (searchArgv, data, dataAfterFilter)->
-    for index in [0..searchArgv.length-1]
-      switch searchArgv[index].searchBaseOn
-        when -2
-          data = data
-        when -1
-          data = dataAfterFilter
-        else
-          data = searchArgv[searchArgv[index].searchBaseOn].result
-      searchArgv[index].num = data.length
-      if searchArgv[index].filterKey is ''
-        searchArgv[index].result=[]
-        searchArgv[index].percent=0
-      else
-        filterKey = searchArgv[index].filterKey
-        regFlag = false
-        res = filterKey.match /^\/(.+)\/([gim]*)$/
-        if res?
-          try
-            reg = new RegExp res[1], res[2]
-            regFlag = true
-          catch e
-            regFlag = false
-          finally
-            if regFlag
-              filterKey = reg
-        result = data.filter (log)=>
-          match = false
-          for item, i in log
-            searchText = item
-            if i is 0
-              searchText = dateToString(new Date(searchText))
-            else if not regFlag
-              searchText = "#{searchText}".toLowerCase().trim()
-            if regFlag
-              match = filterKey.test searchText
-            else
-              match = searchText.indexOf(filterKey.toLowerCase().trim()) >= 0
-            if match
-              return match
-          match
-        searchArgv[index].result = result
-        if searchArgv[index].num isnt 0
-          searchArgv[index].percent = Math.round(searchArgv[index].result.length*10000/searchArgv[index].num) / 100
-        else
-          searchArgv[index].percent = 0
-    @setState
-      searchArgv: searchArgv
+  checkboxChangeFlag: false
 
-  refreshCompareResult: (compareArgv, data, dataAfterFilter, searchArgv)->
-    @compareResult = []
+
+  refreshSearchResult: (searchArgv)->
+    for item, index in searchArgv
+      item.total = dataManager.getSearchDataLength @props.contentType, item.searchBaseOn
+      item.res = dataManager.searchData @props.contentType, CONST.search.indexBase + index + 1, item.searchBaseOn, item.filterKey
+      item.res = item.res.length
+      item.percent = calPercent item.res, item.total
+    searchArgv
+
+  refreshCompareResult: (compareArgv)->
     for item, index in compareArgv
-      if item.numeratorBaseon is -3
-        numerator = @refs["numerator#{index}"]?.getValue()
-        if not numerator
-          numerator = 0
-      else
-        numerator = @getDataNum item.numeratorBaseon, data, dataAfterFilter, searchArgv
-      if item.denominatorBaseon is -3
-        denominator = @refs["denominator#{index}"]?.getValue()
-        if not denominator
-          denominator = 0
-      else
-        denominator = @getDataNum item.denominatorBaseon, data, dataAfterFilter, searchArgv
-      if denominator isnt 0
-        percent = Math.round(numerator*10000/denominator) / 100
-      else
-        percent = 0
-      @compareResult.push
-        numerator: numerator
-        denominator: denominator
-        percent: percent
-    @compareResult
+      for term in ['numerator', 'denominator']
+        if item[term].baseOn is -1
+          num = @refs["#{term}#{index}"]?.getValue()
+          if not num
+            num = 0
+        else
+          num = dataManager.getSearchDataLength @props.contentType, item[term].baseOn
+        item[term].num = num
+      item.percent = calPercent item.numerator.num, item.denominator.num
+    compareArgv
+
   handleFilterPaneShow: ->
     {filterPaneShow} = @state
     filterPaneShow = not filterPaneShow
     @setState {filterPaneShow}
     config.set "plugin.Akashic.#{@props.contentType}.filterPaneShow", filterPaneShow
   handleStatisticsPaneShow: ->
-    {statisticsPaneShow, searchArgv} = @state
+    {statisticsPaneShow, searchArgv, compareArgv} = @state
     statisticsPaneShow = not statisticsPaneShow
     if statisticsPaneShow
       if @currentDataVersion isnt @inputDataVersion
         @currentDataVersion = @inputDataVersion
-        @refreshSearchResult searchArgv, @props.data, @props.dataAfterFilter
-    @setState {statisticsPaneShow}
+        searchArgv = @refreshSearchResult searchArgv
+        compareArgv = @refreshCompareResult compareArgv
+    @setState
+      statisticsPaneShow: statisticsPaneShow
+      searchArgv: searchArgv
+      compareArgv: compareArgv
+
     config.set "plugin.Akashic.#{@props.contentType}.statisticsPaneShow", statisticsPaneShow
   handleClickCheckbox: (index) ->
     {rowChooseChecked} = @props
     rowChooseChecked[index] = !rowChooseChecked[index]
     @props.tabFilterRules rowChooseChecked
+    @checkboxChangeFlag = true
     config.set "plugin.Akashic.#{@props.contentType}.checkbox", JSON.stringify rowChooseChecked
   handleClickConfigCheckbox: (index) ->
     @props.configCheckboxClick index
@@ -153,43 +122,53 @@ AkashicRecordsCheckboxArea = React.createClass
       val = 1
     @props.showRules @props.showAmount, val
   handleSearchChange: ()->
-    {searchArgv} = @state
+    {searchArgv, compareArgv} = @state
     for index in [0..searchArgv.length-1]
       searchArgv[index].filterKey = @refs["search#{index}"].getValue()
       searchArgv[index].searchBaseOn = parseInt @refs["baseOn#{index}"].getValue()
-    @refreshSearchResult searchArgv, @props.data, @props.dataAfterFilter
+    searchArgv = @refreshSearchResult searchArgv
+    compareArgv = @refreshCompareResult compareArgv
+    @setState
+      searchArgv: searchArgv
+      compareArgv: compareArgv
   addSearchLine: ->
     {searchArgv} = @state
-    searchArgv.push
-      filterKey: ''
-      searchBaseOn: -1
-      result: []
-      num: 0
-      percent: 0
+    searchArgv.push new SearchArgv()
     @setState
       searchArgv: searchArgv
   deleteSearchLine: (index)->
-    {searchArgv} = @state
+    {searchArgv, compareArgv} = @state
     for item, i in searchArgv
       if item.searchBaseOn is index
-        item.searchBaseOn = -1
+        item.searchBaseOn = CONST.search.filteredDataIndex
       else if item.searchBaseOn > index
         item.searchBaseOn -= 1
     searchArgv.splice index, 1
-    @refreshSearchResult searchArgv, @props.data, @props.dataAfterFilter
+    searchArgv = @refreshSearchResult searchArgv
+    for item in compareArgv
+      for term in ['numerator', 'denominator']
+        if item[term].baseOn is index
+          item[term].baseOn = CONST.search.filteredDataIndex
+        else if item[term].baseOn > index
+          item[term].baseOn -= 1
+    compareArgv = @refreshCompareResult compareArgv
+    @setState
+      searchArgv: searchArgv
+      compareArgv: compareArgv
 
-  handleCompareChange: ()->
+  handleCompareChange: ->
     {compareArgv} = @state
     for index in [0..compareArgv.length-1]
-      compareArgv[index]['numeratorBaseon'] = parseInt @refs["numeratorBaseon#{index}"].getValue()
-      compareArgv[index]['denominatorBaseon'] = parseInt @refs["denominatorBaseon#{index}"].getValue()
+      compareArgv[index].numerator.baseOn =
+        parseInt @refs["numeratorBaseon#{index}"].getValue()
+      compareArgv[index].denominator.baseOn =
+        parseInt @refs["denominatorBaseon#{index}"].getValue()
+    compareArgv = @refreshCompareResult compareArgv
     @setState
       compareArgv: compareArgv
   addCompareLine: ->
     {compareArgv} = @state
-    compareArgv.push
-      numeratorBaseon: -1
-      denominatorBaseon: -1
+    compareArgv.push new CompareArgv()
     @setState
       compareArgv: compareArgv
   deleteCompareLine: (index)->
@@ -197,22 +176,52 @@ AkashicRecordsCheckboxArea = React.createClass
     compareArgv.splice index, 1
     @setState
       compareArgv: compareArgv
+
+  refreshData: ->
+    if @state.statisticsPaneShow
+      {searchArgv, compareArgv} = @state
+      searchArgv = @refreshSearchResult searchArgv
+      compareArgv = @refreshCompareResult compareArgv
+      @setState
+        searchArgv: searchArgv
+        compareArgv: compareArgv
+
+  componentWillReceiveProps: (nextProps) ->
+    if @checkboxChangeFlag
+      @checkboxChangeFlag = false
+      @refreshData()
+
+  dataListener: (lazyFlag)->
+    if not lazyFlag
+      @refreshData()
+
   componentWillMount: ->
-    filterPaneShow = config.get "plugin.Akashic.#{@props.contentType}.filterPaneShow", true
-    statisticsPaneShow = config.get "plugin.Akashic.#{@props.contentType}.statisticsPaneShow", true
+    filterPaneShow =
+      config.get "plugin.Akashic.#{@props.contentType}.filterPaneShow", true
+    statisticsPaneShow =
+      config.get "plugin.Akashic.#{@props.contentType}.statisticsPaneShow", true
+    searchArgv = @refreshSearchResult @state.searchArgv
+    compareArgv = @refreshCompareResult @state.compareArgv
     @setState
       filterPaneShow: filterPaneShow
       statisticsPaneShow: statisticsPaneShow
-    @refreshSearchResult @state.searchArgv, @props.data, @props.dataAfterFilter
-    @refreshCompareResult @state.compareArgv, @props.data, @props.dataAfterFilter, @state.searchArgv
-  componentWillReceiveProps: (nextProps)->
-    @inputDataVersion += 1
-    if @state.statisticsPaneShow
-      @currentDataVersion = @inputDataVersion
-      @refreshSearchResult @state.searchArgv, nextProps.data, nextProps.dataAfterFilter
-  componentWillUpdate: (nextProps, nextState)->
-    if nextState.statisticsPaneShow
-      @refreshCompareResult nextState.compareArgv, nextProps.data, nextProps.dataAfterFilter, nextState.searchArgv
+      searchArgv: searchArgv
+      compareArgv: compareArgv
+
+    @rawDataChangelistener = dataManager.addListener @props.contentType,
+      CONST.eventList.rawDataChange, @dataListener
+    @filteredDataChangelistener = dataManager.addListener @props.contentType,
+      CONST.eventList.filteredDataChange, @dataListener
+
+
+  componentWillUnmount: ->
+    if @rawDataChangelistener?
+      dataManager.removeListener @props.contentType,
+        CONST.eventList.rawDataChange, @rawDataChangelistener
+    if @filteredDataChangelistener?
+      dataManager.removeListener @props.contentType,
+        CONST.eventList.filteredDataChange, @filteredDataChangelistener
+
   render: ->
     <div className='akashic-records-settings' className={if @state.filterPaneShow or @state.statisticsPaneShow then "tap-pane-show" else "tab-pane-hidden"}>
       <Grid>
@@ -323,12 +332,12 @@ AkashicRecordsCheckboxArea = React.createClass
                         <td>{index+1}</td>
                         <td>
                           <Input type="select" ref="baseOn#{index}" groupClassName='search-area' value={"#{@state.searchArgv[index].searchBaseOn}"} onChange={@handleSearchChange}>
-                            <option key={-2} value={-2}>{__ "All Data"}</option>
-                            <option key={-1} value={-1}>{__ "Filtered"}</option>
+                            <option key={CONST.search.rawDataIndex} value={CONST.search.rawDataIndex}>{__ "All Data"}</option>
+                            <option key={CONST.search.filteredDataIndex} value={CONST.search.filteredDataIndex}>{__ "Filtered"}</option>
                             {
-                              for i in [0..@state.searchArgv.length-1]
-                                break if i >= index
-                                <option key={i} value={i}>{__ "Search Result No. %s", i+1}</option>
+                              for i in [1..@state.searchArgv.length]
+                                break if i > index
+                                <option key={CONST.search.indexBase + i} value={CONST.search.indexBase + i}>{__ "Search Result No. %s", i}</option>
                             }
                           </Input>
                         </td>
@@ -341,9 +350,9 @@ AkashicRecordsCheckboxArea = React.createClass
                               groupClassName='search-area'
                               onChange={@handleSearchChange} />
                         </td>
-                        <td>{@state.searchArgv[index]['result'].length}</td>
-                        <td>{@state.searchArgv[index]['num']}</td>
-                        <td>{"#{@state.searchArgv[index]['percent']}%"}</td>
+                        <td>{@state.searchArgv[index].res}</td>
+                        <td>{@state.searchArgv[index].total}</td>
+                        <td>{@state.searchArgv[index].percent}</td>
                       </tr>
                   }
                   </tbody>
@@ -370,56 +379,56 @@ AkashicRecordsCheckboxArea = React.createClass
                         }
                         <td>{index+1}</td>
                         <td>
-                          <Input type="select" ref="numeratorBaseon#{index}" groupClassName='search-area' value={"#{@state.compareArgv[index]['numeratorBaseon']}"} onChange={@handleCompareChange}>
-                            <option key={-2} value={-2}>{__ "All Data"}</option>
-                            <option key={-1} value={-1}>{__ "Filtered"}</option>
+                          <Input type="select" ref="numeratorBaseon#{index}" groupClassName='search-area' value={"#{@state.compareArgv[index].numerator.baseOn}"} onChange={@handleCompareChange}>
+                            <option key={CONST.search.rawDataIndex} value={CONST.search.rawDataIndex}>{__ "All Data"}</option>
+                            <option key={CONST.search.filteredDataIndex} value={CONST.search.filteredDataIndex}>{__ "Filtered"}</option>
                             {
-                              for i in [0..@state.searchArgv.length-1]
-                                <option key={i} value={i}>{__ "Search Result No. %s", i+1}</option>
+                              for i in [1..@state.searchArgv.length]
+                                <option key={CONST.search.indexBase + i} value={CONST.search.indexBase + i}>{__ "Search Result No. %s", i}</option>
                             }
-                            <option key={-3} value={-3}>{__ "Custom"}</option>
+                            <option key={-1} value={-1}>{__ "Custom"}</option>
                           </Input>
                         </td>
                         <td>
-                          <Input type="select" ref="denominatorBaseon#{index}" groupClassName='search-area' value={"#{@state.compareArgv[index]['denominatorBaseon']}"} onChange={@handleCompareChange}>
-                            <option key={-2} value={-2}>{__ "All Data"}</option>
-                            <option key={-1} value={-1}>{__ "Filtered"}</option>
+                          <Input type="select" ref="denominatorBaseon#{index}" groupClassName='search-area' value={"#{@state.compareArgv[index].denominator.baseOn}"} onChange={@handleCompareChange}>
+                            <option key={CONST.search.rawDataIndex} value={CONST.search.rawDataIndex}>{__ "All Data"}</option>
+                            <option key={CONST.search.filteredDataIndex} value={CONST.search.filteredDataIndex}>{__ "Filtered"}</option>
                             {
-                              for i in [0..@state.searchArgv.length-1]
-                                <option key={i} value={i}>{__ "Search Result No. %s", i+1}</option>
+                              for i in [1..@state.searchArgv.length]
+                                <option key={CONST.search.indexBase + i} value={CONST.search.indexBase + i}>{__ "Search Result No. %s", i}</option>
                             }
-                            <option key={-3} value={-3}>{__ "Custom"}</option>
+                            <option key={-1} value={-1}>{__ "Custom"}</option>
                           </Input>
                         </td>
                         {
-                          if @state.compareArgv[index].numeratorBaseon is -3
+                          if @state.compareArgv[index].numerator.baseOn is -1
                             <td>
                               <Input
                                 type='number'
                                 placeholder={"0"}
-                                value={"#{@compareResult[index].numerator}"}
+                                value={"#{@state.compareArgv[index].numerator.num}"}
                                 ref="numerator#{index}"
                                 groupClassName='search-area'
                                 onChange={@handleCompareChange} />
                             </td>
                           else
-                            <td>{@compareResult[index].numerator}</td>
+                            <td>{@state.compareArgv[index].numerator.num}</td>
                         }
                         {
-                          if @state.compareArgv[index].denominatorBaseon is -3
+                          if @state.compareArgv[index].denominator.baseOn is -1
                             <td>
                               <Input
                                 type='number'
                                 placeholder={"0"}
-                                value={"#{@compareResult[index].denominator}"}
+                                value={"#{@state.compareArgv[index].denominator.num}"}
                                 ref="denominator#{index}"
                                 groupClassName='search-area'
                                 onChange={@handleCompareChange} />
                             </td>
                           else
-                            <td>{@compareResult[index].denominator}</td>
+                            <td>{@state.compareArgv[index].denominator.num}</td>
                         }
-                        <td>{"#{@compareResult[index].percent}%"}</td>
+                        <td>{@state.compareArgv[index].percent}</td>
                       </tr>
                   }
                   </tbody>

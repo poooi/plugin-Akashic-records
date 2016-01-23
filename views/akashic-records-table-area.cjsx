@@ -1,4 +1,4 @@
-{React, ReactBootstrap, ROOT, config, __, FontAwesome} = window
+{React, ReactBootstrap, ROOT, config, __, FontAwesome, CONST} = window
 {Grid, Row, Col, Table, ButtonGroup, DropdownButton, MenuItem, Input, Pagination, OverlayTrigger, Popover} = ReactBootstrap
 path = require 'path-extra'
 {log, warn, error} = require path.join(ROOT, 'lib/utils')
@@ -6,6 +6,8 @@ path = require 'path-extra'
 
 #i18n = require '../node_modules/i18n'
 # {__} = i18n
+
+dataManager = require '../lib/data-manager'
 
 dateToString = (date)->
   month = date.getMonth() + 1
@@ -68,19 +70,7 @@ AkashicRecordsTableArea = React.createClass
   #   showAmount: 10
   #   filterKey: ''
   #   activePage: 0
-  # _filter: (rawData, keyWord)->
-  #   {rowChooseChecked} = @props
-  #   if keyWord?
-  #     rawData.filter (row)->
-  #       match = false
-  #       for item, index in row
-  #         if rowChooseChecked[index+1]
-  #           if index is 0 and dateToString(new Date(item)).toLowerCase().trim().indexOf(keyWord.toLowerCase().trim()) >= 0
-  #             match = true
-  #           if index isnt 0 and "#{item}".toLowerCase().trim().indexOf(keyWord.toLowerCase().trim()) >= 0
-  #             match = true
-  #       match
-  #   else rawData
+
   # _filterBy: (keyWord)->
   #   dataShow = @_filter @props.data, keyWord
   #   {activePage} = @state
@@ -92,12 +82,13 @@ AkashicRecordsTableArea = React.createClass
   #     dataShow: dataShow
   #     filterKey: keyWord
   #     activePage: activePage
+  filterKeys: []
   handleKeyWordChange: ->
-    {filterKeys} = @props
+    @filterKeys = Object.clone @filterKeys
     for tab, index in @props.tableTab
       continue if index is 0
-      filterKeys[index] = @refs["input#{index}"].getValue() if @props.rowChooseChecked[index]
-    @props.filterRules filterKeys
+      @filterKeys[index-1] = if @props.rowChooseChecked[index] then @refs["input#{index}"].getValue() else ''
+    dataManager.setFilterKeys @props.contentType, @filterKeys
   # componentWillReceiveProps: (nextProps)->
   #   dataShow = @_filter nextProps.data, @filterKey
   #   {activePage} = @state
@@ -122,8 +113,8 @@ AkashicRecordsTableArea = React.createClass
                   <tr>
                     {
                       showLabel = false
-                      for filterKey, index in @props.filterKeys
-                        if filterKey isnt ''
+                      for filterKey, index in @filterKeys
+                        if @props.rowChooseChecked[index+1] and filterKey isnt ''
                           showLabel = true
                       for tab, index in @props.tableTab
                         if index is 0
@@ -141,7 +132,6 @@ AkashicRecordsTableArea = React.createClass
                           <th key={index} className="table-search">
                             <Input
                               type='text'
-                              value={@props.filterKeys[index]}
                               label={if showLabel then @props.tableTab[index] else ''}
                               placeholder={@props.tableTab[index]}
                               ref="input#{index}"
@@ -154,8 +144,8 @@ AkashicRecordsTableArea = React.createClass
                   <tr>
                     {
                       showLabel = false
-                      for filterKey, index in @props.filterKeys
-                        if filterKey isnt ''
+                      for filterKey, index in @filterKeys
+                        if @props.rowChooseChecked[index+1] and filterKey isnt ''
                           showLabel = true
                       for tab, index in @props.tableTab
                         if index is 0
@@ -173,7 +163,6 @@ AkashicRecordsTableArea = React.createClass
                           <th key={index} className="table-search">
                             <Input
                               type='text'
-                              value={@props.filterKeys[index]}
                               label={@props.tableTab[index]}
                               placeholder={@props.tableTab[index]}
                               ref="input#{index}"
@@ -193,8 +182,8 @@ AkashicRecordsTableArea = React.createClass
                   <tr>
                     {
                       showLabel = false
-                      for filterKey, index in @props.filterKeys
-                        if filterKey isnt ''
+                      for filterKey, index in @filterKeys
+                        if @props.rowChooseChecked[index+1] and filterKey isnt ''
                           showLabel = true
                       for tab, index in @props.tableTab
                         if index is 0
@@ -212,7 +201,6 @@ AkashicRecordsTableArea = React.createClass
                           <th key={index} className="table-search">
                             <Input
                               type='text'
-                              value={@props.filterKeys[index]}
                               placeholder={@props.tableTab[index]}
                               ref="input#{index}"
                               groupClassName='filter-area'
