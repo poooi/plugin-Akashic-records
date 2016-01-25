@@ -104,7 +104,6 @@ AkashicRecordsCheckboxArea = React.createClass
       statisticsPaneShow: statisticsPaneShow
       searchArgv: searchArgv
       compareArgv: compareArgv
-
     config.set "plugin.Akashic.#{@props.contentType}.statisticsPaneShow", statisticsPaneShow
   handleClickCheckbox: (index) ->
     {rowChooseChecked} = @props

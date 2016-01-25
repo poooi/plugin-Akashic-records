@@ -99,11 +99,11 @@ resolveFile = (fileContent, tableTabEn)->
         logItem
       data = data.filter (log) ->
         log.length is 12
-    when tableTab['en-US']['mission'], \
-    tableTab['ja-JP']['mission'], \
-    tableTab['zh-CN']['mission'], \
-    tableTab['zh-TW']['mission']
-      logType = "mission"
+    when tableTab['en-US'][CONST.typeList.mission], \
+    tableTab['ja-JP'][CONST.typeList.mission], \
+    tableTab['zh-CN'][CONST.typeList.mission], \
+    tableTab['zh-TW'][CONST.typeList.mission]
+      logType = CONST.typeList.mission
       data = logs.slice(1).map (logItem) ->
         logItem = logItem.split ','
         if logItem.length isnt 11
@@ -112,11 +112,11 @@ resolveFile = (fileContent, tableTabEn)->
         logItem
       data = data.filter (log) ->
         log.length is 11
-    when tableTab['en-US']['createShip'], \
-    tableTab['ja-JP']['createShip'], \
-    tableTab['zh-CN']['createShip'], \
-    tableTab['zh-TW']['createShip']
-      logType = "createShip"
+    when tableTab['en-US'][CONST.typeList.createShip], \
+    tableTab['ja-JP'][CONST.typeList.createShip], \
+    tableTab['zh-CN'][CONST.typeList.createShip], \
+    tableTab['zh-TW'][CONST.typeList.createShip]
+      logType = CONST.typeList.createShip
       data = logs.slice(1).map (logItem) ->
         logItem = logItem.split ','
         if logItem.length isnt 12
@@ -125,11 +125,11 @@ resolveFile = (fileContent, tableTabEn)->
         logItem
       data = data.filter (log) ->
         log.length is 12
-    when tableTab['en-US']['createItem'], \
-    tableTab['ja-JP']['createItem'], \
-    tableTab['zh-CN']['createItem'], \
-    tableTab['zh-TW']['createItem']
-      logType = "createItem"
+    when tableTab['en-US'][CONST.typeList.createItem], \
+    tableTab['ja-JP'][CONST.typeList.createItem], \
+    tableTab['zh-CN'][CONST.typeList.createItem], \
+    tableTab['zh-TW'][CONST.typeList.createItem]
+      logType = CONST.typeList.createItem
       data = logs.slice(1).map (logItem) ->
         logItem = logItem.split ','
         if logItem.length isnt 10
@@ -138,11 +138,11 @@ resolveFile = (fileContent, tableTabEn)->
         logItem
       data = data.filter (log) ->
         log.length is 10
-    when tableTab['en-US']['resource'], \
-    tableTab['ja-JP']['resource'], \
-    tableTab['zh-CN']['resource'], \
-    tableTab['zh-TW']['resource']
-      logType = "resource"
+    when tableTab['en-US'][CONST.typeList.resource], \
+    tableTab['ja-JP'][CONST.typeList.resource], \
+    tableTab['zh-CN'][CONST.typeList.resource], \
+    tableTab['zh-TW'][CONST.typeList.resource]
+      logType = CONST.typeList.resource
       data = logs.slice(1).map (logItem) ->
         logItem = logItem.split ','
         if logItem.length isnt 9
@@ -154,7 +154,7 @@ resolveFile = (fileContent, tableTabEn)->
 
     # 航海日志扩张版
     when "No.,日付,海域,マス,出撃,ランク,敵艦隊,ドロップ艦種,ドロップ艦娘,大破艦,旗艦,旗艦(第二艦隊),MVP,MVP(第二艦隊)"
-      logType = "attack"
+      logType = CONST.typeList.attack
       data = logs.slice(1).map (logItem) ->
         logItem = logItem.split ','
         if logItem.length isnt 14
@@ -189,7 +189,7 @@ resolveFile = (fileContent, tableTabEn)->
       data = data.filter (log) ->
         log.length is 12
     when "日付,海域,マス,出撃,ランク,敵艦隊,ドロップ艦種,ドロップ艦娘,大破艦,旗艦,旗艦(第二艦隊),MVP,MVP(第二艦隊)"
-      logType = "attack"
+      logType = CONST.typeList.attack
       data = logs.slice(1).map (logItem) ->
         logItem = logItem.split ','
         if logItem.length isnt 13
@@ -224,7 +224,7 @@ resolveFile = (fileContent, tableTabEn)->
       data = data.filter (log) ->
         log.length is 12
     when "No.,日付,結果,遠征,燃料,弾薬,鋼材,ボーキ,アイテム1,個数,アイテム2,個数"
-      logType = "mission"
+      logType = CONST.typeList.mission
       data = logs.slice(1).map (logItem) ->
         logItem = logItem.split ','
         if logItem.length isnt 12
@@ -245,7 +245,7 @@ resolveFile = (fileContent, tableTabEn)->
       data = data.filter (log) ->
         log.length is 11
     when "日付,結果,遠征,燃料,弾薬,鋼材,ボーキ,アイテム1,個数,アイテム2,個数"
-      logType = "mission"
+      logType = CONST.typeList.mission
       data = logs.slice(1).map (logItem) ->
         logItem = logItem.split ','
         if logItem.length isnt 11
@@ -266,7 +266,7 @@ resolveFile = (fileContent, tableTabEn)->
       data = data.filter (log) ->
         log.length is 11
     when "No.,日付,種類,名前,艦種,燃料,弾薬,鋼材,ボーキ,開発資材,空きドック,秘書艦,司令部Lv"
-      logType = "createShip"
+      logType = CONST.typeList.createShip
       data = logs.slice(1).map (logItem) ->
         logItem = logItem.split ','
         if logItem.length isnt 13
@@ -292,7 +292,7 @@ resolveFile = (fileContent, tableTabEn)->
       data = data.filter (log) ->
         log.length is 12
     when "日付,種類,名前,艦種,燃料,弾薬,鋼材,ボーキ,開発資材,空きドック,秘書艦,司令部Lv"
-      logType = "createShip"
+      logType = CONST.typeList.createShip
       data = logs.slice(1).map (logItem) ->
         logItem = logItem.split ','
         if logItem.length isnt 12
@@ -318,7 +318,7 @@ resolveFile = (fileContent, tableTabEn)->
       data = data.filter (log) ->
         log.length is 12
     when "No.,日付,開発装備,種別,燃料,弾薬,鋼材,ボーキ,秘書艦,司令部Lv"
-      logType = "createItem"
+      logType = CONST.typeList.createItem
       data = logs.slice(1).map (logItem) ->
         logItem = logItem.split ','
         if logItem.length isnt 10
@@ -343,7 +343,7 @@ resolveFile = (fileContent, tableTabEn)->
       data = data.filter (log) ->
         log.length is 10
     when "日付,開発装備,種別,燃料,弾薬,鋼材,ボーキ,秘書艦,司令部Lv"
-      logType = "createItem"
+      logType = CONST.typeList.createItem
       data = logs.slice(1).map (logItem) ->
         logItem = logItem.split ','
         if logItem.length isnt 9
@@ -368,7 +368,7 @@ resolveFile = (fileContent, tableTabEn)->
       data = data.filter (log) ->
         log.length is 10
     when "日付,直前のイベント,燃料,弾薬,鋼材,ボーキ,高速修復材,高速建造材,開発資材,改修資材"
-      logType = "resource"
+      logType = CONST.typeList.resource
       data = logs.slice(1).map (logItem) ->
         logItem = logItem.split ','
         if logItem.length isnt 10 and logItem.length isnt 12
@@ -387,7 +387,7 @@ resolveFile = (fileContent, tableTabEn)->
       data = data.filter (log) ->
         log.length is 9
     when "日付,燃料,弾薬,鋼材,ボーキ,高速修復材,高速建造材,開発資材,改修資材"
-      logType = "resource"
+      logType = CONST.typeList.resource
       data = logs.slice(1).map (logItem) ->
         logItem = logItem.split ','
         if logItem.length isnt 9 and logItem.length isnt 11
@@ -406,7 +406,7 @@ resolveFile = (fileContent, tableTabEn)->
       data = data.filter (log) ->
         log.length is 9
     when "日付,燃料,弾薬,鋼材,ボーキ,高速修復材,高速建造材,開発資材"
-      logType = "resource"
+      logType = CONST.typeList.resource
       data = logs.slice(1).map (logItem) ->
         logItem = logItem.split ','
         if logItem.length isnt 8
@@ -427,7 +427,7 @@ resolveFile = (fileContent, tableTabEn)->
 
     # KCV yuyuvn版
     when "Date,Result,Operation,Enemy Fleet,Rank"
-      logType = "attack"
+      logType = CONST.typeList.attack
       data = logs.slice(1).map (logItem) ->
         logItem = logItem.split ','
         if logItem.length isnt 6
@@ -449,7 +449,7 @@ resolveFile = (fileContent, tableTabEn)->
       data = data.filter (log) ->
         log.length is 12
     when "Date,Result,Secretary,Secretary level,Fuel,Ammo,Steel,Bauxite"
-      logType = "createItem"
+      logType = CONST.typeList.createItem
       data = logs.slice(1).map (logItem) ->
         logItem = logItem.split ','
         if logItem.length isnt 9
@@ -474,7 +474,7 @@ resolveFile = (fileContent, tableTabEn)->
       data = data.filter (log) ->
         log.length is 10
     when "Date,Result,Secretary,Secretary level,Fuel,Ammo,Steel,Bauxite,# of Build Materials"
-      logType = "createShip"
+      logType = CONST.typeList.createShip
       data = logs.slice(1).map (logItem) ->
         logItem = logItem.split ','
         if logItem.length isnt 10
@@ -500,7 +500,7 @@ resolveFile = (fileContent, tableTabEn)->
       data = data.filter (log) ->
         log.length is 12
     when "Date,Fuel,Ammunition,Steel,Bauxite,DevKits,Buckets,Flamethrowers"
-      logType = "resource"
+      logType = CONST.typeList.resource
       data = logs.slice(1).map (logItem) ->
         logItem = logItem.split ','
         if logItem.length isnt 9
