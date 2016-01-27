@@ -358,7 +358,6 @@ AkashicRecordsArea = React.createClass
   componentDidMount: ->
     window.addEventListener 'game.response', @handleResponse
     window.addEventListener 'battle.result', @handleBattleResultResponse
-  componentWillMount: ->
     @nickNameId = window._nickNameId
     if @nickNameId is 0 or not @nickNameId?
       @nickNameId = config.get 'plugin.Akashic.nickNameId', 0

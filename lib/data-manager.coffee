@@ -118,8 +118,9 @@ class DataManager
         @filterKey[type] = keys
         @_applyFilter type, lazyFlag
 
-  getFilterKeys: (type, keys) ->
+  getFilterKeys: (type) ->
     Object.clone @filterKey[type]
+
   _getDataAccordingToNameId: (id, type) ->
     testNum = /^[1-9]+[0-9]*$/
     datalogs = glob.sync(path.join(APPDATA_PATH, 'akashic-records', @nickNameId.toString(), type, '*'))

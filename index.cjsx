@@ -14,7 +14,7 @@ i18n = new (require 'i18n-2')
 i18n.setLocale(window.language)
 __ = i18n.__.bind(i18n)
 
-devMode = false
+devMode = true
 
 window.akashicRecordsWindow = null
 initialAkashicRecordsWindow = ->
