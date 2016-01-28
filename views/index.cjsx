@@ -9,7 +9,6 @@ path = require 'path-extra'
 AkashicLog = require './akashic-records-log'
 AkashicResourceLog = require './akashic-resource-log'
 AkashicAdvancedModule = require './akashic-advanced-module'
-AkashicSenkaLog = require './akashic-senka-log'
 
 $('#font-awesome')?.setAttribute 'href', "#{ROOT}/components/font-awesome/css/font-awesome.min.css"
 
@@ -36,29 +35,10 @@ judgeDanger = (nowHp, deckShipId, _ships) ->
     dangerInfo
   else
     "无"
-  
+
 timeToBString = (time) ->
   date = new Date(time)
   "#{date.getFullYear()}#{date.getMonth()}#{date.getDate()}#{date.getHours()}"
-
-senkaDateToString = ->
-  date = new Date()
-  year = date.getFullYear()
-  month = date.getMonth() + 1
-  if month < 10
-    month = "0#{month}"
-  day = date.getDate()
-  if day < 10
-    day = "0#{day}"
-  hour = date.getHours()
-  if hour in [2..13]
-    time = "02"
-  else if hour in [14..23]
-    time = "14"
-  else
-    day = day - 1
-    time = "14"
-  "#{year}#{month}#{day}#{time}"
 
 attackTableTabEn = ['No.', 'Time', 'World', "Node", "Sortie Type",
                   "Battle Result", "Enemy Encounters", "Drop",
@@ -93,9 +73,6 @@ createShipTableTab = createShipTableTabEn.map (tab) ->
 
 resourceTableTab = resourceTableTabEn.map (tab) ->
   __(tab)
-
-senkaTableTab = [__("Ranking"), 'Lv.', __("Admiral Name"), __("Military Rank"),
-                 __("Comment"), __("Victory"), __("Insignia")]
 
 
 # getUseItem: (id)->
@@ -530,10 +507,10 @@ AkashicRecordsArea = React.createClass
       else
         dataItem.push "奇怪的战果？#{rank}"
     dataItem.push enemy
-    
+
     if dropShipId isnt -1
       dropData = window.$ships[dropShipId].api_name
-    else 
+    else
       dropData = ""
     if window.$useitems[dropItem?.api_useitem_id]?.api_name
       if dropData isnt ""
@@ -576,17 +553,10 @@ AkashicRecordsArea = React.createClass
     if selectedKey is 4
       @setState
         mapShowFlag: true
-        personalShowFlag: false
-        selectedKey: selectedKey
-    else if selectedKey is 5
-      @setState
-        mapShowFlag: false
-        personalShowFlag: true
         selectedKey: selectedKey
     else
       @setState
         mapShowFlag: false
-        personalShowFlag: false
         selectedKey: selectedKey
 
   render: ->
@@ -600,8 +570,7 @@ AkashicRecordsArea = React.createClass
         <Tab eventKey={2} title={__ "Construction"} ><AkashicLog indexKey={2} selectedKey={@state.selectedKey} data={@state.createShipData} dataVersion={@state.dataVersion[3]} tableTab={createShipTableTab} contentType={'createShip'}/></Tab>
         <Tab eventKey={3} title={__ "Development"} ><AkashicLog indexKey={3} selectedKey={@state.selectedKey} data={@state.createItemData} dataVersion={@state.dataVersion[2]} tableTab={createItemTableTab} contentType={'createItem'}/></Tab>
         <Tab eventKey={4} title={__ "Resource"} ><AkashicResourceLog indexKey={4} selectedKey={@state.selectedKey} data={@state.resourceData} dataVersion={@state.dataVersion[4]} tableTab={resourceTableTab} mapShowFlag={@state.mapShowFlag} contentType={'resource'}/></Tab>
-        <Tab eventKey={5} title={__ "Victory"} ><AkashicSenkaLog indexKey={5} selectedKey={@state.selectedKey} memberId={@state.memberId} tableTab={senkaTableTab}  personalShowFlag={@state.personalShowFlag} contentType={'senka'}/></Tab>
-        <Tab eventKey={6} title={__ "Others"} >
+        <Tab eventKey={5} title={__ "Others"} >
           <AkashicAdvancedModule
             tableTab={
               'attack': attackTableTabEn

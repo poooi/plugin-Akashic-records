@@ -46,7 +46,7 @@ module.exports =
   priority: 10
   displayName: <span><FontAwesome key={0} name='book' /> {__ "Logbook"}</span>
   #displayName: <span><FontAwesome key={0} name='book' /> 航海日志</span>
-  description: "#{__ "Logs"}. #{__ "Senka module is developed by rui"}."
+  description: "#{__ "Logs"}."
   author: 'Jennings Wu'
   link: 'https://github.com/JenningsWu'
   version: '2.3.2'
