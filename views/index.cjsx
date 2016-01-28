@@ -380,22 +380,12 @@ AkashicRecordsArea = React.createClass
         <Label bsStyle="danger">{@state.warning}</Label>
       </div>
       <Tabs activeKey={@state.selectedKey} animation={false} onSelect={@handleSelectTab}>
-<<<<<<< 275b735ba593c9875c67e09222d985d8b38edcc0
-        <Tab eventKey={0} title={__ "Sortie"} ><AkashicLog indexKey={0} selectedKey={@state.selectedKey} data={@state.attackData} dataVersion={@state.dataVersion[0]} tableTab={attackTableTab} contentType={'attack'}/></Tab>
-        <Tab eventKey={1} title={__ "Expedition"} ><AkashicLog indexKey={1} selectedKey={@state.selectedKey} data={@state.missionData} dataVersion={@state.dataVersion[1]} tableTab={missionTableTab} contentType={'mission'}/></Tab>
-        <Tab eventKey={2} title={__ "Construction"} ><AkashicLog indexKey={2} selectedKey={@state.selectedKey} data={@state.createShipData} dataVersion={@state.dataVersion[3]} tableTab={createShipTableTab} contentType={'createShip'}/></Tab>
-        <Tab eventKey={3} title={__ "Development"} ><AkashicLog indexKey={3} selectedKey={@state.selectedKey} data={@state.createItemData} dataVersion={@state.dataVersion[2]} tableTab={createItemTableTab} contentType={'createItem'}/></Tab>
-        <Tab eventKey={4} title={__ "Resource"} ><AkashicResourceLog indexKey={4} selectedKey={@state.selectedKey} data={@state.resourceData} dataVersion={@state.dataVersion[4]} tableTab={resourceTableTab} mapShowFlag={@state.mapShowFlag} contentType={'resource'}/></Tab>
-        <Tab eventKey={5} title={__ "Others"} >
-=======
         <Tab eventKey={0} title={__ "Sortie"} ><AkashicLog indexKey={0} selectedKey={@state.selectedKey} tableTab={attackTableTab} contentType={CONST.typeList.attack}/></Tab>
         <Tab eventKey={1} title={__ "Expedition"} ><AkashicLog indexKey={1} selectedKey={@state.selectedKey} tableTab={missionTableTab} contentType={CONST.typeList.mission}/></Tab>
         <Tab eventKey={2} title={__ "Construction"} ><AkashicLog indexKey={2} selectedKey={@state.selectedKey} tableTab={createShipTableTab} contentType={CONST.typeList.createShip}/></Tab>
         <Tab eventKey={3} title={__ "Development"} ><AkashicLog indexKey={3} selectedKey={@state.selectedKey} tableTab={createItemTableTab} contentType={CONST.typeList.createItem}/></Tab>
-        <Tab eventKey={4} title={__ "Resource"} ><AkashicResourceLog indexKey={4} selectedKey={@state.selectedKey} tableTab={resourceTableTab} mapShowFlag={@state.mapShowFlag} contentType={'resource'}/></Tab>
-        <Tab eventKey={5} title={__ "Victory"} ><AkashicSenkaLog indexKey={5} selectedKey={@state.selectedKey} memberId={@state.memberId} tableTab={senkaTableTab}  personalShowFlag={@state.personalShowFlag} contentType={'senka'}/></Tab>
+        <Tab eventKey={4} title={__ "Resource"} ><AkashicResourceLog indexKey={4} selectedKey={@state.selectedKey} tableTab={resourceTableTab} mapShowFlag={@state.mapShowFlag} contentType={CONST.typeList.resource}/></Tab>
         <Tab eventKey={6} title={__ "Others"} >
->>>>>>> Use data-manager instead of build-in manager
           <AkashicAdvancedModule
             tableTab={
               'attack': attackTableTabEn
