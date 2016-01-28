@@ -44,7 +44,7 @@ AkashicRecordsStatisticsPanel = React.createClass
       new CompareArgv()
     ]
 
-  handleStatisticsPaneShow: ->
+  handlePanelShow: ->
     {show, searchArgv, compareArgv} = @state
     show = not show
     if show
@@ -56,7 +56,7 @@ AkashicRecordsStatisticsPanel = React.createClass
       show: show
       searchArgv: searchArgv
       compareArgv: compareArgv
-    config.set "plugin.Akashic.#{@props.contentType}.statisticsPaneShow", show
+    config.set "plugin.Akashic.#{@props.contentType}.statisticsPanelShow", show
 
   refreshSearchResult: (searchArgv)->
     for item, index in searchArgv
@@ -114,7 +114,6 @@ AkashicRecordsStatisticsPanel = React.createClass
       searchArgv: searchArgv
       compareArgv: compareArgv
 
-
   handleCompareChange: ->
     {compareArgv} = @state
     for index in [0..compareArgv.length-1]
@@ -161,7 +160,7 @@ AkashicRecordsStatisticsPanel = React.createClass
 
   componentWillMount: ->
     show =
-      config.get "plugin.Akashic.#{@props.contentType}.statisticsPaneShow", true
+      config.get "plugin.Akashic.#{@props.contentType}.statisticsPanelShow", true
     searchArgv = @refreshSearchResult @state.searchArgv
     compareArgv = @refreshCompareResult @state.compareArgv
     @setState
@@ -187,7 +186,7 @@ AkashicRecordsStatisticsPanel = React.createClass
     <Grid>
       <Row>
           <Col xs={12}>
-            <div onClick={@handleStatisticsPaneShow}>
+            <div onClick={@handlePanelShow}>
               <Divider text={__ "Statistics"} icon={true} hr={true} show={@state.show}/>
             </div>
           </Col>

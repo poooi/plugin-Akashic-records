@@ -1,7 +1,7 @@
 {React, ReactBootstrap, jQuery, __, CONST} = window
 {Grid, Col, Table} = ReactBootstrap
 
-AkashicRecordsCheckboxArea = require './akashic-records-checkbox-area'
+AkashicRecordsCheckboxPanel = require './akashic-records-checkbox-panel'
 AkashicRecordsStatisticsPanel = require './akashic-records-statistics-panel'
 AkashicRecordsTableArea = require './akashic-records-table-area'
 
@@ -115,7 +115,7 @@ AkashicLog = React.createClass
 
   render: ->
     <div>
-      <AkashicRecordsCheckboxArea
+      <AkashicRecordsCheckboxPanel
         contentType={@props.contentType}
         tableTab={@props.tableTab}
         tabFilterRules={@tabFilterRules}

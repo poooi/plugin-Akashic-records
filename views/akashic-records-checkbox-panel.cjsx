@@ -27,16 +27,16 @@ dateToString = (date)->
     second = "0#{second}"
   "#{date.getFullYear()}/#{month}/#{day} #{hour}:#{minute}:#{second}"
 
-AkashicRecordsCheckboxArea = React.createClass
+AkashicRecordsCheckboxPanel = React.createClass
   getInitialState: ->
-    filterPaneShow: true
+    show: true
   checkboxChangeFlag: false
 
-  handleFilterPaneShow: ->
-    {filterPaneShow} = @state
-    filterPaneShow = not filterPaneShow
-    @setState {filterPaneShow}
-    config.set "plugin.Akashic.#{@props.contentType}.filterPaneShow", filterPaneShow
+  handlePanelShow: ->
+    {show} = @state
+    show = not show
+    @setState {show}
+    config.set "plugin.Akashic.#{@props.contentType}.checkboxPanelShow", show
   
   handleClickCheckbox: (index) ->
     {rowChooseChecked} = @props
@@ -57,21 +57,21 @@ AkashicRecordsCheckboxArea = React.createClass
   
 
   componentWillMount: ->
-    filterPaneShow =
-      config.get "plugin.Akashic.#{@props.contentType}.filterPaneShow", true
+    show =
+      config.get "plugin.Akashic.#{@props.contentType}.checkboxPanelShow", true
     @setState
-      filterPaneShow: filterPaneShow
+      show: show
 
   render: ->
     <Grid>
       <Row>
         <Col xs={12}>
-          <div onClick={@handleFilterPaneShow}>
-            <Divider text={__ "Filter"} icon={true} hr={true} show={@state.filterPaneShow}/>
+          <div onClick={@handlePanelShow}>
+            <Divider text={__ "Filter"} icon={true} hr={true} show={@state.show}/>
           </div>
         </Col>
       </Row>
-      <Collapse className='akashic-records-filter' in={@state.filterPaneShow}>
+      <Collapse className='akashic-records-checkbox-panel' in={@state.show}>
         <div>
           <Row>
           {
@@ -129,4 +129,4 @@ AkashicRecordsCheckboxArea = React.createClass
       </Collapse>
     </Grid>
 
-module.exports = AkashicRecordsCheckboxArea
+module.exports = AkashicRecordsCheckboxPanel
