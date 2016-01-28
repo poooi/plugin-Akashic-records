@@ -2,6 +2,7 @@
 {Grid, Col, Table} = ReactBootstrap
 
 AkashicRecordsCheckboxArea = require './akashic-records-checkbox-area'
+AkashicRecordsStatisticsPanel = require './akashic-records-statistics-panel'
 AkashicRecordsTableArea = require './akashic-records-table-area'
 
 #i18n = require '../node_modules/i18n'
@@ -125,6 +126,9 @@ AkashicLog = React.createClass
         configList={configList}
         configChecked={@state.configChecked}
         configCheckboxClick={@configCheckboxClick} />
+      <AkashicRecordsStatisticsPanel
+        contentType={@props.contentType}
+      />
       <AkashicRecordsTableArea
         contentType={@props.contentType}
         tableTab={@props.tableTab}

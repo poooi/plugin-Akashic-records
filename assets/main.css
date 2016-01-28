@@ -35,11 +35,6 @@ akashic-records .container {
   margin-bottom: 15px;
 }
 
-.akashic-records-settings.tab-pane-hidden {
-  margin-bottom: 0px;
-}
-
-
 #myChart {
   min-height: 350px !important;
   height: 100% !important;
@@ -139,10 +134,6 @@ akashic-records .divider hr{
   margin-top: 10px;
   margin-bottom: 8px;
 }
-
-/*akashic-records .tab-pane-hidden .divider hr{
-  margin-bottom: 3px;
-}*/
 
 akashic-records .akashic-records-filter .checkbox,
 akashic-records .akashic-records-statistics .checkbox{

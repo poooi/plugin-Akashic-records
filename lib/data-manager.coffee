@@ -149,11 +149,11 @@ class DataManager
       return b[0] - a[0]
     data
 
-  initializeData: (id) ->
+  initializeData: (id, lazyFlag) ->
     @nickNameId = id
     for key, type of CONST.typeList
       @data.raw[type] = @_getDataAccordingToNameId @nickNameId, type
-      @_fireEvent(type, CONST.eventList.dataChange)
+      @_fireEvent(type, CONST.eventList.dataChange, lazyFlag)
       @_applyFilter(type)
 
   addListener: (type, eventType, method) ->
@@ -176,7 +176,7 @@ class DataManager
       for method in @listeners[type][eventType]
         method.call(this, lazyFlag)
 
-  saveLog: (type, log) ->
+  saveLog: (type, log, lazyFlag) ->
     if @_checkTypeValid type
       @data.raw[type].unshift log
       fs.ensureDirSync(path.join(APPDATA_PATH, 'akashic-records', @nickNameId.toString(), type))
@@ -196,8 +196,8 @@ class DataManager
           consoleError "Write #{type}-log file error!" if err)
       consoleLog "save one #{type} log"
       newLogs = @_filterOneLog type, log
-      newLogsFlag = newLogs.length isnt 0
-      @_fireEvent type, CONST.eventList.dataChange, newLogsFlag
+      newLogsFlag = newLogs.length isnt 0 and type isnt CONST.typeList.resource
+      @_fireEvent type, CONST.eventList.dataChange, newLogsFlag & lazyFlag
       if newLogsFlag
         if @data.raw[type] isnt @data.afterFilter[type]
           @data.afterFilter[type].unshift newLogs[0]
@@ -242,10 +242,13 @@ class DataManager
       data = []
       changeFlag = true
     else
-      if not @searchBuffer[type][base].key[keyword]?
+      if @searchBuffer[type][base].key[keyword]?
+        data = @searchBuffer[type][base].key[keyword]
+      else
         data = @_search @searchBuffer[type][base].data, keyword
+        @searchBuffer[type][base].key[keyword] = data
         changeFlag = true
-    if changeFlag
+    if changeFlag or not @searchBuffer[type][index]?
       @searchBuffer[type][index] = new SearchBuffer(data)
     data
 

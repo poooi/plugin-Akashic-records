@@ -48,6 +48,7 @@ showBattleDetail = (timestamp) ->
     window.toggleModal "Warning", e
 
 AkashicRecordsTableTbodyItem = React.createClass
+  #componentShouldUpdate
   render: ->
     <tr>
       <td>

@@ -1,0 +1,60 @@
+Listen data in:
+  - log's checkbox-area
+    - [lazy flag] raw data
+    - [lazy flag] filtered data
+  - log's table-area: 
+    - [lazy flag] filtered data
+      
+->
+  raw data
+    [lazy flag] checkbox-area
+  filtered data
+    [lazy flag] checkbox-area
+      check active page
+    [lazy flag] table-area
+      check & set active page
+    [active page chagne] log-area
+
+Fire event in data-manager:
+  initializeData:
+    [lazy flag] raw data
+    filtered data
+  saveLog:
+    [lazy flag && new log] raw data
+    filtered data if new log
+  setFilterKeys:
+    [lazy flag] filtered data
+
+Needed
+  raw data change 
+    -> statistic view
+  
+  filtered data change:
+    -> active page
+      -> statistic view
+      -> table area
+    -> statistic view
+    -> table area
+
+Actions
+  √ raw data chagne
+  √ filtered data change
+
+  √ initialize data             =>        [lazy flag] initializeData (raw & filtered)
+    -> raw data change
+    -> filtered data change
+
+  √ get new data                =>        [lazy flag] saveLog
+    -> raw data change
+    -> filtered data change if new log
+
+  √ set tab checkbox            =>        [lazy flag] setFilterKeys & log-area setState
+    -> filtered data change if key words change
+    -> log view change
+
+  √ set filter keywords         =>        set filterKeys
+    -> filtered data change
+
+
+
+

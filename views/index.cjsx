@@ -135,7 +135,7 @@ AkashicRecordsArea = React.createClass
           @nickNameId = window._nickNameId
           if not @nickNameId? and @nickNameId isnt 0
             config.set 'plugin.Akashic.nickNameId', @nickNameId
-            dataManager.initializeData(@nickNameId)
+            dataManager.initializeData(@nickNameId, true)
         @setState
           memberId: body.api_member_id
       # Map selected rank
@@ -207,7 +207,7 @@ AkashicRecordsArea = React.createClass
           dataItem.push body.api_get_item2.api_useitem_count
         else
           dataItem.push "", ""
-        dataManager.saveLog(CONST.typeList.mission, dataItem)
+        dataManager.saveLog(CONST.typeList.mission, dataItem, true)
 
       # 开发
       when '/kcsapi/api_req_kousyou/createitem'
@@ -231,7 +231,7 @@ AkashicRecordsArea = React.createClass
         @_decks = window._decks
         dataItem.push "#{@_ships[@_decks[0].api_ship[0]].api_name}(Lv.#{@_ships[@_decks[0].api_ship[0]].api_lv})"
         dataItem.push window._teitokuLv
-        dataManager.saveLog(CONST.typeList.createItem, dataItem)
+        dataManager.saveLog(CONST.typeList.createItem, dataItem, true)
 
       # 建造
       when '/kcsapi/api_req_kousyou/createship'
@@ -266,7 +266,7 @@ AkashicRecordsArea = React.createClass
           dataItem.push remainNum
           dataItem.push "#{@_ships[@_decks[0].api_ship[0]].api_name}(Lv.#{@_ships[@_decks[0].api_ship[0]].api_lv})"
           dataItem.push window._teitokuLv
-          dataManager.saveLog(CONST.typeList.createShip, dataItem)
+          dataManager.saveLog(CONST.typeList.createShip, dataItem, true)
           @createShipFlag = false
 
       # 资源
@@ -353,7 +353,7 @@ AkashicRecordsArea = React.createClass
       tmp[1] = "#{@_ships[deckShipId[6]].api_name}(Lv.#{@_ships[deckShipId[6]].api_lv})"
       tmp[3] = "#{@_ships[deckShipId[6 + mvp[1]]].api_name}(Lv.#{@_ships[deckShipId[6 + mvp[1]]].api_lv})"
     dataItem = dataItem.concat tmp
-    dataManager.saveLog(CONST.typeList.attack, dataItem)
+    dataManager.saveLog(CONST.typeList.attack, dataItem, true)
 
   componentDidMount: ->
     window.addEventListener 'game.response', @handleResponse
@@ -362,7 +362,7 @@ AkashicRecordsArea = React.createClass
     if @nickNameId is 0 or not @nickNameId?
       @nickNameId = config.get 'plugin.Akashic.nickNameId', 0
     if @nickNameId isnt 0
-      dataManager.initializeData @nickNameId
+      dataManager.initializeData @nickNameId, true
 
   handleSelectTab: (selectedKey)->
     if selectedKey is 4
