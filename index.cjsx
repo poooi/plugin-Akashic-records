@@ -107,7 +107,7 @@ module.exports =
   description: "#{__ "Logs"}."
   author: 'Jennings Wu'
   link: 'https://github.com/JenningsWu'
-  version: '2.3.2'
+  version: '3.0.0-beta.0'
   handleClick: ->
     if devMode
       initialAkashicRecordsWindow()
