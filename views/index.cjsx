@@ -1,11 +1,11 @@
 fs = require 'fs-extra'
-glob = require 'glob'
-{React, ReactDOM, ReactBootstrap, $, ROOT, APPDATA_PATH, __, translate} = window
-{Tabs, Tab, Label} = ReactBootstrap
 path = require 'path-extra'
+
+{React, ReactDOM, ReactBootstrap, $, ROOT, __, translate, CONST} = window
+{Tabs, Tab, Label} = ReactBootstrap
 {log, warn, error} = require path.join(ROOT, 'lib/utils')
-# AkashicRecordTab = require './item-info-table-area'
-# AkashicRecordContent = require './item-info-checkbox-area'
+
+dataManager = require '../lib/data-manager'
 AkashicLog = require './akashic-records-log'
 AkashicResourceLog = require './akashic-resource-log'
 AkashicAdvancedModule = require './akashic-advanced-module'
@@ -102,11 +102,6 @@ resourceTableTab = resourceTableTabEn.map (tab) ->
 
 AkashicRecordsArea = React.createClass
   getInitialState: ->
-    attackData: []
-    missionData: []
-    createItemData: []
-    createShipData: []
-    resourceData: []
     mapShowFlag: false
     selectedKey: 0
     dataVersion: [0, 0, 0, 0, 0]
@@ -130,156 +125,16 @@ AkashicRecordsArea = React.createClass
   largeFlag: false
   material: []
   kdockId: 0
-  getDataAccordingToNameId: (id, type) ->
-    testNum = /^[1-9]+[0-9]*$/
-    datalogs = glob.sync(path.join(APPDATA_PATH, 'akashic-records', @nickNameId.toString(), type, '*'))
-    datalogs = datalogs.map (filePath) ->
-      try
-        fileContent = fs.readFileSync filePath, 'utf8'
-        logs = fileContent.split "\n"
-        logs = logs.map (logItem) ->
-          logItem = logItem.split ','
-          logItem[0] = parseInt logItem[0] if testNum.test(logItem[0])
-          logItem
-        logs.filter (log) ->
-          log.length > 2
-      catch e
-        warn "Read and decode file:#{filePath} error!#{e.toString()}"
-        return []
-    data = []
-    for datalog in datalogs
-      data = data.concat datalog
-    data.reverse()
-    data.sort (a, b)->
-      if isNaN a[0]
-        a[0] = (new Date(a[0])).getTime()
-      if isNaN b[0]
-        b[0] = (new Date(b[0])).getTime()
-      return b[0] - a[0]
-  getLogFromFile: (id, type) ->
-    switch type
-      when 0
-        {attackData, dataVersion} = @state
-        attackData = @getDataAccordingToNameId id, "attack"
-        console.log "get attackData from file" if process.env.DEBUG?
-        dataVersion[type] += 1
-        @setState
-          attackData: attackData
-          dataVersion: dataVersion
-      when 1
-        {missionData, dataVersion} = @state
-        missionData = @getDataAccordingToNameId id, "mission"
-        console.log "get missionData from file" if process.env.DEBUG?
-        dataVersion[type] += 1
-        @setState
-          missionData: missionData
-          dataVersion: dataVersion
-      when 2
-        {createItemData, dataVersion} = @state
-        createItemData = @getDataAccordingToNameId id, "createitem"
-        console.log "get createItemData from file" if process.env.DEBUG?
-        dataVersion[type] += 1
-        @setState
-          createItemData: createItemData
-          dataVersion: dataVersion
-      when 3
-        {createShipData, dataVersion} = @state
-        createShipData = @getDataAccordingToNameId id, "createship"
-        console.log "get createShipData from file" if process.env.DEBUG?
-        dataVersion[type] += 1
-        @setState
-          createShipData: createShipData
-          dataVersion: dataVersion
-      when 4
-        {resourceData, dataVersion} = @state
-        resourceData = @getDataAccordingToNameId id, "resource"
-        console.log "get resourceData from file" if process.env.DEBUG?
-        dataVersion[type] += 1
-        if resourceData.length > 0
-          @timeString = timeToBString resourceData[0][0]
-        else
-          @timeString = ""
-        @setState
-          resourceData: resourceData
-          dataVersion: dataVersion
-  getAttackData: (id) ->
-    @getLogFromFile id, 0
-  getMissionData: (id) ->
-    @getLogFromFile id, 1
-  getCreateItemData: (id) ->
-    @getLogFromFile id, 2
-  getCreateShipData: (id) ->
-    @getLogFromFile id, 3
-  getResourceData: (id) ->
-    @getLogFromFile id, 4
 
-  setDataHandler: (type, data) ->
-    {dataVersion} = @state
-    if type isnt -1
-      dataVersion[type] += 1
-    dataVersion: dataVersion
-    switch type
-      when 0
-        @setState
-          attackData: data
-      when 1
-        @setState
-          missionData: data
-      when 2
-        @setState
-          createItemData: data
-      when 3
-        @setState
-          createShipData: data
-      when 4
-        @setState
-          resourceData: data
-
-  saveLog: (type, log) ->
-    fs.ensureDirSync(path.join(APPDATA_PATH, 'akashic-records', @nickNameId.toString(), type))
-    if type is "attack"
-      date = new Date(log[0])
-      year = date.getFullYear()
-      month = date.getMonth() + 1
-      if month < 10
-        month = "0#{month}"
-      day = date.getDate()
-      if day < 10
-        day = "0#{day}"
-      fs.appendFile(path.join(APPDATA_PATH, 'akashic-records', @nickNameId.toString(), type, "#{year}#{month}#{day}"), "#{log.join(',')}\n", 'utf8', (err)->
-        error "Write attack-log file error!" if err)
-    else
-      fs.appendFile(path.join(APPDATA_PATH, 'akashic-records', @nickNameId.toString(), type, "data"), "#{log.join(',')}\n", 'utf8', (err)->
-        error "Write #{type}-log file error!" if err)
-  saveAttackLog: (alog) ->
-    console.log "save one Attack-log" if process.env.DEBUG?
-    @saveLog "attack", alog
-  saveMissionLog: (alog) ->
-    console.log "save one Mission-log" if process.env.DEBUG?
-    @saveLog "mission", alog
-  saveCreateItemLog: (alog) ->
-    console.log "save one CreateItem-log" if process.env.DEBUG?
-    @saveLog "createitem", alog
-  saveCreateShipLog: (alog) ->
-    console.log "save one CreateShip-log" if process.env.DEBUG?
-    @saveLog "createship", alog
-  saveResourceLog: (alog) ->
-    console.log "save one Resource-log" if process.env.DEBUG?
-    @saveLog "resource", alog
   handleResponse: (e) ->
     {method, body, postBody} = e.detail
     urlpath = e.detail.path
     switch urlpath
       when '/kcsapi/api_get_member/basic'
-        if @nickNameId isnt window._nickNameId
+        if window._nickNameId? and @nickNameId isnt window._nickNameId
           @nickNameId = window._nickNameId
-          if @nickNameId isnt 0 or not @nickNameId?
-            config.set 'plugin.Akashic.nickNameId', @nickNameId
-            @getAttackData @nickNameId
-            @getMissionData @nickNameId
-            @getCreateItemData @nickNameId
-            @getCreateShipData @nickNameId
-            @getResourceData @nickNameId
+          config.set 'plugin.Akashic.nickNameId', @nickNameId
+          dataManager.initializeData(@nickNameId, true)
         @setState
           memberId: body.api_member_id
       # Map selected rank
@@ -351,14 +206,7 @@ AkashicRecordsArea = React.createClass
           dataItem.push body.api_get_item2.api_useitem_count
         else
           dataItem.push "", ""
-        {missionData} = @state
-        missionData.unshift dataItem
-        @saveMissionLog dataItem
-        {dataVersion} = @state
-        dataVersion[1] += 1
-        @setState
-          missionData: missionData
-          dataVersion: dataVersion
+        dataManager.saveLog(CONST.typeList.mission, dataItem, true)
 
       # 开发
       when '/kcsapi/api_req_kousyou/createitem'
@@ -382,14 +230,7 @@ AkashicRecordsArea = React.createClass
         @_decks = window._decks
         dataItem.push "#{@_ships[@_decks[0].api_ship[0]].api_name}(Lv.#{@_ships[@_decks[0].api_ship[0]].api_lv})"
         dataItem.push window._teitokuLv
-        {createItemData} = @state
-        createItemData.unshift dataItem
-        @saveCreateItemLog dataItem
-        {dataVersion} = @state
-        dataVersion[2] += 1
-        @setState
-          createItemData: createItemData
-          dataVersion: dataVersion
+        dataManager.saveLog(CONST.typeList.createItem, dataItem, true)
 
       # 建造
       when '/kcsapi/api_req_kousyou/createship'
@@ -424,14 +265,7 @@ AkashicRecordsArea = React.createClass
           dataItem.push remainNum
           dataItem.push "#{@_ships[@_decks[0].api_ship[0]].api_name}(Lv.#{@_ships[@_decks[0].api_ship[0]].api_lv})"
           dataItem.push window._teitokuLv
-          {createShipData} = @state
-          createShipData.unshift dataItem
-          @saveCreateShipLog dataItem
-          {dataVersion} = @state
-          dataVersion[3] += 1
-          @setState
-            createShipData: createShipData
-            dataVersion: dataVersion
+          dataManager.saveLog(CONST.typeList.createShip, dataItem, true)
           @createShipFlag = false
 
       # 资源
@@ -445,14 +279,7 @@ AkashicRecordsArea = React.createClass
           dataItem = []
           dataItem.push nowDate.getTime()
           dataItem.push item.api_value for item in body.api_material
-          {resourceData} = @state
-          resourceData.unshift dataItem
-          @saveResourceLog dataItem
-          {dataVersion} = @state
-          dataVersion[4] += 1
-          @setState
-            resourceData: resourceData
-            dataVersion: dataVersion
+          dataManager.saveLog('resource', dataItem)
 
   handleBattleResultResponse: (e) ->
     {map, quest, boss, mapCell, rank, deckHp, deckShipId, enemy, dropItem, dropShipId, combined, mvp} = e.detail
@@ -525,29 +352,16 @@ AkashicRecordsArea = React.createClass
       tmp[1] = "#{@_ships[deckShipId[6]].api_name}(Lv.#{@_ships[deckShipId[6]].api_lv})"
       tmp[3] = "#{@_ships[deckShipId[6 + mvp[1]]].api_name}(Lv.#{@_ships[deckShipId[6 + mvp[1]]].api_lv})"
     dataItem = dataItem.concat tmp
-    {attackData} = @state
-    attackData.unshift dataItem
-    # log "save and show new data"
-    @saveAttackLog dataItem
-    {dataVersion} = @state
-    dataVersion[0] += 1
-    @setState
-      attackData: attackData
-      dataVersion: dataVersion
+    dataManager.saveLog(CONST.typeList.attack, dataItem, true)
 
   componentDidMount: ->
     window.addEventListener 'game.response', @handleResponse
     window.addEventListener 'battle.result', @handleBattleResultResponse
-  componentWillMount: ->
     @nickNameId = window._nickNameId
     if @nickNameId is 0 or not @nickNameId?
       @nickNameId = config.get 'plugin.Akashic.nickNameId', 0
     if @nickNameId isnt 0
-      @getAttackData @nickNameId
-      @getMissionData @nickNameId
-      @getCreateItemData @nickNameId
-      @getCreateShipData @nickNameId
-      @getResourceData @nickNameId
+      dataManager.initializeData @nickNameId, true
 
   handleSelectTab: (selectedKey)->
     if selectedKey is 4
@@ -565,26 +379,20 @@ AkashicRecordsArea = React.createClass
         <Label bsStyle="danger">{@state.warning}</Label>
       </div>
       <Tabs activeKey={@state.selectedKey} animation={false} onSelect={@handleSelectTab}>
-        <Tab eventKey={0} title={__ "Sortie"} ><AkashicLog indexKey={0} selectedKey={@state.selectedKey} data={@state.attackData} dataVersion={@state.dataVersion[0]} tableTab={attackTableTab} contentType={'attack'}/></Tab>
-        <Tab eventKey={1} title={__ "Expedition"} ><AkashicLog indexKey={1} selectedKey={@state.selectedKey} data={@state.missionData} dataVersion={@state.dataVersion[1]} tableTab={missionTableTab} contentType={'mission'}/></Tab>
-        <Tab eventKey={2} title={__ "Construction"} ><AkashicLog indexKey={2} selectedKey={@state.selectedKey} data={@state.createShipData} dataVersion={@state.dataVersion[3]} tableTab={createShipTableTab} contentType={'createShip'}/></Tab>
-        <Tab eventKey={3} title={__ "Development"} ><AkashicLog indexKey={3} selectedKey={@state.selectedKey} data={@state.createItemData} dataVersion={@state.dataVersion[2]} tableTab={createItemTableTab} contentType={'createItem'}/></Tab>
-        <Tab eventKey={4} title={__ "Resource"} ><AkashicResourceLog indexKey={4} selectedKey={@state.selectedKey} data={@state.resourceData} dataVersion={@state.dataVersion[4]} tableTab={resourceTableTab} mapShowFlag={@state.mapShowFlag} contentType={'resource'}/></Tab>
-        <Tab eventKey={5} title={__ "Others"} >
+        <Tab eventKey={0} title={__ "Sortie"} ><AkashicLog indexKey={0} selectedKey={@state.selectedKey} tableTab={attackTableTab} contentType={CONST.typeList.attack}/></Tab>
+        <Tab eventKey={1} title={__ "Expedition"} ><AkashicLog indexKey={1} selectedKey={@state.selectedKey} tableTab={missionTableTab} contentType={CONST.typeList.mission}/></Tab>
+        <Tab eventKey={2} title={__ "Construction"} ><AkashicLog indexKey={2} selectedKey={@state.selectedKey} tableTab={createShipTableTab} contentType={CONST.typeList.createShip}/></Tab>
+        <Tab eventKey={3} title={__ "Development"} ><AkashicLog indexKey={3} selectedKey={@state.selectedKey} tableTab={createItemTableTab} contentType={CONST.typeList.createItem}/></Tab>
+        <Tab eventKey={4} title={__ "Resource"} ><AkashicResourceLog indexKey={4} selectedKey={@state.selectedKey} tableTab={resourceTableTab} mapShowFlag={@state.mapShowFlag} contentType={CONST.typeList.resource}/></Tab>
+        <Tab eventKey={6} title={__ "Others"} >
           <AkashicAdvancedModule
             tableTab={
               'attack': attackTableTabEn
               'mission': missionTableTabEn
-              'createItem': createItemTableTabEn
-              'createShip': createShipTableTabEn
+              'createitem': createItemTableTabEn
+              'createship': createShipTableTabEn
               'resource': resourceTableTabEn
-            }
-            attackData={@state.attackData}
-            missionData={@state.missionData}
-            createItemData={@state.createItemData}
-            createShipData={@state.createShipData}
-            resourceData={@state.resourceData}
-            setDataHandler={@setDataHandler}/>
+            }/>
         </Tab>
       </Tabs>
     </div>

@@ -35,6 +35,8 @@ if not window.ipc?
   catch e
     console.log e if process.env.DEBUG is 1
 
+window.CONST = require path.join(__dirname, 'lib', 'constant')
+
 switch window.language
   when 'ja-JP'
     windowTitle = 'アカシックレコード'

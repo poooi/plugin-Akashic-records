@@ -1,4 +1,4 @@
-{React, ReactBootstrap, ROOT, config, __, FontAwesome} = window
+{React, ReactBootstrap, ROOT, config, __, FontAwesome, CONST} = window
 {Grid, Row, Col, Table, ButtonGroup, DropdownButton, MenuItem, Input, Pagination, OverlayTrigger, Popover} = ReactBootstrap
 path = require 'path-extra'
 {log, warn, error} = require path.join(ROOT, 'lib/utils')
@@ -6,6 +6,8 @@ path = require 'path-extra'
 
 #i18n = require '../node_modules/i18n'
 # {__} = i18n
+
+dataManager = require '../lib/data-manager'
 
 dateToString = (date)->
   month = date.getMonth() + 1
@@ -25,6 +27,10 @@ dateToString = (date)->
     second = "0#{second}"
   "#{date.getFullYear()}/#{month}/#{day} #{hour}:#{minute}:#{second}"
 
+boundActivePageNum = (activePage, logLength, showAmount) ->
+  activePage = Math.min activePage, Math.ceil(logLength/showAmount)
+  activePage = Math.max activePage, 1
+
 showBattleDetail = (timestamp) ->
   try
     if not window.ipc?
@@ -42,6 +48,7 @@ showBattleDetail = (timestamp) ->
     window.toggleModal "Warning", e
 
 AkashicRecordsTableTbodyItem = React.createClass
+  #componentShouldUpdate
   render: ->
     <tr>
       <td>
@@ -63,53 +70,59 @@ AkashicRecordsTableTbodyItem = React.createClass
     </tr>
 
 AkashicRecordsTableArea = React.createClass
-  # getInitialState: ->
-  #   dataShow: []
-  #   showAmount: 10
-  #   filterKey: ''
-  #   activePage: 0
-  # _filter: (rawData, keyWord)->
-  #   {rowChooseChecked} = @props
-  #   if keyWord?
-  #     rawData.filter (row)->
-  #       match = false
-  #       for item, index in row
-  #         if rowChooseChecked[index+1]
-  #           if index is 0 and dateToString(new Date(item)).toLowerCase().trim().indexOf(keyWord.toLowerCase().trim()) >= 0
-  #             match = true
-  #           if index isnt 0 and "#{item}".toLowerCase().trim().indexOf(keyWord.toLowerCase().trim()) >= 0
-  #             match = true
-  #       match
-  #   else rawData
-  # _filterBy: (keyWord)->
-  #   dataShow = @_filter @props.data, keyWord
-  #   {activePage} = @state
-  #   if activePage < 1
-  #     activePage = 1
-  #   if activePage > Math.ceil(dataShow.length/@state.showAmount)
-  #     activePage = Math.ceil(dataShow.length/@state.showAmount)
-  #   @setState
-  #     dataShow: dataShow
-  #     filterKey: keyWord
-  #     activePage: activePage
+  getInitialState: ->
+    dataShow: []
+    paginationItems: 0
+    paginationMaxButtons: 0
+  filterKeys: []
   handleKeyWordChange: ->
-    {filterKeys} = @props
+    @filterKeys = Object.clone @filterKeys
     for tab, index in @props.tableTab
       continue if index is 0
-      filterKeys[index] = @refs["input#{index}"].getValue() if @props.rowChooseChecked[index]
-    @props.filterRules filterKeys
-  # componentWillReceiveProps: (nextProps)->
-  #   dataShow = @_filter nextProps.data, @filterKey
-  #   {activePage} = @state
-  #   if activePage < 1
-  #     activePage = 1
-  #   if activePage > Math.ceil(dataShow.length/@state.showAmount)
-  #     activePage = Math.ceil(dataShow.length/@state.showAmount)
-  #   @setState
-  #     dataShow: dataShow
-  #     activePage: activePage
+      @filterKeys[index-1] = if @props.rowChooseChecked[index] then @refs["input#{index}"].getValue() else ''
+    dataManager.setFilterKeys @props.contentType, @filterKeys
+
+  getVisibleData: (activePage, showAmount) ->
+    data = dataManager.getFilteredData @props.contentType
+    if data.length > 0
+      dataShow = data.slice((activePage - 1) * showAmount, activePage * showAmount)
+    else
+      dataShow = []
+
+  setShowState: (activePage, showAmount)->
+    dataShow = @getVisibleData activePage, showAmount
+    len = dataManager.getFilteredData(@props.contentType).length
+    paginationItems = Math.ceil(len/showAmount)
+    paginationMaxButtons = Math.min(Math.ceil(len/showAmount), 5)
+    @setState
+      dataShow: dataShow
+      paginationItems: paginationItems
+      paginationMaxButtons: paginationMaxButtons
+
+  filteredDataChangeCB: (lazyFlag)->
+    if not lazyFlag
+      {activePage} = @props
+      len = dataManager.getFilteredData(@props.contentType).length
+      tmp = activePage
+      activePage = boundActivePageNum activePage, len, @props.showAmount
+      if (tmp isnt activePage)
+        @props.handlePageChange activePage
+      else
+        @setShowState(@props.activePage, @props.showAmount)
+
+  componentWillMount: ->
+    @filteredDataChangelistener = dataManager.addListener @props.contentType, CONST.eventList.filteredDataChange, @filteredDataChangeCB
+
+  componentWillUnmount: ->
+    if @filteredDataChangelistener?
+      dataManager.removeListener @props.contentType, CONST.eventList.filteredDataChange, @filteredDataChangelistener
+
+  componentWillReceiveProps: (nextProps)->
+    @setShowState(nextProps.activePage, nextProps.showAmount)
+
   handlePaginationSelect: (event, selectedEvent)->
     @props.handlePageChange selectedEvent.eventKey
+
   render: ->
     <div>
       <Grid>
@@ -122,8 +135,8 @@ AkashicRecordsTableArea = React.createClass
                   <tr>
                     {
                       showLabel = false
-                      for filterKey, index in @props.filterKeys
-                        if filterKey isnt ''
+                      for filterKey, index in @filterKeys
+                        if @props.rowChooseChecked[index+1] and filterKey isnt ''
                           showLabel = true
                       for tab, index in @props.tableTab
                         if index is 0
@@ -141,7 +154,6 @@ AkashicRecordsTableArea = React.createClass
                           <th key={index} className="table-search">
                             <Input
                               type='text'
-                              value={@props.filterKeys[index]}
                               label={if showLabel then @props.tableTab[index] else ''}
                               placeholder={@props.tableTab[index]}
                               ref="input#{index}"
@@ -154,8 +166,8 @@ AkashicRecordsTableArea = React.createClass
                   <tr>
                     {
                       showLabel = false
-                      for filterKey, index in @props.filterKeys
-                        if filterKey isnt ''
+                      for filterKey, index in @filterKeys
+                        if @props.rowChooseChecked[index+1] and filterKey isnt ''
                           showLabel = true
                       for tab, index in @props.tableTab
                         if index is 0
@@ -173,7 +185,6 @@ AkashicRecordsTableArea = React.createClass
                           <th key={index} className="table-search">
                             <Input
                               type='text'
-                              value={@props.filterKeys[index]}
                               label={@props.tableTab[index]}
                               placeholder={@props.tableTab[index]}
                               ref="input#{index}"
@@ -193,8 +204,8 @@ AkashicRecordsTableArea = React.createClass
                   <tr>
                     {
                       showLabel = false
-                      for filterKey, index in @props.filterKeys
-                        if filterKey isnt ''
+                      for filterKey, index in @filterKeys
+                        if @props.rowChooseChecked[index+1] and filterKey isnt ''
                           showLabel = true
                       for tab, index in @props.tableTab
                         if index is 0
@@ -212,7 +223,6 @@ AkashicRecordsTableArea = React.createClass
                           <th key={index} className="table-search">
                             <Input
                               type='text'
-                              value={@props.filterKeys[index]}
                               placeholder={@props.tableTab[index]}
                               ref="input#{index}"
                               groupClassName='filter-area'
@@ -224,7 +234,7 @@ AkashicRecordsTableArea = React.createClass
               </thead>
               <tbody>
                 {
-                  for item, index in @props.data
+                  for item, index in @state.dataShow
                     <AkashicRecordsTableTbodyItem
                       key = {item[0]}
                       index = {(@props.activePage-1)*@props.showAmount+index+1};
@@ -246,8 +256,8 @@ AkashicRecordsTableArea = React.createClass
               first={true}
               last={true}
               ellipsis={true}
-              items={@props.paginationItems}
-              maxButtons={@props.paginationMaxButtons}
+              items={@state.paginationItems}
+              maxButtons={@state.paginationMaxButtons}
               activePage={@props.activePage}
               onSelect={@handlePaginationSelect}
             />

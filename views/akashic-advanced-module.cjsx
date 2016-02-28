@@ -1,4 +1,4 @@
-{React, ReactBootstrap, ROOT, FontAwesome, __, translate} = window
+{React, ReactBootstrap, ROOT, FontAwesome, __, translate, CONST} = window
 {Grid, Row, Col, Input, Button, OverlayTrigger, Popover, Input} = ReactBootstrap
 
 fs = require 'fs-extra'
@@ -13,6 +13,8 @@ remote = require 'remote'
 dialog = remote.require 'dialog'
 
 {openExternal} = require 'shell'
+
+dataManager = require '../lib/data-manager'
 
 dateCmp = (a, b)->
   if isNaN a[0]
@@ -84,11 +86,11 @@ resolveFile = (fileContent, tableTabEn)->
   logs = fileContent.split "\n"
   logs[0] = logs[0].trim()
   switch logs[0]
-    when tableTab['en-US']['attack'], \
-    tableTab['ja-JP']['attack'], \
-    tableTab['zh-CN']['attack'], \
-    tableTab['zh-TW']['attack']
-      logType = "attack"
+    when tableTab['en-US'][CONST.typeList.attack], \
+    tableTab['ja-JP'][CONST.typeList.attack], \
+    tableTab['zh-CN'][CONST.typeList.attack], \
+    tableTab['zh-TW'][CONST.typeList.attack]
+      logType = CONST.typeList.attack
       data = logs.slice(1).map (logItem) ->
         logItem = logItem.split ','
         if logItem.length isnt 12
@@ -97,11 +99,11 @@ resolveFile = (fileContent, tableTabEn)->
         logItem
       data = data.filter (log) ->
         log.length is 12
-    when tableTab['en-US']['mission'], \
-    tableTab['ja-JP']['mission'], \
-    tableTab['zh-CN']['mission'], \
-    tableTab['zh-TW']['mission']
-      logType = "mission"
+    when tableTab['en-US'][CONST.typeList.mission], \
+    tableTab['ja-JP'][CONST.typeList.mission], \
+    tableTab['zh-CN'][CONST.typeList.mission], \
+    tableTab['zh-TW'][CONST.typeList.mission]
+      logType = CONST.typeList.mission
       data = logs.slice(1).map (logItem) ->
         logItem = logItem.split ','
         if logItem.length isnt 11
@@ -110,11 +112,11 @@ resolveFile = (fileContent, tableTabEn)->
         logItem
       data = data.filter (log) ->
         log.length is 11
-    when tableTab['en-US']['createShip'], \
-    tableTab['ja-JP']['createShip'], \
-    tableTab['zh-CN']['createShip'], \
-    tableTab['zh-TW']['createShip']
-      logType = "createShip"
+    when tableTab['en-US'][CONST.typeList.createShip], \
+    tableTab['ja-JP'][CONST.typeList.createShip], \
+    tableTab['zh-CN'][CONST.typeList.createShip], \
+    tableTab['zh-TW'][CONST.typeList.createShip]
+      logType = CONST.typeList.createShip
       data = logs.slice(1).map (logItem) ->
         logItem = logItem.split ','
         if logItem.length isnt 12
@@ -123,11 +125,11 @@ resolveFile = (fileContent, tableTabEn)->
         logItem
       data = data.filter (log) ->
         log.length is 12
-    when tableTab['en-US']['createItem'], \
-    tableTab['ja-JP']['createItem'], \
-    tableTab['zh-CN']['createItem'], \
-    tableTab['zh-TW']['createItem']
-      logType = "createItem"
+    when tableTab['en-US'][CONST.typeList.createItem], \
+    tableTab['ja-JP'][CONST.typeList.createItem], \
+    tableTab['zh-CN'][CONST.typeList.createItem], \
+    tableTab['zh-TW'][CONST.typeList.createItem]
+      logType = CONST.typeList.createItem
       data = logs.slice(1).map (logItem) ->
         logItem = logItem.split ','
         if logItem.length isnt 10
@@ -136,11 +138,11 @@ resolveFile = (fileContent, tableTabEn)->
         logItem
       data = data.filter (log) ->
         log.length is 10
-    when tableTab['en-US']['resource'], \
-    tableTab['ja-JP']['resource'], \
-    tableTab['zh-CN']['resource'], \
-    tableTab['zh-TW']['resource']
-      logType = "resource"
+    when tableTab['en-US'][CONST.typeList.resource], \
+    tableTab['ja-JP'][CONST.typeList.resource], \
+    tableTab['zh-CN'][CONST.typeList.resource], \
+    tableTab['zh-TW'][CONST.typeList.resource]
+      logType = CONST.typeList.resource
       data = logs.slice(1).map (logItem) ->
         logItem = logItem.split ','
         if logItem.length isnt 9
@@ -152,7 +154,7 @@ resolveFile = (fileContent, tableTabEn)->
 
     # 航海日志扩张版
     when "No.,日付,海域,マス,出撃,ランク,敵艦隊,ドロップ艦種,ドロップ艦娘,大破艦,旗艦,旗艦(第二艦隊),MVP,MVP(第二艦隊)"
-      logType = "attack"
+      logType = CONST.typeList.attack
       data = logs.slice(1).map (logItem) ->
         logItem = logItem.split ','
         if logItem.length isnt 14
@@ -187,7 +189,7 @@ resolveFile = (fileContent, tableTabEn)->
       data = data.filter (log) ->
         log.length is 12
     when "日付,海域,マス,出撃,ランク,敵艦隊,ドロップ艦種,ドロップ艦娘,大破艦,旗艦,旗艦(第二艦隊),MVP,MVP(第二艦隊)"
-      logType = "attack"
+      logType = CONST.typeList.attack
       data = logs.slice(1).map (logItem) ->
         logItem = logItem.split ','
         if logItem.length isnt 13
@@ -222,7 +224,7 @@ resolveFile = (fileContent, tableTabEn)->
       data = data.filter (log) ->
         log.length is 12
     when "No.,日付,結果,遠征,燃料,弾薬,鋼材,ボーキ,アイテム1,個数,アイテム2,個数"
-      logType = "mission"
+      logType = CONST.typeList.mission
       data = logs.slice(1).map (logItem) ->
         logItem = logItem.split ','
         if logItem.length isnt 12
@@ -243,7 +245,7 @@ resolveFile = (fileContent, tableTabEn)->
       data = data.filter (log) ->
         log.length is 11
     when "日付,結果,遠征,燃料,弾薬,鋼材,ボーキ,アイテム1,個数,アイテム2,個数"
-      logType = "mission"
+      logType = CONST.typeList.mission
       data = logs.slice(1).map (logItem) ->
         logItem = logItem.split ','
         if logItem.length isnt 11
@@ -264,7 +266,7 @@ resolveFile = (fileContent, tableTabEn)->
       data = data.filter (log) ->
         log.length is 11
     when "No.,日付,種類,名前,艦種,燃料,弾薬,鋼材,ボーキ,開発資材,空きドック,秘書艦,司令部Lv"
-      logType = "createShip"
+      logType = CONST.typeList.createShip
       data = logs.slice(1).map (logItem) ->
         logItem = logItem.split ','
         if logItem.length isnt 13
@@ -290,7 +292,7 @@ resolveFile = (fileContent, tableTabEn)->
       data = data.filter (log) ->
         log.length is 12
     when "日付,種類,名前,艦種,燃料,弾薬,鋼材,ボーキ,開発資材,空きドック,秘書艦,司令部Lv"
-      logType = "createShip"
+      logType = CONST.typeList.createShip
       data = logs.slice(1).map (logItem) ->
         logItem = logItem.split ','
         if logItem.length isnt 12
@@ -316,7 +318,7 @@ resolveFile = (fileContent, tableTabEn)->
       data = data.filter (log) ->
         log.length is 12
     when "No.,日付,開発装備,種別,燃料,弾薬,鋼材,ボーキ,秘書艦,司令部Lv"
-      logType = "createItem"
+      logType = CONST.typeList.createItem
       data = logs.slice(1).map (logItem) ->
         logItem = logItem.split ','
         if logItem.length isnt 10
@@ -341,7 +343,7 @@ resolveFile = (fileContent, tableTabEn)->
       data = data.filter (log) ->
         log.length is 10
     when "日付,開発装備,種別,燃料,弾薬,鋼材,ボーキ,秘書艦,司令部Lv"
-      logType = "createItem"
+      logType = CONST.typeList.createItem
       data = logs.slice(1).map (logItem) ->
         logItem = logItem.split ','
         if logItem.length isnt 9
@@ -366,7 +368,7 @@ resolveFile = (fileContent, tableTabEn)->
       data = data.filter (log) ->
         log.length is 10
     when "日付,直前のイベント,燃料,弾薬,鋼材,ボーキ,高速修復材,高速建造材,開発資材,改修資材"
-      logType = "resource"
+      logType = CONST.typeList.resource
       data = logs.slice(1).map (logItem) ->
         logItem = logItem.split ','
         if logItem.length isnt 10 and logItem.length isnt 12
@@ -385,7 +387,7 @@ resolveFile = (fileContent, tableTabEn)->
       data = data.filter (log) ->
         log.length is 9
     when "日付,燃料,弾薬,鋼材,ボーキ,高速修復材,高速建造材,開発資材,改修資材"
-      logType = "resource"
+      logType = CONST.typeList.resource
       data = logs.slice(1).map (logItem) ->
         logItem = logItem.split ','
         if logItem.length isnt 9 and logItem.length isnt 11
@@ -404,7 +406,7 @@ resolveFile = (fileContent, tableTabEn)->
       data = data.filter (log) ->
         log.length is 9
     when "日付,燃料,弾薬,鋼材,ボーキ,高速修復材,高速建造材,開発資材"
-      logType = "resource"
+      logType = CONST.typeList.resource
       data = logs.slice(1).map (logItem) ->
         logItem = logItem.split ','
         if logItem.length isnt 8
@@ -425,7 +427,7 @@ resolveFile = (fileContent, tableTabEn)->
 
     # KCV yuyuvn版
     when "Date,Result,Operation,Enemy Fleet,Rank"
-      logType = "attack"
+      logType = CONST.typeList.attack
       data = logs.slice(1).map (logItem) ->
         logItem = logItem.split ','
         if logItem.length isnt 6
@@ -447,7 +449,7 @@ resolveFile = (fileContent, tableTabEn)->
       data = data.filter (log) ->
         log.length is 12
     when "Date,Result,Secretary,Secretary level,Fuel,Ammo,Steel,Bauxite"
-      logType = "createItem"
+      logType = CONST.typeList.createItem
       data = logs.slice(1).map (logItem) ->
         logItem = logItem.split ','
         if logItem.length isnt 9
@@ -472,7 +474,7 @@ resolveFile = (fileContent, tableTabEn)->
       data = data.filter (log) ->
         log.length is 10
     when "Date,Result,Secretary,Secretary level,Fuel,Ammo,Steel,Bauxite,# of Build Materials"
-      logType = "createShip"
+      logType = CONST.typeList.createShip
       data = logs.slice(1).map (logItem) ->
         logItem = logItem.split ','
         if logItem.length isnt 10
@@ -498,7 +500,7 @@ resolveFile = (fileContent, tableTabEn)->
       data = data.filter (log) ->
         log.length is 12
     when "Date,Fuel,Ammunition,Steel,Bauxite,DevKits,Buckets,Flamethrowers"
-      logType = "resource"
+      logType = CONST.typeList.resource
       data = logs.slice(1).map (logItem) ->
         logItem = logItem.split ','
         if logItem.length isnt 9
@@ -551,23 +553,24 @@ AttackLog = React.createClass
     if nickNameId and nickNameId isnt 0
       switch @state.typeChoosed
         when '出击'
-          logType = 'attack'
+          logType = CONST.typeList.attack
           data = @props.attackData
         when '远征'
-          logType = 'mission'
+          logType = CONST.typeList.mission
           data = @props.missionData
         when '建造'
-          logType = 'createShip'
+          logType = CONST.typeList.createShip
           data = @props.createShipData
         when '开发'
-          logType = 'createItem'
+          logType = CONST.typeList.createItem
           data = @props.createItemData
         when '资源'
-          logType = 'resource'
+          logType = CONST.typeList.resource
           data = @props.resourceData
         else
           @showMessage '发生错误！请报告开发者'
           return
+      data = dataManager.getRawData logType
       if process.platform is 'win32'
         if window.language is 'ja-JP'
           codeType = 'shiftjis'
@@ -622,30 +625,25 @@ AttackLog = React.createClass
           {logType, data} = resolveFile fileContent, @props.tableTab
           saveType = -1
           switch logType
-            when 'attack'
+            when CONST.typeList.attack
               hint = '出击'
-              oldData = @props.attackData
               saveType = 0
-            when 'mission'
+            when CONST.typeList.mission
               hint = '远征'
-              oldData = @props.missionData
               saveType = 1
-            when 'createShip'
+            when CONST.typeList.createShip
               hint = '建造'
-              oldData = @props.createShipData
               saveType = 3
-            when 'createItem'
+            when CONST.typeList.createItem
               hint = '开发'
-              oldData = @props.createItemData
               saveType = 2
-            when 'resource'
+            when CONST.typeList.resource
               hint = '资源'
-              oldData = @props.resourceData
               saveType = 4
-          oldData = duplicateRemoval oldData
+          oldData = duplicateRemoval dataManager.getRawData logType
           oldLength = oldData.length
           newData = oldData.concat data
-          if logType is "resource"
+          if logType is CONST.typeList.resource
             newData = duplicateResourceRemoval newData
           else
             newData = duplicateRemoval newData
@@ -657,7 +655,7 @@ AttackLog = React.createClass
           fs.writeFile path.join(APPDATA_PATH, 'akashic-records', "tmp", "data"), saveData
           fs.emptyDirSync path.join(APPDATA_PATH, 'akashic-records', nickNameId.toString(), logType.toLowerCase())
           fs.writeFile path.join(APPDATA_PATH, 'akashic-records', nickNameId.toString(), logType.toLowerCase(), "data"), saveData
-          @props.setDataHandler saveType, newData
+          # @props.setDataHandler saveType, newData
           @showMessage "新导入#{newLength - oldLength}条#{hint}记录！"
         catch e
           @showMessage e.message
