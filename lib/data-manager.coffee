@@ -5,7 +5,9 @@ glob = require 'glob'
 path = require 'path-extra'
 _ = require 'underscore'
 
-{APPDATA_PATH, CONST} = window
+{APPDATA_PATH, CONST, config} = window
+
+DATA_PATH = config.get "plugin.Akashic.dataPath", APPDATA_PATH
 
 dateToString = (date)->
   month = date.getMonth() + 1
@@ -123,7 +125,7 @@ class DataManager
 
   _getDataAccordingToNameId: (id, type) ->
     testNum = /^[1-9]+[0-9]*$/
-    datalogs = glob.sync(path.join(APPDATA_PATH, 'akashic-records', @nickNameId.toString(), type, '*'))
+    datalogs = glob.sync(path.join(DATA_PATH, 'akashic-records', @nickNameId.toString(), type, '*'))
     datalogs = datalogs.map (filePath) ->
       try
         fileContent = fs.readFileSync filePath, 'utf8'
@@ -179,7 +181,7 @@ class DataManager
   saveLog: (type, log, lazyFlag) ->
     if @_checkTypeValid type
       @data.raw[type].unshift log
-      fs.ensureDirSync(path.join(APPDATA_PATH, 'akashic-records', @nickNameId.toString(), type))
+      fs.ensureDirSync(path.join(DATA_PATH, 'akashic-records', @nickNameId.toString(), type))
       if type is 'attack'
         date = new Date(log[0])
         year = date.getFullYear()
@@ -189,10 +191,10 @@ class DataManager
         day = date.getDate()
         if day < 10
           day = "0#{day}"
-        fs.appendFile(path.join(APPDATA_PATH, 'akashic-records', @nickNameId.toString(), type, "#{year}#{month}#{day}"), "#{log.join(',')}\n", 'utf8', (err)->
+        fs.appendFile(path.join(DATA_PATH, 'akashic-records', @nickNameId.toString(), type, "#{year}#{month}#{day}"), "#{log.join(',')}\n", 'utf8', (err)->
           consoleError "Write attack-log file error!" if err)
       else
-        fs.appendFile(path.join(APPDATA_PATH, 'akashic-records', @nickNameId.toString(), type, "data"), "#{log.join(',')}\n", 'utf8', (err)->
+        fs.appendFile(path.join(DATA_PATH, 'akashic-records', @nickNameId.toString(), type, "data"), "#{log.join(',')}\n", 'utf8', (err)->
           consoleError "Write #{type}-log file error!" if err)
       consoleLog "save one #{type} log"
       newLogs = @_filterOneLog type, log
