@@ -131,11 +131,10 @@ AkashicRecordsArea = React.createClass
     urlpath = e.detail.path
     switch urlpath
       when '/kcsapi/api_get_member/basic'
-        if @nickNameId isnt window._nickNameId
+        if window._nickNameId? and @nickNameId isnt window._nickNameId
           @nickNameId = window._nickNameId
-          if not @nickNameId? and @nickNameId isnt 0
-            config.set 'plugin.Akashic.nickNameId', @nickNameId
-            dataManager.initializeData(@nickNameId, true)
+          config.set 'plugin.Akashic.nickNameId', @nickNameId
+          dataManager.initializeData(@nickNameId, true)
         @setState
           memberId: body.api_member_id
       # Map selected rank
