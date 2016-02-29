@@ -7,8 +7,6 @@ path = require 'path-extra'
 #i18n = require '../node_modules/i18n'
 # {__} = i18n
 
-dataManager = require '../lib/data-manager'
-
 dateToString = (date)->
   month = date.getMonth() + 1
   if month < 10
@@ -70,58 +68,11 @@ AkashicRecordsTableTbodyItem = React.createClass
     </tr>
 
 AkashicRecordsTableArea = React.createClass
-  getInitialState: ->
-    dataShow: []
-    paginationItems: 0
-    paginationMaxButtons: 0
-  filterKeys: []
-  handleKeyWordChange: ->
-    @filterKeys = Object.clone @filterKeys
-    for tab, index in @props.tableTab
-      continue if index is 0
-      @filterKeys[index-1] = if @props.rowChooseChecked[index] then @refs["input#{index}"].getValue() else ''
-    dataManager.setFilterKeys @props.contentType, @filterKeys
-
-  getVisibleData: (activePage, showAmount) ->
-    data = dataManager.getFilteredData @props.contentType
-    if data.length > 0
-      dataShow = data.slice((activePage - 1) * showAmount, activePage * showAmount)
-    else
-      dataShow = []
-
-  setShowState: (activePage, showAmount)->
-    dataShow = @getVisibleData activePage, showAmount
-    len = dataManager.getFilteredData(@props.contentType).length
-    paginationItems = Math.ceil(len/showAmount)
-    paginationMaxButtons = Math.min(Math.ceil(len/showAmount), 5)
-    @setState
-      dataShow: dataShow
-      paginationItems: paginationItems
-      paginationMaxButtons: paginationMaxButtons
-
-  filteredDataChangeCB: (lazyFlag)->
-    if not lazyFlag
-      {activePage} = @props
-      len = dataManager.getFilteredData(@props.contentType).length
-      tmp = activePage
-      activePage = boundActivePageNum activePage, len, @props.showAmount
-      if (tmp isnt activePage)
-        @props.handlePageChange activePage
-      else
-        @setShowState(@props.activePage, @props.showAmount)
-
-  componentWillMount: ->
-    @filteredDataChangelistener = dataManager.addListener @props.contentType, CONST.eventList.filteredDataChange, @filteredDataChangeCB
-
-  componentWillUnmount: ->
-    if @filteredDataChangelistener?
-      dataManager.removeListener @props.contentType, CONST.eventList.filteredDataChange, @filteredDataChangelistener
-
-  componentWillReceiveProps: (nextProps)->
-    @setShowState(nextProps.activePage, nextProps.showAmount)
+  handleKeyWordChange: (index)->
+    @props.onFilterKeySet index,  @refs["input#{index}"].getValue()
 
   handlePaginationSelect: (event, selectedEvent)->
-    @props.handlePageChange selectedEvent.eventKey
+    @props.onActivePageSet selectedEvent.eventKey
 
   render: ->
     <div>
@@ -131,12 +82,12 @@ AkashicRecordsTableArea = React.createClass
             <Table striped bordered condensed hover>
               <thead>
               {
-                if @props.configChecked[2]
+                if @props.configListChecked[2]
                   <tr>
                     {
                       showLabel = false
                       for filterKey, index in @filterKeys
-                        if @props.rowChooseChecked[index+1] and filterKey isnt ''
+                        if @props.tabVisibility[index+1] and filterKey isnt ''
                           showLabel = true
                       for tab, index in @props.tableTab
                         if index is 0
@@ -158,16 +109,16 @@ AkashicRecordsTableArea = React.createClass
                               placeholder={@props.tableTab[index]}
                               ref="input#{index}"
                               groupClassName='filter-area'
-                              onChange={@handleKeyWordChange} />
-                          </th> if @props.rowChooseChecked[index]
+                              onChange={@handleKeyWordChange.bind(@, index)} />
+                          </th> if @props.tabVisibility[index]
                     }
                   </tr>
-                else if @props.configChecked[0] and @props.configChecked[1]
+                else if @props.configListChecked[0] and @props.configListChecked[1]
                   <tr>
                     {
                       showLabel = false
-                      for filterKey, index in @filterKeys
-                        if @props.rowChooseChecked[index+1] and filterKey isnt ''
+                      for filterKey, index in @props.filterKeys
+                        if @props.tabVisibility[index+1] and filterKey isnt ''
                           showLabel = true
                       for tab, index in @props.tableTab
                         if index is 0
@@ -189,23 +140,23 @@ AkashicRecordsTableArea = React.createClass
                               placeholder={@props.tableTab[index]}
                               ref="input#{index}"
                               groupClassName='filter-area'
-                              onChange={@handleKeyWordChange} />
-                          </th> if @props.rowChooseChecked[index]
+                              onChange={@handleKeyWordChange.bind(@, index)} />
+                          </th> if @props.tabVisibility[index]
                     }
                   </tr>
-                else if @props.configChecked[0]
+                else if @props.configListChecked[0]
                   <tr>
                   {
                     for tab, index in @props.tableTab
-                      <th key={index}>{@props.tableTab[index]}</th> if @props.rowChooseChecked[index]
+                      <th key={index}>{@props.tableTab[index]}</th> if @props.tabVisibility[index]
                   }
                   </tr>
-                else if @props.configChecked[1]
+                else if @props.configListChecked[1]
                   <tr>
                     {
                       showLabel = false
-                      for filterKey, index in @filterKeys
-                        if @props.rowChooseChecked[index+1] and filterKey isnt ''
+                      for filterKey, index in @props.filterKeys
+                        if @props.tabVisibility[index+1] and filterKey isnt ''
                           showLabel = true
                       for tab, index in @props.tableTab
                         if index is 0
@@ -226,20 +177,20 @@ AkashicRecordsTableArea = React.createClass
                               placeholder={@props.tableTab[index]}
                               ref="input#{index}"
                               groupClassName='filter-area'
-                              onChange={@handleKeyWordChange} />
-                          </th> if @props.rowChooseChecked[index]
+                              onChange={@handleKeyWordChange.bind(@, index)} />
+                          </th> if @props.tabVisibility[index]
                     }
                   </tr>
               }
               </thead>
               <tbody>
                 {
-                  for item, index in @state.dataShow
+                  for item, index in @props.logs
                     <AkashicRecordsTableTbodyItem
                       key = {item[0]}
                       index = {(@props.activePage-1)*@props.showAmount+index+1};
                       data={item}
-                      rowChooseChecked={@props.rowChooseChecked}
+                      rowChooseChecked={@props.tabVisibility}
                       contentType={@props.contentType}
                       tableTab={@props.tableTab}
                     />
@@ -256,8 +207,8 @@ AkashicRecordsTableArea = React.createClass
               first={true}
               last={true}
               ellipsis={true}
-              items={@state.paginationItems}
-              maxButtons={@state.paginationMaxButtons}
+              items={@props.paginationItems}
+              maxButtons={Math.min(@props.paginationItems, 5)}
               activePage={@props.activePage}
               onSelect={@handlePaginationSelect}
             />

@@ -3,7 +3,7 @@
 
 CheckboxPanel = require './containers/checkbox-panel'
 AkashicRecordsStatisticsPanel = require './akashic-records-statistics-panel'
-AkashicRecordsTableArea = require './akashic-records-table-area'
+VisibleTable = require './containers/visible-table'
 
 #i18n = require '../node_modules/i18n'
 # {__} = i18n
@@ -115,14 +115,7 @@ AkashicLog = React.createClass
       <AkashicRecordsStatisticsPanel
         contentType={@props.contentType}
       />
-      <AkashicRecordsTableArea
-        contentType={@props.contentType}
-        tableTab={@props.tableTab}
-        rowChooseChecked={@state.rowChooseChecked}
-        activePage={@state.activePage}
-        showAmount={@state.showAmount}
-        handlePageChange={@handlePageChange}
-        configChecked={@state.configChecked}/>
+      <VisibleTable contentType={@props.contentType} />
     </div>
 
 module.exports = AkashicLog

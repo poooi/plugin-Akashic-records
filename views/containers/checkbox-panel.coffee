@@ -2,7 +2,7 @@
 {connect} = require 'react-redux'
 {setTabVisibility, setShowAmount, setActivePage, setConfigList} =
   require '../actions'
-checkboxPanel = require '../components/akashic-records-checkbox-panel'
+CheckboxPanel = require '../components/akashic-records-checkbox-panel'
 
 getPropsFromState = (state) =>
   show: state.checkboxVisible
@@ -36,4 +36,4 @@ mapDispatchToProps = (dispatch, ownProps) =>
 
 module.exports = connect(
   mapStateToProps,
-  mapDispatchToProps)(checkboxPanel)
+  mapDispatchToProps)(CheckboxPanel)
