@@ -108,10 +108,7 @@ AkashicLog = React.createClass
   #         activePage: activePage
 
   shouldComponentUpdate: (nextProps, nextState)->
-    if nextProps.indexKey is nextProps.selectedKey
-      true
-    else
-      false
+    false
 
   render: ->
     <div>

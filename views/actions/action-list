@@ -1,0 +1,54 @@
+data:
+  ADD_LOG
+    action.log: [string]
+  INITIALIZE_LOG
+    action.logs: [log]
+
+tab:
+  SET_LANGUAGE
+    action.language: string
+  SET_TAB_VISIBILITY
+    action.index: int
+    action.val: bool
+
+page:
+  SET_ACTIVE_PAGE
+    action.val
+  RESET_ACTIVE_PAGE
+  SET_SHOW_AMOUNT
+    action.val
+
+view-control
+  SET_CONFIG_LIST
+    action.index
+    action.val
+  SHOW_CHECKBOX_PANEL
+  HIDDEN_CHECKBOX_PANEL
+  SHOW_STATISTICS_PANEL
+  HIDDEN_STATICTICS_PANEL
+
+search-rules
+  ADD_SEARCH_RULE
+  SET_SEARCH_RULE_BASE
+    action.val: int
+  SET_SEARCH_RULE_KEY
+    action.val: string
+  DELETE_SEARCH_RULE
+    action.index
+
+statistics-rules
+  ADD_STATISTICS_RULE
+  SET_STATISTICS_RULE_NUMERATOR_TYPE
+    action.val: int
+  SET_STATISTICS_RULE_DENOMINATOR_TYPE
+    action.val: int
+  SET_STATISTICS_RULE_NUMERATOR
+    action.val: int
+  SET_STATISTICS_RULE_DENOMINATOR
+    action.val: int
+  DELETE_STATISTICS_RULE
+
+filter-keys
+  SET_FILTER_KEY
+    action.index: int
+    action.val: string

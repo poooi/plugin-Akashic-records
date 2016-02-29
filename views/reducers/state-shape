@@ -1,0 +1,29 @@
+attack
+mission
+createShip
+createItem
+resource
+  data: [array]
+  tab: [string]
+  language: string
+  tabVisibility: [bool]
+  activePage: int
+  showAmount: int
+  configList: [bool, bool, bool, bool]
+  checkboxVisible: bool
+  statisticsVisible: bool
+  searchRules: [
+    {
+      baseOn: int
+      content: string
+    }, ...
+  ]
+  statisticsRules: [
+    {
+      numeratorType: int
+      denominatorType: int
+      numerator: int
+      denominator: int
+    }
+  ]
+  filterKeys: [string]
