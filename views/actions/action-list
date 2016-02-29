@@ -1,12 +1,13 @@
 data:
   ADD_LOG
     action.log: [string]
-  INITIALIZE_LOG
+  INITIALIZE_LOGS
     action.logs: [log]
 
 tab:
   SET_LANGUAGE
     action.language: string
+    * global
   SET_TAB_VISIBILITY
     action.index: int
     action.val: bool

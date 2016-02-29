@@ -26,7 +26,9 @@ logContent = combineReducers {
 
 module.exports = (type) =>
   (state, action) =>
-    if action.dataType is type
+    if action.type is 'SET_LANGUAGE'
+      logContent state, action
+    else if action.dataType is type
       logContent state, action
     else
       logContent state,
