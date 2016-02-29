@@ -110,10 +110,10 @@ AkashicRecordsArea = React.createClass
         <Label bsStyle="danger">{@state.warning}</Label>
       </div>
       <Tabs activeKey={@state.selectedKey} animation={false} onSelect={@handleSelectTab}>
-        <Tab eventKey={0} title={__ "Sortie"} ><AkashicLog indexKey={0} selectedKey={@state.selectedKey} tableTab={attackTableTab} contentType={CONST.typeList.attack}/></Tab>
-        <Tab eventKey={1} title={__ "Expedition"} ><AkashicLog indexKey={1} selectedKey={@state.selectedKey} tableTab={missionTableTab} contentType={CONST.typeList.mission}/></Tab>
-        <Tab eventKey={2} title={__ "Construction"} ><AkashicLog indexKey={2} selectedKey={@state.selectedKey} tableTab={createShipTableTab} contentType={CONST.typeList.createShip}/></Tab>
-        <Tab eventKey={3} title={__ "Development"} ><AkashicLog indexKey={3} selectedKey={@state.selectedKey} tableTab={createItemTableTab} contentType={CONST.typeList.createItem}/></Tab>
+        <Tab eventKey={0} title={__ "Sortie"} ><AkashicLog contentType={CONST.typeList.attack}/></Tab>
+        <Tab eventKey={1} title={__ "Expedition"} ><AkashicLog contentType={CONST.typeList.mission}/></Tab>
+        <Tab eventKey={2} title={__ "Construction"} ><AkashicLog contentType={CONST.typeList.createShip}/></Tab>
+        <Tab eventKey={3} title={__ "Development"} ><AkashicLog contentType={CONST.typeList.createItem}/></Tab>
         <Tab eventKey={4} title={__ "Resource"} ><AkashicResourceLog indexKey={4} selectedKey={@state.selectedKey} tableTab={resourceTableTab} mapShowFlag={@state.mapShowFlag} contentType={CONST.typeList.resource}/></Tab>
         <Tab eventKey={6} title={__ "Others"} >
           <AkashicAdvancedModule
