@@ -11,11 +11,10 @@ module.exports =
   setLanguage: (language) ->
     type: 'SET_LANGUAGE'
     language: language
-  setTabVisibility: (index, visible, type) ->
+  setTabVisibility: (index, type) ->
     type: 'SET_TAB_VISIBILITY'
     dataType: type
     index: index
-    val: visible
 
   setActivePage: (val, type) ->
     type: 'SET_ACTIVE_PAGE'
@@ -33,7 +32,6 @@ module.exports =
     type: 'SET_CONFIG_LIST'
     dataType: type
     index: index
-    val: val
   showCheckboxPanel: (type) ->
     type: 'SHOW_CHECKBOX_PANEL'
     dataType: type
@@ -91,5 +89,3 @@ module.exports =
     dataType: type
     index: index
     val: key
-
-  

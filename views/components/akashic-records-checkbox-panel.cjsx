@@ -7,8 +7,6 @@ Divider = require './divider'
 #i18n = require '../node_modules/i18n'
 # {__} = i18n
 
-
-
 dateToString = (date)->
   month = date.getMonth() + 1
   if month < 10
@@ -28,57 +26,45 @@ dateToString = (date)->
   "#{date.getFullYear()}/#{month}/#{day} #{hour}:#{minute}:#{second}"
 
 AkashicRecordsCheckboxPanel = React.createClass
-  getInitialState: ->
-    show: true
-  checkboxChangeFlag: false
-
   handlePanelShow: ->
-    {show} = @state
-    show = not show
-    @setState {show}
+    show = not @props.show
     config.set "plugin.Akashic.#{@props.contentType}.checkboxPanelShow", show
-  
+    @props.setPanelVisibilitiy show
+
   handleClickCheckbox: (index) ->
-    {rowChooseChecked} = @props
-    rowChooseChecked[index] = !rowChooseChecked[index]
-    @props.tabFilterRules rowChooseChecked
-    @checkboxChangeFlag = true
-    config.set "plugin.Akashic.#{@props.contentType}.checkbox", JSON.stringify rowChooseChecked
-  
+    {tabVisibility} = @props
+    tmp = Object.clone tabVisibility
+    tmp[index] = not tmp[index]
+    config.set "plugin.Akashic.#{@props.contentType}.checkbox", JSON.stringify tmp
+    @props.onCheckboxClick index
+    
   handleClickConfigCheckbox: (index) ->
-    @props.configCheckboxClick index
+    @props.onConfigListSet index
   handleShowAmountSelect: (eventKey, selectedKey)->
-    @props.showRules selectedKey, @props.activePage
+    @props.onShowAmountSet selectedKey
   handleShowPageSelect: ()->
     val = parseInt @refs.pageSelected.getValue()
     if !val or val < 1
       val = 1
-    @props.showRules @props.showAmount, val
-  
-
-  componentWillMount: ->
-    show =
-      config.get "plugin.Akashic.#{@props.contentType}.checkboxPanelShow", true
-    @setState
-      show: show
+    @props.onShowAmountSet val
 
   render: ->
     <Grid>
       <Row>
         <Col xs={12}>
           <div onClick={@handlePanelShow}>
-            <Divider text={__ "Filter"} icon={true} hr={true} show={@state.show}/>
+            <Divider text={__ "Filter"} icon={true} hr={true} show={@props.show}/>
           </div>
         </Col>
       </Row>
-      <Collapse className='akashic-records-checkbox-panel' in={@state.show}>
+      <Collapse className='akashic-records-checkbox-panel' in={@props.show}>
         <div>
           <Row>
           {
             for checkedVal, index in @props.tableTab
               continue if !index
               <Col key={index} xs={2}>
-                <Input type='checkbox' value={index} onChange={@handleClickCheckbox.bind(@, index)} checked={@props.rowChooseChecked[index]} style={verticalAlign: 'middle'} label={checkedVal} />
+                <Input type='checkbox' value={index} onChange={@handleClickCheckbox.bind(@, index)} checked={@props.tabVisibility[index]} style={verticalAlign: 'middle'} label={checkedVal} />
               </Col>
           }
           </Row>
@@ -113,7 +99,7 @@ AkashicRecordsCheckboxPanel = React.createClass
               for checkedVal, index in @props.configList
                 continue if index is 3
                 <Col key={index} xs={4}>
-                  <Input type='checkbox' value={index} onChange={@handleClickConfigCheckbox.bind(@, index)} checked={@props.configChecked[index]} style={verticalAlign: 'middle'} label={checkedVal} />
+                  <Input type='checkbox' value={index} onChange={@handleClickConfigCheckbox.bind(@, index)} checked={@props.configListChecked[index]} style={verticalAlign: 'middle'} label={checkedVal} />
                 </Col>
             }
             </Col>
@@ -121,7 +107,7 @@ AkashicRecordsCheckboxPanel = React.createClass
             {
               index = 3
               checkedVal = @props.configList[index]
-              <Input type='checkbox' value={index} onChange={@handleClickConfigCheckbox.bind(@, index)} checked={@props.configChecked[index]} style={verticalAlign: 'middle'} label={checkedVal} />
+              <Input type='checkbox' value={index} onChange={@handleClickConfigCheckbox.bind(@, index)} checked={@props.configListChecked[index]} style={verticalAlign: 'middle'} label={checkedVal} />
             }
             </Col>
           </Row>

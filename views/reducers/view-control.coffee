@@ -1,14 +1,29 @@
 {config} = window
 
+configList = ["Show Headings", "Show Filter-box",
+            "Auto-selected", "Disable filtering while hiding filter-box"]
+
+getTabs = () =>
+  configList.map (tab) ->
+    __ tab
+
 module.exports =
   configList: (state, action) =>
+    if not state?
+      state = getTabs()
+    if action.type is 'SET_LANGUAGE'
+      getTabs()
+    else
+      state
+
+  configListChecked: (state, action) =>
     if not state?
       state = JSON.parse config.get "plugin.Akashic.#{action.dataType}.configChecked",
         JSON.stringify [true, true, false, false]
     switch action.type
       when 'SET_CONFIG_LIST'
         tmp = [state...]
-        tmp[action.index] = action.val
+        tmp[action.index] = not state[action.index]
       else
         state
 

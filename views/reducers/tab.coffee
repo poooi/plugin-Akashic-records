@@ -1,4 +1,4 @@
-{config} = window
+{config, __} = window
 
 tableTab =
   attack: ['No.', 'Time', 'World', "Node", "Sortie Type",
@@ -23,12 +23,18 @@ tableTab =
 defaultTabVisibility = [true, true, true, true, true, true, true,
                 true, true, true, true, true, true, true]
 
+getTabs = (type) =>
+  state = tableTab[type].map (tab) ->
+    __ tab
+
 module.exports =
-  tab: (state = [], action) =>
-    if tableTab[action.dataType]
-      tableTab[action.dataType]
+  tabs: (state, action) =>
+    if not state? and tableTab[action.dataType]
+      getTabs(action.dataType)
+    if action.type is 'SET_LANGUAGE'
+      getTabs(action.dataType)
     else
-      []
+      state
 
   language: (state = window.language, action) =>
     if action.type is "SET_LANGUAGE"
@@ -42,6 +48,6 @@ module.exports =
         JSON.stringify defaultTabVisibility
     if action.type is "SET_TAB_VISIBILITY"
       tmp = [state...]
-      tmp[action.index] = action.val
+      tmp[action.index] = not state[action.index]
     else
       state

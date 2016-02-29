@@ -1,7 +1,7 @@
 {React, ReactBootstrap, jQuery, __, CONST} = window
 {Grid, Col, Table} = ReactBootstrap
 
-AkashicRecordsCheckboxPanel = require './akashic-records-checkbox-panel'
+CheckboxPanel = require './containers/checkbox-panel'
 AkashicRecordsStatisticsPanel = require './akashic-records-statistics-panel'
 AkashicRecordsTableArea = require './akashic-records-table-area'
 
@@ -28,7 +28,6 @@ dateToString = (date)->
     second = "0#{second}"
   "#{date.getFullYear()}/#{month}/#{day} #{hour}:#{minute}:#{second}"
 
-configList = [__("Show Headings"), __("Show Filter-box"), __("Auto-selected"), __("Disable filtering while hiding filter-box")]
 
 boundActivePageNum = (activePage, logLength, showAmount) ->
   activePage = Math.min activePage, Math.ceil(logLength/showAmount)
@@ -112,17 +111,7 @@ AkashicLog = React.createClass
 
   render: ->
     <div>
-      <AkashicRecordsCheckboxPanel
-        contentType={@props.contentType}
-        tableTab={@props.tableTab}
-        tabFilterRules={@tabFilterRules}
-        rowChooseChecked={@state.rowChooseChecked}
-        showRules={@showRules}
-        showAmount={@state.showAmount}
-        activePage={@state.activePage}
-        configList={configList}
-        configChecked={@state.configChecked}
-        configCheckboxClick={@configCheckboxClick} />
+      <CheckboxPanel contentType={@props.contentType} />
       <AkashicRecordsStatisticsPanel
         contentType={@props.contentType}
       />

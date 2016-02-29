@@ -10,7 +10,6 @@ tab:
     * global
   SET_TAB_VISIBILITY
     action.index: int
-    action.val: bool
 
 page:
   SET_ACTIVE_PAGE
@@ -22,7 +21,6 @@ page:
 view-control
   SET_CONFIG_LIST
     action.index
-    action.val
   SHOW_CHECKBOX_PANEL
   HIDDEN_CHECKBOX_PANEL
   SHOW_STATISTICS_PANEL

@@ -1,21 +1,22 @@
 {combineReducers} = require 'redux'
 
 data = require './data'
-{tab, language, tabVisibility} = require './tab'
+{tabs, language, tabVisibility} = require './tab'
 {activePage, showAmount} = require './page'
-{configList, checkboxVisible, statisticsVisible}  = require './view-control'
+{configList, configListChecked, checkboxVisible, statisticsVisible}  = require './view-control'
 searchRules = require './search-rules'
 statisticsRules = require './statistics-rules'
 filterKeys = require './filter-keys'
 
 logContent = combineReducers {
   data,
-  tab,
+  tabs,
   language,
   tabVisibility,
   activePage,
   showAmount,
   configList,
+  configListChecked,
   checkboxVisible,
   statisticsVisible,
   searchRules,
