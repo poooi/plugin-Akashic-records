@@ -35,7 +35,7 @@
     "jschardet": "^1.3.0"
   },
   "poiPlugin": {
-    "name": "Logbook",
+    "title": "Logbook",
     "description": "Logs",
     "icon": "fa/book",
     "priority": 10
