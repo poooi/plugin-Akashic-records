@@ -8,35 +8,7 @@ fs = require 'fs-extra'
 
 {dialog} = remote.require 'electron'
 
-# i18n configure
-i18n = new (require 'i18n-2')
-  locales: ['en-US', 'ja-JP', 'zh-CN', 'zh-TW'],
-  defaultLocale: 'zh-CN',
-  directory: path.join(__dirname, 'i18n'),
-  updateFiles: false,
-  indent: '\t',
-  extension: '.json',
-  devMode: false
-i18n.setLocale(window.language)
-__ = i18n.__.bind(i18n)
-
-devMode = false
-
-window.akashicRecordsWindow = null
-initialAkashicRecordsWindow = ->
-  window.akashicRecordsWindow = windowManager.createWindow
-    x: config.get 'poi.window.x', 0
-    y: config.get 'poi.window.y', 0
-    width: 820
-    height: 650
-    realClose: devMode
-  window.akashicRecordsWindow.loadURL "file://#{__dirname}/index.html"
-  if process.env.DEBUG? or devMode
-    window.akashicRecordsWindow.openDevTools
-      detach: true
-
-if config.get('plugin.Akashic.enable', true) and not devMode
-  initialAkashicRecordsWindow()
+__ = window.i18n['poi-plugin-akashic-records'].__.bind(window.i18n['poi-plugin-akashic-records'])
 
 # Parameters:
 #   label       String         The title to display
@@ -100,18 +72,13 @@ FolderPickerConfig = React.createClass
     </Grid>
 
 module.exports =
-  name: 'Akashic'
-  priority: 10
-  displayName: <span><FontAwesome key={0} name='book' /> {__ "Logbook"}</span>
-  #displayName: <span><FontAwesome key={0} name='book' /> 航海日志</span>
-  description: "#{__ "Logs"}."
-  author: 'Jennings Wu'
-  link: 'https://github.com/JenningsWu'
-  version: '3.0.0-beta.0'
-  handleClick: ->
-    if devMode
-      initialAkashicRecordsWindow()
-    window.akashicRecordsWindow.show()
+  windowOptions:
+    x: config.get 'poi.window.x', 0
+    y: config.get 'poi.window.y', 0
+    width: 820
+    height: 650
+  windowURL: "file://#{__dirname}/index.html"
+  useEnv: true
   settingsClass: React.createClass
     getInitialState: ->
       defaultVal: config.get "plugin.Akashic.dataPath", APPDATA_PATH

@@ -21,7 +21,10 @@
     "plugin",
     "logbook"
   ],
-  "author": "Jennings Wu",
+  "author": {
+    "name": "Jennings Wu",
+    "link": "https://github.com/JenningsWu"
+  },
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/yudachi/plugin-Akashic-records/issues"
@@ -30,5 +33,11 @@
   "dependencies": {
     "iconv-lite": "^0.4.11",
     "jschardet": "^1.3.0"
+  },
+  "poiPlugin": {
+    "name": "Logbook",
+    "description": "Logs",
+    "icon": "fa/book",
+    "priority": 10
   }
 }
