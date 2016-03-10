@@ -1,6 +1,7 @@
 {__} = window
 {connect} = require 'react-redux'
-{setTabVisibility, setShowAmount, setActivePage, setConfigList} =
+{showCheckboxPanel, hiddenCheckboxPanel,
+setTabVisibility, setShowAmount, setActivePage, setConfigList} =
   require '../actions'
 CheckboxPanel = require '../components/akashic-records-checkbox-panel'
 
@@ -25,8 +26,8 @@ mapDispatchToProps = (dispatch, ownProps) =>
       dispatch showCheckboxPanel(ownProps.contentType)
     else
       dispatch hiddenCheckboxPanel(ownProps.contentType)
-  onCheckboxClick: (index) =>
-    dispatch setTabVisibility(index, ownProps.contentType)
+  onCheckboxClick: (index, val) =>
+    dispatch setTabVisibility(index, val, ownProps.contentType)
   onShowAmountSet: (val) =>
     dispatch setShowAmount(val, ownProps.contentType)
   onActivePageSet: (val) =>

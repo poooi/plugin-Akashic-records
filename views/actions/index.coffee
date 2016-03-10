@@ -1,6 +1,6 @@
 module.exports =
   addLog: (log, type) ->
-    type: 'ADD_DATA'
+    type: 'ADD_LOG'
     dataType: type
     log: log
   initializeLogs: (logs, type) ->
@@ -11,10 +11,11 @@ module.exports =
   setLanguage: (language) ->
     type: 'SET_LANGUAGE'
     language: language
-  setTabVisibility: (index, type) ->
+  setTabVisibility: (index, val, type) ->
     type: 'SET_TAB_VISIBILITY'
     dataType: type
     index: index
+    val: val
 
   setActivePage: (val, type) ->
     type: 'SET_ACTIVE_PAGE'
@@ -48,13 +49,15 @@ module.exports =
   addSearchRule: (type) ->
     type: 'ADD_SEARCH_RULE'
     dataType: type
-  setSearchRuleBase: (baseon, type) ->
+  setSearchRuleBase: (index, baseon, type) ->
     type: 'SET_SEARCH_RULE_BASE'
     dataType: type
+    index: index
     val: baseon
-  setSearchRuleKey: (key, type) ->
+  setSearchRuleKey: (index, key, type) ->
     type: 'SET_SEARCH_RULE_KEY'
     dataType: type
+    index: index
     val: key
   deleteSearchRule: (index, type) ->
     type: 'DELETE_SEARCH_RULE'
@@ -64,25 +67,30 @@ module.exports =
   addStatisticsRule: (type) ->
     type: 'ADD_STATISTICS_RULE'
     dataType: type
-  setStatisticsRuleNumeratorType: (ntype, type) ->
+  setStatisticsRuleNumeratorType: (index, ntype, type) ->
     type: 'SET_STATISTICS_RULE_NUMERATOR_TYPE'
     dataType: type
+    index: index
     val: ntype
-  setStatisticsRuleDenominatorType: (dtype, type) ->
+  setStatisticsRuleDenominatorType: (index, dtype, type) ->
     type: 'SET_STATISTICS_RULE_DENOMINATOR_TYPE'
     dataType: type
+    index: index
     val: dtype
-  setStatisticsRuleNumerator: (n, type) ->
+  setStatisticsRuleNumerator: (index, n, type) ->
     type: 'SET_STATISTICS_RULE_NUMERATOR'
     dataType: type
+    index: index
     val: n
-  setStatisticsRuleDenominator: (d, type) ->
+  setStatisticsRuleDenominator: (index, d, type) ->
     type: 'SET_STATISTICS_RULE_DENOMINATOR'
     dataType: type
+    index: index
     val: d
-  deleteStatisticsRule: (type) ->
+  deleteStatisticsRule: (index, type) ->
     type: 'DELETE_STATISTICS_RULE'
     dataType: type
+    index: index
 
   setFilterKey: (index, key, type) ->
     type: 'SET_FILTER_KEY'

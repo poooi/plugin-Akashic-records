@@ -48,6 +48,6 @@ module.exports =
         JSON.stringify defaultTabVisibility
     if action.type is "SET_TAB_VISIBILITY"
       tmp = [state...]
-      tmp[action.index] = not state[action.index]
+      tmp[action.index] = action.val
     else
       state

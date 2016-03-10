@@ -36,7 +36,7 @@ AkashicRecordsCheckboxPanel = React.createClass
     tmp = Object.clone tabVisibility
     tmp[index] = not tmp[index]
     config.set "plugin.Akashic.#{@props.contentType}.checkbox", JSON.stringify tmp
-    @props.onCheckboxClick index
+    @props.onCheckboxClick index, not tmp[index]
     
   handleClickConfigCheckbox: (index) ->
     @props.onConfigListSet index

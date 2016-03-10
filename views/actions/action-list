@@ -10,6 +10,7 @@ tab:
     * global
   SET_TAB_VISIBILITY
     action.index: int
+    action.val: bool
 
 page:
   SET_ACTIVE_PAGE
@@ -29,8 +30,10 @@ view-control
 search-rules
   ADD_SEARCH_RULE
   SET_SEARCH_RULE_BASE
+    action.index: int
     action.val: int
   SET_SEARCH_RULE_KEY
+    action.index: int
     action.val: string
   DELETE_SEARCH_RULE
     action.index
@@ -38,14 +41,19 @@ search-rules
 statistics-rules
   ADD_STATISTICS_RULE
   SET_STATISTICS_RULE_NUMERATOR_TYPE
+    action.index: int
     action.val: int
   SET_STATISTICS_RULE_DENOMINATOR_TYPE
+    action.index: int
     action.val: int
   SET_STATISTICS_RULE_NUMERATOR
+    action.index: int
     action.val: int
   SET_STATISTICS_RULE_DENOMINATOR
+    action.index: int
     action.val: int
   DELETE_STATISTICS_RULE
+    action.index: int
 
 filter-keys
   SET_FILTER_KEY

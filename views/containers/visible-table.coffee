@@ -2,13 +2,14 @@
 {connect} = require 'react-redux'
 {setFilterKey, setActivePage} = require '../actions'
 TableArea = require '../components/akashic-records-table-area'
+{filterSelectors} = require '../selectors'
 
-getPropsFromState = (state) =>
+getPropsFromState = (state, dataType) =>
   len = getLogsLength(state)
 
   tableTab: state.tabs
   tabVisibility: state.tabVisibility
-  logs: getVisibleLogs(state)
+  logs: filterSelectors[dataType](state)
   paginationItems: Math.ceil(len/state.showAmount)
   activePage: state.activePage
   showAmount: state.showAmount
@@ -17,7 +18,7 @@ getPropsFromState = (state) =>
 
 mapStateToProps = (state, ownProps) =>
   if state[ownProps.contentType]?
-    getPropsFromState(state[ownProps.contentType])
+    getPropsFromState(state[ownProps.contentType], ownProps.contentType)
   else
     {}
 
