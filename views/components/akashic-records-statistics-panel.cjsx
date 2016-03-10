@@ -19,12 +19,24 @@ AkashicRecordsStatisticsPanel = React.createClass
   handleAddSearch: ->
     @props.onSeaRuleAdd()
   handleDeleteSearchLine: (index)->
-    @props.onSeaRuleDelete(index)
+    @props.onSeaRuleDelete index
+  handleSeaBaseSet: (index)->
+    @props.onSeaRuleBaseSet index, @refs["baseOn#{index}"].getValue()
+  onSeaRuleKeySet: (index)->
+    @props.onSeaRuleBaseSet index, @refs["search#{index}"].getValue()
 
   handleAddStat: ->
     @props.onStatRuleAdd()
   handleDeleteStat: (index)->
-    @props.onStatRuleDelete(index)
+    @props.onStatRuleDelete index
+  handleStatNTypeSet: (index)->
+    @props.onStatRuleNTypeSet index, @refs["NType#{index}"].getValue()
+  handleStatRuleNSet: (index)->
+    @props.onStatRuleNSet index, @refs["numerator#{index}"].getValue()
+  handleStatDTypeSet: (index)->
+    @props.onStatRuleDTypeSet index, @refs["DType#{index}"].getValue()
+  handleStatRuleDSet: (index)->
+    @props.onStatRuleDSet index, @refs["denominator#{index}"].getValue()
 
   render: ->
     <Grid>
@@ -45,7 +57,12 @@ AkashicRecordsStatisticsPanel = React.createClass
                       <th style={verticalAlign: 'middle'}>
                         <OverlayTrigger trigger='click' rootClose={true} placement='right' overlay={
                           <Popover title={__ "Tips"} id={"regExp-Hint"}>
-                            <li>{__ "Support the Javascript's "}<a onClick={openExternal.bind(this, "http://www.w3school.com.cn/jsref/jsref_obj_regexp.asp")}>{"RegExp"}</a></li>
+                            <li>
+                              {__ "Support the Javascript's "}
+                              <a onClick={openExternal.bind(this, "http://www.w3school.com.cn/jsref/jsref_obj_regexp.asp")}>
+                                {"RegExp"}
+                              </a>
+                            </li>
                           </Popover>
                           }>
                           <FontAwesome name='question-circle'/>
@@ -65,33 +82,43 @@ AkashicRecordsStatisticsPanel = React.createClass
                       <tr key={index}>
                         {
                           if index is 0
-                            <td style={verticalAlign: 'middle'}><FontAwesome name='plus-circle' onClick={@addSearchLine}/></td>
+                            <td style={verticalAlign: 'middle'}>
+                              <FontAwesome name='plus-circle' onClick={@handleAddSearch}/>
+                            </td>
                           else
-                            <td style={verticalAlign: 'middle'}><FontAwesome name='minus-circle' onClick={@deleteSearchLine.bind(@, index)}/></td>
+                            <td style={verticalAlign: 'middle'}>
+                              <FontAwesome name='minus-circle' onClick={@handleDeleteSearchLine.bind(@, index)}/>
+                            </td>
                         }
                         <td>{index+1}</td>
                         <td>
-                          <Input type="select" ref="baseOn#{index}" groupClassName='search-area' value={"#{@state.searchArgv[index].searchBaseOn}"} onChange={@handleSearchChange}>
-                            <option key={CONST.search.rawDataIndex} value={CONST.search.rawDataIndex}>{__ "All Data"}</option>
-                            <option key={CONST.search.filteredDataIndex} value={CONST.search.filteredDataIndex}>{__ "Filtered"}</option>
+                          <Input type="select" ref="baseOn#{index}" groupClassName='search-area' value={"#{@props.searchItems[index].baseOn}"} onChange={@handleSeaBaseSet.bind(@, index)}>
+                            <option key={CONST.search.rawDataIndex} value={CONST.search.rawDataIndex}>
+                              {__ "All Data"}
+                            </option>
+                            <option key={CONST.search.filteredDataIndex} value={CONST.search.filteredDataIndex}>
+                              {__ "Filtered"}
+                            </option>
                             {
                               for i in [1..index]
-                                <option key={CONST.search.indexBase + i} value={CONST.search.indexBase + i}>{__ "Search Result No. %s", i}</option>
+                                <option key={CONST.search.indexBase + i} value={CONST.search.indexBase + i}>
+                                  {__ "Search Result No. %s", i}
+                                </option>
                             }
                           </Input>
                         </td>
                         <td>
                            <Input
                               type='text'
-                              value={@state.searchArgv[index].filterKey}
+                              value={@props.searchItems[index].content}
                               placeholder={__ "Keywords"}
                               ref="search#{index}"
                               groupClassName='search-area'
-                              onChange={@handleSearchChange} />
+                              onChange={@onSeaRuleKeySet.bind(@, index)} />
                         </td>
-                        <td>{@state.searchArgv[index].res}</td>
-                        <td>{@state.searchArgv[index].total}</td>
-                        <td>{@state.searchArgv[index].percent}</td>
+                        <td>{@props.searchItems[index].res}</td>
+                        <td>{@props.searchItems[index].total}</td>
+                        <td>{@props.searchItems[index].percent}</td>
                       </tr>
                   }
                   </tbody>
@@ -112,13 +139,17 @@ AkashicRecordsStatisticsPanel = React.createClass
                       <tr key={index}>
                         {
                           if index is 0
-                            <td style={verticalAlign: 'middle'}><FontAwesome name='plus-circle' onClick={@addCompareLine}/></td>
+                            <td style={verticalAlign: 'middle'}>
+                              <FontAwesome name='plus-circle' onClick={@handleAddStat}/>
+                            </td>
                           else
-                            <td style={verticalAlign: 'middle'}><FontAwesome name='minus-circle' onClick={@deleteCompareLine.bind(@, index)}/></td>
+                            <td style={verticalAlign: 'middle'}>
+                              <FontAwesome name='minus-circle' onClick={@handleDeleteStat.bind(@, index)}/>
+                            </td>
                         }
                         <td>{index+1}</td>
                         <td>
-                          <Input type="select" ref="numeratorBaseon#{index}" groupClassName='search-area' value={"#{@state.compareArgv[index].numerator.baseOn}"} onChange={@handleCompareChange}>
+                          <Input type="select" ref="NType#{index}" groupClassName='search-area' value={"#{@props.statisticsItems[index].numeratorType}"} onChange={@handleStatNTypeSet.bind(@, index)}>
                             <option key={CONST.search.rawDataIndex} value={CONST.search.rawDataIndex}>{__ "All Data"}</option>
                             <option key={CONST.search.filteredDataIndex} value={CONST.search.filteredDataIndex}>{__ "Filtered"}</option>
                             {
@@ -129,7 +160,7 @@ AkashicRecordsStatisticsPanel = React.createClass
                           </Input>
                         </td>
                         <td>
-                          <Input type="select" ref="denominatorBaseon#{index}" groupClassName='search-area' value={"#{@state.compareArgv[index].denominator.baseOn}"} onChange={@handleCompareChange}>
+                          <Input type="select" ref="DType#{index}" groupClassName='search-area' value={"#{@props.statisticsItems[index].denominatorType}"} onChange={@handleStatDTypeSet.bind(@, index)}>
                             <option key={CONST.search.rawDataIndex} value={CONST.search.rawDataIndex}>{__ "All Data"}</option>
                             <option key={CONST.search.filteredDataIndex} value={CONST.search.filteredDataIndex}>{__ "Filtered"}</option>
                             {
@@ -140,34 +171,34 @@ AkashicRecordsStatisticsPanel = React.createClass
                           </Input>
                         </td>
                         {
-                          if @state.compareArgv[index].numerator.baseOn is -1
+                          if @props.statisticsItems[index].numeratorType is -1
                             <td>
                               <Input
                                 type='number'
                                 placeholder={"0"}
-                                value={"#{@state.compareArgv[index].numerator.num}"}
+                                value={"#{@props.statisticsItems[index].numerator}"}
                                 ref="numerator#{index}"
                                 groupClassName='search-area'
-                                onChange={@handleCompareChange} />
+                                onChange={@handleStatRuleNSet.bind(@, index)} />
                             </td>
                           else
-                            <td>{@state.compareArgv[index].numerator.num}</td>
+                            <td>{@props.statisticsItems[index].numerator}</td>
                         }
                         {
-                          if @state.compareArgv[index].denominator.baseOn is -1
+                          if @props.statisticsItems[index].denominatorType is -1
                             <td>
                               <Input
                                 type='number'
                                 placeholder={"0"}
-                                value={"#{@state.compareArgv[index].denominator.num}"}
+                                value={"#{@props.statisticsItems[index].denominator}"}
                                 ref="denominator#{index}"
                                 groupClassName='search-area'
-                                onChange={@handleCompareChange} />
+                                onChange={@handleStatRuleDSet.bind(@, index)} />
                             </td>
                           else
-                            <td>{@state.compareArgv[index].denominator.num}</td>
+                            <td>{@props.statisticsItems[index].denominator}</td>
                         }
-                        <td>{@state.compareArgv[index].percent}</td>
+                        <td>{@props.statisticsItems[index].percent}</td>
                       </tr>
                   }
                   </tbody>
