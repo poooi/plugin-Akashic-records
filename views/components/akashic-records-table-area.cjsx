@@ -82,83 +82,24 @@ AkashicRecordsTableArea = React.createClass
             <Table striped bordered condensed hover>
               <thead>
               {
-                if @props.configListChecked[2]
-                  <tr>
-                    {
-                      showLabel = false
-                      for filterKey, index in @filterKeys
-                        if @props.tabVisibility[index+1] and filterKey isnt ''
-                          showLabel = true
-                      for tab, index in @props.tableTab
-                        if index is 0
-                          <th key={index}>
-                            <OverlayTrigger trigger='click' rootClose={true} placement='right' overlay={
-                              <Popover id="table-tips" title={__ "Tips"}>
-                                <li>{__ "Disable filtering while hiding column"}</li>
-                                <li>{__ "Support the Javascript's "}<a onClick={openExternal.bind(this, "http://www.w3school.com.cn/jsref/jsref_obj_regexp.asp")}>{"RegExp"}</a></li>
-                              </Popover>
-                              }>
-                              <FontAwesome name='question-circle'/>
-                            </OverlayTrigger>
-                          </th>
-                        else
-                          <th key={index} className="table-search">
-                            <Input
-                              type='text'
-                              label={if showLabel then @props.tableTab[index] else ''}
-                              placeholder={@props.tableTab[index]}
-                              ref="input#{index}"
-                              groupClassName='filter-area'
-                              onChange={@handleKeyWordChange.bind(@, index)} />
-                          </th> if @props.tabVisibility[index]
-                    }
-                  </tr>
-                else if @props.configListChecked[0] and @props.configListChecked[1]
-                  <tr>
-                    {
-                      showLabel = false
-                      for filterKey, index in @props.filterKeys
-                        if @props.tabVisibility[index+1] and filterKey isnt ''
-                          showLabel = true
-                      for tab, index in @props.tableTab
-                        if index is 0
-                          <th key={index}>
-                            <OverlayTrigger trigger='click' rootClose={true} placement='right' overlay={
-                              <Popover id="table-tips" title={__ "Tips"}>
-                                <li>{__ "Disable filtering while hiding column"}</li>
-                                <li>{__ "Support the Javascript's "}<a onClick={openExternal.bind(this, "http://www.w3school.com.cn/jsref/jsref_obj_regexp.asp")}>{"RegExp"}</a></li>
-                              </Popover>
-                              }>
-                              <FontAwesome name='question-circle'/>
-                            </OverlayTrigger>
-                          </th>
-                        else
-                          <th key={index} className="table-search">
-                            <Input
-                              type='text'
-                              label={@props.tableTab[index]}
-                              placeholder={@props.tableTab[index]}
-                              ref="input#{index}"
-                              groupClassName='filter-area'
-                              onChange={@handleKeyWordChange.bind(@, index)} />
-                          </th> if @props.tabVisibility[index]
-                    }
-                  </tr>
-                else if @props.configListChecked[0]
+                showLabel = @props.configListChecked.get(0)
+                showFilter = @props.configListChecked.get(1)
+                if @props.configListChecked.get(2)
+                  showFilter = true
+                  for filterKey, index in @props.filterKeys.toArray()
+                    if @props.tabVisibility.get(index+1) and filterKey isnt ''
+                      showLabel = true
+                if showLabel and not showFilter
                   <tr>
                   {
                     for tab, index in @props.tableTab
                       <th key={index}>{@props.tableTab[index]}</th> if @props.tabVisibility[index]
                   }
                   </tr>
-                else if @props.configListChecked[1]
+                else if showLabel or showFilter
                   <tr>
                     {
-                      showLabel = false
-                      for filterKey, index in @props.filterKeys
-                        if @props.tabVisibility[index+1] and filterKey isnt ''
-                          showLabel = true
-                      for tab, index in @props.tableTab
+                      for tab, index in @props.tableTab.toArray()
                         if index is 0
                           <th key={index}>
                             <OverlayTrigger trigger='click' rootClose={true} placement='right' overlay={
@@ -174,25 +115,26 @@ AkashicRecordsTableArea = React.createClass
                           <th key={index} className="table-search">
                             <Input
                               type='text'
-                              placeholder={@props.tableTab[index]}
+                              label={if showLabel then @props.tableTab.get index else ''}
+                              placeholder={@props.tableTab.get index}
                               ref="input#{index}"
                               groupClassName='filter-area'
                               onChange={@handleKeyWordChange.bind(@, index)} />
-                          </th> if @props.tabVisibility[index]
+                          </th> if @props.tabVisibility.get index
                     }
-                  </tr>
               }
               </thead>
               <tbody>
                 {
-                  for item, index in @props.logs
+                  [0...@props.log.size].map (index) ->
+                    item = @props.log.get(index)
                     <AkashicRecordsTableTbodyItem
                       key = {item[0]}
                       index = {(@props.activePage-1)*@props.showAmount+index+1};
                       data={item}
-                      rowChooseChecked={@props.tabVisibility}
+                      rowChooseChecked={@props.tabVisibility.toArray()}
                       contentType={@props.contentType}
-                      tableTab={@props.tableTab}
+                      tableTab={@props.tableTab.toArray()}
                     />
                 }
               </tbody>

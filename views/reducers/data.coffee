@@ -1,8 +1,10 @@
-module.exports = (state = [], action) =>
+{Immutable} = window
+
+module.exports = (state = Immutable.List(), action) =>
   switch action.type
     when 'ADD_LOG'
-      [state..., action.log]
+      state.push Immutable.fromJS action.log
     when 'INITIALIZE_LOG'
-      action.logs
+      Immutable.fromJS action.logs
     else
       state

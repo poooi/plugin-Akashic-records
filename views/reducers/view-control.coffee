@@ -1,4 +1,4 @@
-{config} = window
+{config, Immutable} = window
 
 configList = ["Show Headings", "Show Filter-box",
             "Auto-selected", "Disable filtering while hiding filter-box"]
@@ -20,10 +20,18 @@ module.exports =
     if not state?
       state = JSON.parse config.get "plugin.Akashic.#{action.dataType}.configChecked",
         JSON.stringify [true, true, false, false]
+      state = Immutable.List(state)
     switch action.type
       when 'SET_CONFIG_LIST'
-        tmp = [state...]
-        tmp[action.index] = not state[action.index]
+        if state.get(action.index)
+          state.set(action.index, false)
+        else
+          if action.index < 2
+            state.set(action.index, true).set(2, false)
+          else if action.index is 2
+            state.set(0, false).set(1, false).set(2, true)
+          else
+            state.set(action.index, true)
       else
         state
 

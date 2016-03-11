@@ -1,24 +1,30 @@
+{Immutable} = window
+
 searchRule = (state, action) =>
   switch action.type
     when 'ADD_SEARCH_RULE'
-      baseOn: 1
-      content: ''
+      Immutable.Map
+        baseOn: 1
+        content: ''
     when 'SET_SEARCH_RULE_BASE'
-      state.baseOn = action.val
+      state.set 'baseOn', action.val
     when 'SET_SEARCH_RULE_KEY'
-      state.content = action.val
+      state.set 'content', action.val
     else
       state
 
-module.exports = (state = [], action) =>
+module.exports = (state = Immutable.List(), action) =>
   switch action.type
     when 'ADD_SEARCH_RULE'
-      [state..., searchRule(undefined, action)]
-    when 'SET_SEARCH_RULE_BASE'
-      state
-    when 'SET_SEARCH_RULE_KEY'
-      state
+      state.push searchRule(undefined, action)
+    when 'SET_SEARCH_RULE_BASE', 'SET_SEARCH_RULE_KEY'
+      state.set action.index, searchRule(state.get action.index, action)
     when 'DELETE_SEARCH_RULE'
-      state
+      tmp = state.delete(action.index)
+      tmp.map (item) ->
+        if item.get('baseOn') > action.index + 1
+          item.set('baseOn', item.get('baseOn') - 1)
+        else
+          item
     else
       state

@@ -5,7 +5,7 @@ TableArea = require '../components/akashic-records-table-area'
 {filterSelectors} = require '../selectors'
 
 getPropsFromState = (state, dataType) =>
-  len = getLogsLength(state)
+  len = state.data.size
 
   tableTab: state.tabs
   tabVisibility: state.tabVisibility

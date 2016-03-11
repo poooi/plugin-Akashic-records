@@ -61,10 +61,10 @@ AkashicRecordsCheckboxPanel = React.createClass
         <div>
           <Row>
           {
-            for checkedVal, index in @props.tableTab
+            for checkedVal, index in @props.tableTab.toArray()
               continue if !index
               <Col key={index} xs={2}>
-                <Input type='checkbox' value={index} onChange={@handleClickCheckbox.bind(@, index)} checked={@props.tabVisibility[index]} style={verticalAlign: 'middle'} label={checkedVal} />
+                <Input type='checkbox' value={index} onChange={@handleClickCheckbox.bind(@, index)} checked={@props.tabVisibility.get index} style={verticalAlign: 'middle'} label={checkedVal} />
               </Col>
           }
           </Row>
@@ -96,18 +96,18 @@ AkashicRecordsCheckboxPanel = React.createClass
             </Col>
             <Col xs={5}>
             {
-              for checkedVal, index in @props.configList
-                continue if index is 3
+              [0...3].map (index)=>
+                checkedVal = @props.configList.get index
                 <Col key={index} xs={4}>
-                  <Input type='checkbox' value={index} onChange={@handleClickConfigCheckbox.bind(@, index)} checked={@props.configListChecked[index]} style={verticalAlign: 'middle'} label={checkedVal} />
+                  <Input type='checkbox' value={index} onChange={@handleClickConfigCheckbox.bind(@, index)} checked={@props.configListChecked.get index} style={verticalAlign: 'middle'} label={checkedVal} />
                 </Col>
             }
             </Col>
             <Col xs={3}>
             {
               index = 3
-              checkedVal = @props.configList[index]
-              <Input type='checkbox' value={index} onChange={@handleClickConfigCheckbox.bind(@, index)} checked={@props.configListChecked[index]} style={verticalAlign: 'middle'} label={checkedVal} />
+              checkedVal = @props.configList.get index
+              <Input type='checkbox' value={index} onChange={@handleClickConfigCheckbox.bind(@, index)} checked={@props.configListChecked.get index} style={verticalAlign: 'middle'} label={checkedVal} />
             }
             </Col>
           </Row>

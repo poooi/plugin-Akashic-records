@@ -1,5 +1,5 @@
-{createSelector} = require 'reselect'
-{APPDATA_PATH, CONST, config} = window
+{createSelector,} = require 'reselect'
+{APPDATA_PATH, CONST, config, Immutable} = window
 
 dateToString = (date)->
   month = date.getMonth() + 1
@@ -48,10 +48,11 @@ filterWithIndex: (logs, filterKeys) ->
           retData = filterRegWindex retData, index, reg
         else
           retData = filterStringWIndex retData, index, key.toLowerCase().trim()
+    retData
 
 filterWNindex: (logs, key) ->
   if keyword is ''
-      []
+      Immutable.List()
     else
       regFlag = false
       res = keyword.match /^\/(.+)\/([gim]*)$/
@@ -82,7 +83,11 @@ filterWNindex: (logs, key) ->
 
 logSelectorFactory = () ->
   getLogs = (state) -> state.data
-  getFilterKeys = (state) -> state.filterKeys
+  getFilterKeys = (state) ->
+    if state.configListChecked.get(1) or state.configListChecked.get(2)
+      state.filterKeys.toArray()
+    else
+      []
   createSelector [getLogs, getFilterKeys], filterWithIndex
 
 logSearchSelectorBaseFactory = (old, num) ->
@@ -97,14 +102,14 @@ logSearchSelectorFactory = () ->
     lastLogs = null
     (logs, filteredLogs, filterRules) ->
       if not selector or lastLogs isnt logs
-        selector = logSearchSelectorBaseFactory([], filterRules.length)
-      if selector.length isnt filterRules.length
-        selector = logSearchSelectorBaseFactory(selector, filterRules.length)
+        selector = logSearchSelectorBaseFactory([], filterRules.size)
+      if selector.length isnt filterRules.size
+        selector = logSearchSelectorBaseFactory(selector, filterRules.size)
       logsRes = [logs, filteredLogs]
-      for filterRule, i in filterRules
+      for filterRule, i in filterRules.toJS()
         logsRes[CONST.search.indexBase+i+1] = selector[i] logsRes, filterRule
       logsRes.map (logs) ->
-        logs.length
+        logs.size
 
 module.exports =
   filterSelectors:
