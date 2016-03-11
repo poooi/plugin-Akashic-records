@@ -91,8 +91,7 @@ logSelectorFactory = () ->
   createSelector [getLogs, getFilterKeys], filterWithIndex
 
 logSearchSelectorBaseFactory = (old, num) ->
-  getLogs = (logsRes, searchRule)-> 
-    logsRes[searchRule.baseOn]
+  getLogs = (logsRes, searchRule)-> logsRes[searchRule.baseOn]
   getSearchKey = (logsRes, searchRule) -> searchRule.content
   [0...num].map (index) =>
     old[index] or createSelector [getLogs, getSearchKey], filterWNindex

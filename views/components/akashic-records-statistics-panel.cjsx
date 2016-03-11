@@ -24,8 +24,8 @@ AkashicRecordsStatisticsPanel = React.createClass
     @props.onSeaRuleDelete index
   handleSeaBaseSet: (index)->
     @props.onSeaRuleBaseSet index, @refs["baseOn#{index}"].getValue()
-  onSeaRuleKeySet: (index)->
-    @props.onSeaRuleBaseSet index, @refs["search#{index}"].getValue()
+  handleSeaRuleKeySet: (index)->
+    @props.onSeaRuleKeySet index, @refs["search#{index}"].getValue()
 
   handleAddStat: ->
     @props.onStatRuleAdd()
@@ -116,7 +116,7 @@ AkashicRecordsStatisticsPanel = React.createClass
                               placeholder={__ "Keywords"}
                               ref="search#{index}"
                               groupClassName='search-area'
-                              onChange={@onSeaRuleKeySet.bind(@, index)} />
+                              onChange={@handleSeaRuleKeySet.bind(@, index)} />
                         </td>
                         <td>{@props.searchItems.get(index).get('res')}</td>
                         <td>{@props.searchItems.get(index).get('total')}</td>

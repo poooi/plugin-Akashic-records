@@ -34,10 +34,14 @@ module.exports = (state, action) =>
       state.delete action.index
     when 'DELETE_SEARCH_RULE'
       state.map (item) ->
-        if item.get('numeratorType') > action.index + 1
+        if item.get('numeratorType') > action.index + 2
           item = item.set('numeratorType', item.get('numeratorType') - 1)
-        if item.get('denominatorType') > action.index + 1
+        else if item.get('numeratorType') is action.index + 2
+          item = item.set('numeratorType', 1)
+        if item.get('denominatorType') > action.index + 2
           item = item.set('denominatorType', item.get('denominatorType') - 1)
+        else if item.get('denominatorType') is action.index + 2
+          item = item.set('denominatorType', 1)
         item
     else
       state

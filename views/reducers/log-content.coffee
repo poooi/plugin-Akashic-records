@@ -36,8 +36,6 @@ boundActivePageNum = (state, dataType) ->
 
 module.exports = (type) ->
   (state, action) ->
-    console.log type
-    console.log action
     if action.type is 'SET_LANGUAGE'
       logContent state, action
     else if action.dataType is type

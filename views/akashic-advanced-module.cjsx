@@ -568,7 +568,7 @@ AttackLog = React.createClass
         else
           @showMessage '发生错误！请报告开发者'
           return
-      data = dataManager.getRawData logType
+      # data = dataManager.getRawData logType
       if process.platform is 'win32'
         if window.language is 'ja-JP'
           codeType = 'shiftjis'
@@ -638,7 +638,7 @@ AttackLog = React.createClass
             when CONST.typeList.resource
               hint = '资源'
               saveType = 4
-          oldData = duplicateRemoval dataManager.getRawData logType
+          # oldData = duplicateRemoval dataManager.getRawData logType
           oldLength = oldData.length
           newData = oldData.concat data
           if logType is CONST.typeList.resource

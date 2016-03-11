@@ -20,14 +20,14 @@ module.exports = (state, action) =>
     when 'ADD_SEARCH_RULE'
       state.push searchRule(undefined, action)
     when 'SET_SEARCH_RULE_BASE', 'SET_SEARCH_RULE_KEY'
-      console.log state
-      console.log action
       state.set action.index, searchRule(state.get(action.index), action)
     when 'DELETE_SEARCH_RULE'
       tmp = state.delete(action.index)
       tmp.map (item) ->
-        if item.get('baseOn') > action.index + 1
+        if item.get('baseOn') > action.index + 2
           item.set('baseOn', item.get('baseOn') - 1)
+        else if item.get('baseOn') is action.index + 2
+          item.set('baseOn', 1)
         else
           item
     else

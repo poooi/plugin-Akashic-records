@@ -114,7 +114,16 @@ AkashicRecordsArea = React.createClass
         <Tab eventKey={2} title={__ "Construction"} ><AkashicLog contentType={CONST.typeList.createShip}/></Tab>
         <Tab eventKey={3} title={__ "Development"} ><AkashicLog contentType={CONST.typeList.createItem}/></Tab>
         <Tab eventKey={4} title={__ "Resource"} ><AkashicResourceLog indexKey={4} selectedKey={@state.selectedKey} tableTab={resourceTableTab} mapShowFlag={@state.mapShowFlag} contentType={CONST.typeList.resource}/></Tab>
-        
+        <Tab eventKey={6} title={__ "Others"} >
+          <AkashicAdvancedModule
+            tableTab={
+              'attack': attackTableTabEn
+              'mission': missionTableTabEn
+              'createitem': createItemTableTabEn
+              'createship': createShipTableTabEn
+              'resource': resourceTableTabEn
+            }/>
+        </Tab>
       </Tabs>
     </div>
 

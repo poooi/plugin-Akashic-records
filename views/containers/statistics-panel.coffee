@@ -22,7 +22,6 @@ getSearchItems = (lens, searchRules) ->
 
 getStatisticsItems = (lens, statisticsRules) ->
   statisticsRules.map (item) ->
-    console.log item
     if item.numeratorType isnt -1
       item = item.set 'numerator', lens[item.numeratorType]
     if item.denominatorType isnt -1
