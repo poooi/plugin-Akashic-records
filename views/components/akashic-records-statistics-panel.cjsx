@@ -1,10 +1,8 @@
 {React, ReactBootstrap, jQuery, config, __, CONST} = window
 {Panel, Button, Col, Input, Grid, Row, ButtonGroup, DropdownButton,
   MenuItem, Table, OverlayTrigger, Popover, Collapse, Well} = ReactBootstrap
-Divider = require './divider'
+Divider = require '../divider'
 {openExternal} = require 'shell'
-
-dataManager = require '../lib/data-manager'
 
 boundActivePageNum = (activePage, logLength, showAmount) ->
   activePage = Math.min activePage, Math.ceil(logLength/showAmount)
@@ -12,9 +10,9 @@ boundActivePageNum = (activePage, logLength, showAmount) ->
 
 AkashicRecordsStatisticsPanel = React.createClass
   shouldComponentUpdate: (nextProps, nextState)->
-    @props.show is nextProps.show and
-    @props.searchItems.equals(nextProps.searchItems) and
-    @props.statisticsItems.equals(nextProps.statisticsItems)
+    @props.show isnt nextProps.show or
+    not @props.searchItems.equals(nextProps.searchItems) or
+    not @props.statisticsItems.equals(nextProps.statisticsItems)
   handlePanelShow: ->
     show = not @props.show
     config.set "plugin.Akashic.#{@props.contentType}.statisticsPanelShow", show
@@ -96,7 +94,7 @@ AkashicRecordsStatisticsPanel = React.createClass
                         }
                         <td>{index+1}</td>
                         <td>
-                          <Input type="select" ref="baseOn#{index}" groupClassName='search-area' value={"#{@props.searchItems.get('index').get('baseOn')}"} onChange={@handleSeaBaseSet.bind(@, index)}>
+                          <Input type="select" ref="baseOn#{index}" groupClassName='search-area' value={"#{@props.searchItems.get(index).get('baseOn')}"} onChange={@handleSeaBaseSet.bind(@, index)}>
                             <option key={CONST.search.rawDataIndex} value={CONST.search.rawDataIndex}>
                               {__ "All Data"}
                             </option>
@@ -104,7 +102,7 @@ AkashicRecordsStatisticsPanel = React.createClass
                               {__ "Filtered"}
                             </option>
                             {
-                              for i in [1..index]
+                              for i in [1...index+1]
                                 <option key={CONST.search.indexBase + i} value={CONST.search.indexBase + i}>
                                   {__ "Search Result No. %s", i}
                                 </option>
@@ -114,15 +112,15 @@ AkashicRecordsStatisticsPanel = React.createClass
                         <td>
                            <Input
                               type='text'
-                              value={@props.searchItems.get('index').get('content')}
+                              value={@props.searchItems.get(index).get('content')}
                               placeholder={__ "Keywords"}
                               ref="search#{index}"
                               groupClassName='search-area'
                               onChange={@onSeaRuleKeySet.bind(@, index)} />
                         </td>
-                        <td>{@props.searchItems.get('index').get('res')}</td>
-                        <td>{@props.searchItems.get('index').get('total')}</td>
-                        <td>{@props.searchItems.get('index').get('percent')}</td>
+                        <td>{@props.searchItems.get(index).get('res')}</td>
+                        <td>{@props.searchItems.get(index).get('total')}</td>
+                        <td>{@props.searchItems.get(index).get('percent')}</td>
                       </tr>
                   }
                   </tbody>
@@ -153,7 +151,7 @@ AkashicRecordsStatisticsPanel = React.createClass
                         }
                         <td>{index+1}</td>
                         <td>
-                          <Input type="select" ref="NType#{index}" groupClassName='search-area' value={"#{@props.statisticsItems.get('index').get('numeratorType')}"} onChange={@handleStatNTypeSet.bind(@, index)}>
+                          <Input type="select" ref="NType#{index}" groupClassName='search-area' value={"#{@props.statisticsItems.get(index).get('numeratorType')}"} onChange={@handleStatNTypeSet.bind(@, index)}>
                             <option key={CONST.search.rawDataIndex} value={CONST.search.rawDataIndex}>{__ "All Data"}</option>
                             <option key={CONST.search.filteredDataIndex} value={CONST.search.filteredDataIndex}>{__ "Filtered"}</option>
                             {
@@ -164,7 +162,7 @@ AkashicRecordsStatisticsPanel = React.createClass
                           </Input>
                         </td>
                         <td>
-                          <Input type="select" ref="DType#{index}" groupClassName='search-area' value={"#{@props.statisticsItems.get('index').get('denominatorType')}"} onChange={@handleStatDTypeSet.bind(@, index)}>
+                          <Input type="select" ref="DType#{index}" groupClassName='search-area' value={"#{@props.statisticsItems.get(index).get('denominatorType')}"} onChange={@handleStatDTypeSet.bind(@, index)}>
                             <option key={CONST.search.rawDataIndex} value={CONST.search.rawDataIndex}>{__ "All Data"}</option>
                             <option key={CONST.search.filteredDataIndex} value={CONST.search.filteredDataIndex}>{__ "Filtered"}</option>
                             {
@@ -175,34 +173,34 @@ AkashicRecordsStatisticsPanel = React.createClass
                           </Input>
                         </td>
                         {
-                          if @props.statisticsItems.get('index').get('numeratorType') is -1
+                          if @props.statisticsItems.get(index).get('numeratorType') is -1
                             <td>
                               <Input
                                 type='number'
                                 placeholder={"0"}
-                                value={"#{@props.statisticsItems.get('index').get('numerator')}"}
+                                value={"#{@props.statisticsItems.get(index).get('numerator')}"}
                                 ref="numerator#{index}"
                                 groupClassName='search-area'
                                 onChange={@handleStatRuleNSet.bind(@, index)} />
                             </td>
                           else
-                            <td>{@props.statisticsItems.get('index').get('numerator')}</td>
+                            <td>{@props.statisticsItems.get(index).get('numerator')}</td>
                         }
                         {
-                          if @props.statisticsItems.get('index').get('denominatorType') is -1
+                          if @props.statisticsItems.get(index).get('denominatorType') is -1
                             <td>
                               <Input
                                 type='number'
                                 placeholder={"0"}
-                                value={"#{@props.statisticsItems.get('index').get('denominator')}"}
+                                value={"#{@props.statisticsItems.get(index).get('denominator')}"}
                                 ref="denominator#{index}"
                                 groupClassName='search-area'
                                 onChange={@handleStatRuleDSet.bind(@, index)} />
                             </td>
                           else
-                            <td>{@props.statisticsItems.get('index').get('denominator')}</td>
+                            <td>{@props.statisticsItems.get(index).get('denominator')}</td>
                         }
-                        <td>{@props.statisticsItems.get('index').get('percent')}</td>
+                        <td>{@props.statisticsItems.get(index).get('percent')}</td>
                       </tr>
                   }
                   </tbody>

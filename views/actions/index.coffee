@@ -29,7 +29,7 @@ module.exports =
     dataType: type
     val: val
 
-  setConfigList: (index, val, type) ->
+  setConfigList: (index, type) ->
     type: 'SET_CONFIG_LIST'
     dataType: type
     index: index

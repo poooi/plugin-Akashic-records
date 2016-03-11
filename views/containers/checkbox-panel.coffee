@@ -33,7 +33,7 @@ mapDispatchToProps = (dispatch, ownProps) =>
   onActivePageSet: (val) =>
     dispatch setActivePage(val, ownProps.contentType)
   onConfigListSet: (index) =>
-    dispatch setConfigList(val, ownProps.contentType)
+    dispatch setConfigList(index, ownProps.contentType)
 
 module.exports = connect(
   mapStateToProps,

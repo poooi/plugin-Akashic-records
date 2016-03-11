@@ -55,13 +55,13 @@ class APIResolver
     if window._nickNameId? and @nickNameId isnt window._nickNameId
       @nickNameId = window._nickNameId
       config.set 'plugin.Akashic.nickNameId', @nickNameId
-      if @nickNameId isnt 0
-        dataManager.initializeData @nickNameId, true
+      # if @nickNameId isnt 0
+        # dataManager.initializeData @nickNameId, true
   start: () ->
     window.addEventListener 'game.response', @bindHandleResponse
     window.addEventListener 'battle.result', @bindHandleBattleResultResponse
     @updateUser()
-    dataManager.initializeData @nickNameId, true
+    # dataManager.initializeData @nickNameId, true
 
   stop: () ->
     window.removeEventListener 'game.response', @bindHandleResponse
@@ -75,7 +75,7 @@ class APIResolver
         if window._nickNameId? and @nickNameId isnt window._nickNameId
           @nickNameId = window._nickNameId
           config.set 'plugin.Akashic.nickNameId', @nickNameId
-          dataManager.initializeData(@nickNameId, true)
+          # dataManager.initializeData(@nickNameId, true)
       # Map selected rank
       when '/kcsapi/api_get_member/mapinfo'
         for map in body
@@ -145,7 +145,7 @@ class APIResolver
           dataItem.push body.api_get_item2.api_useitem_count
         else
           dataItem.push "", ""
-        dataManager.saveLog(CONST.typeList.mission, dataItem, true)
+        # dataManager.saveLog(CONST.typeList.mission, dataItem, true)
 
       # 开发
       when '/kcsapi/api_req_kousyou/createitem'
@@ -169,7 +169,7 @@ class APIResolver
         _decks = window._decks
         dataItem.push "#{@_ships[_decks[0].api_ship[0]].api_name}(Lv.#{@_ships[_decks[0].api_ship[0]].api_lv})"
         dataItem.push window._teitokuLv
-        dataManager.saveLog(CONST.typeList.createItem, dataItem, true)
+        # dataManager.saveLog(CONST.typeList.createItem, dataItem, true)
 
       # 建造
       when '/kcsapi/api_req_kousyou/createship'
@@ -204,7 +204,7 @@ class APIResolver
           dataItem.push remainNum
           dataItem.push "#{@_ships[_decks[0].api_ship[0]].api_name}(Lv.#{@_ships[_decks[0].api_ship[0]].api_lv})"
           dataItem.push window._teitokuLv
-          dataManager.saveLog(CONST.typeList.createShip, dataItem, true)
+          # dataManager.saveLog(CONST.typeList.createShip, dataItem, true)
           @createShipFlag = false
 
       # 资源
@@ -218,7 +218,7 @@ class APIResolver
           dataItem = []
           dataItem.push nowDate.getTime()
           dataItem.push item.api_value for item in body.api_material
-          dataManager.saveLog('resource', dataItem)
+          # dataManager.saveLog('resource', dataItem)
 
   handleBattleResultResponse: (e) ->
     {map, quest, boss, mapCell, rank, deckHp, deckShipId, enemy, dropItem, dropShipId, combined, mvp} = e.detail
@@ -297,6 +297,6 @@ class APIResolver
       tmp[1] = "#{@_ships[deckShipId[6]].api_name}(Lv.#{@_ships[deckShipId[6]].api_lv})"
       tmp[3] = "#{@_ships[deckShipId[6 + mvp[1]]].api_name}(Lv.#{@_ships[deckShipId[6 + mvp[1]]].api_lv})"
     dataItem = dataItem.concat tmp
-    dataManager.saveLog(CONST.typeList.attack, dataItem, true)
+    # dataManager.saveLog(CONST.typeList.attack, dataItem, true)
 
 module.exports = APIResolver

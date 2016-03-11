@@ -32,25 +32,25 @@ filterStringWIndex = (data, index, keyword)->
     else
       "#{row[index]}".toLowerCase().trim().indexOf(keyword) >= 0
 
-filterWithIndex: (logs, filterKeys) ->
-    retData = logs
-    for key, index in filterKeys
-      if key isnt ''
-        regFlag = false
-        res = key.match /^\/(.+)\/([gim]*)$/
-        if res?
-          try
-            reg = new RegExp res[1], res[2]
-            regFlag = true
-          catch e
-            consoleError "Failed to resolve RegExp #{key}."
-        if regFlag
-          retData = filterRegWindex retData, index, reg
-        else
-          retData = filterStringWIndex retData, index, key.toLowerCase().trim()
-    retData
+filterWithIndex = (logs, filterKeys) ->
+  retData = logs
+  for key, index in filterKeys
+    if key isnt ''
+      regFlag = false
+      res = key.match /^\/(.+)\/([gim]*)$/
+      if res?
+        try
+          reg = new RegExp res[1], res[2]
+          regFlag = true
+        catch e
+          consoleError "Failed to resolve RegExp #{key}."
+      if regFlag
+        retData = filterRegWindex retData, index, reg
+      else
+        retData = filterStringWIndex retData, index, key.toLowerCase().trim()
+  retData
 
-filterWNindex: (logs, key) ->
+filterWNindex = (logs, keyword) ->
   if keyword is ''
       Immutable.List()
     else
@@ -91,23 +91,24 @@ logSelectorFactory = () ->
   createSelector [getLogs, getFilterKeys], filterWithIndex
 
 logSearchSelectorBaseFactory = (old, num) ->
-  getLogs = (logsRes, filterRule) -> logsRes[filterRule.baseOn]
-  getFilteredLogs = (logsRes, filterRule) -> filterRule.content
+  getLogs = (logsRes, searchRule)-> 
+    logsRes[searchRule.baseOn]
+  getSearchKey = (logsRes, searchRule) -> searchRule.content
   [0...num].map (index) =>
-    old[index] or createSelector [getLogs, getFilterKeys], filterWNindex
+    old[index] or createSelector [getLogs, getSearchKey], filterWNindex
 
 logSearchSelectorFactory = () ->
   do () ->
     selector = null
     lastLogs = null
-    (logs, filteredLogs, filterRules) ->
+    (logs, filteredLogs, searchRules) ->
       if not selector or lastLogs isnt logs
-        selector = logSearchSelectorBaseFactory([], filterRules.size)
-      if selector.length isnt filterRules.size
-        selector = logSearchSelectorBaseFactory(selector, filterRules.size)
+        selector = logSearchSelectorBaseFactory([], searchRules.size)
+      if selector.length isnt searchRules.size
+        selector = logSearchSelectorBaseFactory(selector, searchRules.size)
       logsRes = [logs, filteredLogs]
-      for filterRule, i in filterRules.toJS()
-        logsRes[CONST.search.indexBase+i+1] = selector[i] logsRes, filterRule
+      for searchRule, i in searchRules.toJS()
+        logsRes[CONST.search.indexBase+i+1] = selector[i] logsRes, searchRule
       logsRes.map (logs) ->
         logs.size
 

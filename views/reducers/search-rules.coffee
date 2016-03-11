@@ -13,12 +13,16 @@ searchRule = (state, action) =>
     else
       state
 
-module.exports = (state = Immutable.List(), action) =>
+module.exports = (state, action) =>
+  if not state?
+    state = Immutable.List.of(searchRule(undefined, {type: 'ADD_SEARCH_RULE'}))
   switch action.type
     when 'ADD_SEARCH_RULE'
       state.push searchRule(undefined, action)
     when 'SET_SEARCH_RULE_BASE', 'SET_SEARCH_RULE_KEY'
-      state.set action.index, searchRule(state.get action.index, action)
+      console.log state
+      console.log action
+      state.set action.index, searchRule(state.get(action.index), action)
     when 'DELETE_SEARCH_RULE'
       tmp = state.delete(action.index)
       tmp.map (item) ->

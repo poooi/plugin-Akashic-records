@@ -16,29 +16,29 @@ calPercent = (num, de) ->
 
 getSearchItems = (lens, searchRules) ->
   searchRules.map (item, index) ->
-    item.toSeq().update 'res', lens[index+2]
-    .update 'total', lens[item.baseOn]
-    .update 'percent', calPercent lens[index+2], lens[item.baseOn]
-    .toMap()
+    item.set 'res', lens[index+2]
+    .set 'total', lens[item.baseOn]
+    .set 'percent', calPercent lens[index+2], lens[item.baseOn]
 
 getStatisticsItems = (lens, statisticsRules) ->
   statisticsRules.map (item) ->
+    console.log item
     if item.numeratorType isnt -1
       item = item.set 'numerator', lens[item.numeratorType]
     if item.denominatorType isnt -1
       item = item.set 'denominator', lens[item.denominatorType]
-    item.update 'percent', calPercent item.get('numerator'), item.get('denominator')
+    item.set 'percent', calPercent item.get('numerator'), item.get('denominator')
 
-getPropsFromState = (state) ->
+getPropsFromState = (state, dataType) ->
   filteredLogs = filterSelectors[dataType] state
-  loglens = searchSelectors[dataType] state.data, filteredLogs, searchRules
+  loglens = searchSelectors[dataType] state.data, filteredLogs, state.searchRules
   show: state.statisticsVisible
-  searchItems: getSearchItems loglens state.statisticsVisible
-  statisticsItems: getStatisticsItems loglens, state.searchRules
+  searchItems: getSearchItems loglens, state.searchRules
+  statisticsItems: getStatisticsItems loglens, state.statisticsRules
 
 mapStateToProps = (state, ownProps) ->
   if state[ownProps.contentType]?
-    getPropsFromState(state[ownProps.contentType])
+    getPropsFromState(state[ownProps.contentType], ownProps.contentType)
   else
     {}
 

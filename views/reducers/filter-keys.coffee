@@ -10,5 +10,7 @@ module.exports = (state = defaultFilterKeys, action) =>
     when 'SET_TAB_VISIBILITY'
       if action.val is false and state.get(action.index) isnt ''
         state.set(action.index, '')
+      else
+        state
     else
       state

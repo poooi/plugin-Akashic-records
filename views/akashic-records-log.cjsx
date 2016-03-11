@@ -1,5 +1,5 @@
 CheckboxPanel = require './containers/checkbox-panel'
-AkashicRecordsStatisticsPanel = require './akashic-records-statistics-panel'
+StatisticsPanel = require './containers/statistics-panel'
 VisibleTable = require './containers/visible-table'
 
 
@@ -9,9 +9,7 @@ AkashicLog = React.createClass
   render: ->
     <div>
       <CheckboxPanel contentType={@props.contentType} />
-      <AkashicRecordsStatisticsPanel
-        contentType={@props.contentType}
-      />
+      <StatisticsPanel contentType={@props.contentType} />
       <VisibleTable contentType={@props.contentType} />
     </div>
 

@@ -3,7 +3,6 @@
 
 #i18n = require '../node_modules/i18n'
 # {__} = i18n
-dataManager = require '../lib/data-manager'
 
 AkashicResourceChart = require './akashic-resource-chart'
 AkashicResourceTable = require './akashic-resource-table'
@@ -23,18 +22,6 @@ AkashicResourceLog = React.createClass
       @setState
         mapShowFlag: false
         selectedKey: selectedKey
-
-
-  dataChangeCB: ->
-    @setState
-      data: dataManager.getRawData @props.contentType
-
-  componentWillMount: ->
-    @dataChangelistener = dataManager.addListener @props.contentType, CONST.eventList.dataChange, @dataChangeCB
-
-  componentWillUnmount: ->
-    if @dataChangelistener?
-      dataManager.removeListener @props.contentType, CONST.eventList.dataChange, @dataChangelistener
 
   render: ->
     <div>

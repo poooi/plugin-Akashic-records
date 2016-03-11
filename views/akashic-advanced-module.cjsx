@@ -14,8 +14,6 @@ dialog = remote.require 'dialog'
 
 {openExternal} = require 'shell'
 
-dataManager = require '../lib/data-manager'
-
 dateCmp = (a, b)->
   if isNaN a[0]
     a[0] = (new Date(a[0])).getTime()

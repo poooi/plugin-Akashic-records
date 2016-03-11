@@ -36,16 +36,21 @@ boundActivePageNum = (state, dataType) ->
 
 module.exports = (type) ->
   (state, action) ->
+    console.log type
+    console.log action
     if action.type is 'SET_LANGUAGE'
       logContent state, action
     else if action.dataType is type
       state = logContent state, action
       switch action.type
-        when 'INITIALIZE_LOGS', 'SET_FILTER_KEY', 'SET_SHOW_AMOUNT'
+        when 'INITIALIZE_LOGS', 'SET_FILTER_KEY',\
+             'SET_SHOW_AMOUNT', 'SET_ACTIVE_PAGE'
           boundActivePageNum state, type
         else
           state
-    else
+    else if not state?
       logContent state,
         type: 'NONE'
-        dataType: dataType
+        dataType: type
+    else
+      state

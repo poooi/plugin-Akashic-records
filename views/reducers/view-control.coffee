@@ -1,9 +1,9 @@
 {config, Immutable} = window
 
-configList = ["Show Headings", "Show Filter-box",
-            "Auto-selected", "Disable filtering while hiding filter-box"]
+configList = Immutable.List.of("Show Headings", "Show Filter-box",
+            "Auto-selected", "Disable filtering while hiding filter-box")
 
-getTabs = () =>
+getTabs = () ->
   configList.map (tab) ->
     __ tab
 

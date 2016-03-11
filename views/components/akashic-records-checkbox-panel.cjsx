@@ -1,7 +1,7 @@
 {React, ReactBootstrap, jQuery, config, __, CONST} = window
 {Panel, Button, Col, Input, Grid, Row, ButtonGroup, DropdownButton,
   MenuItem, Table, OverlayTrigger, Popover, Collapse, Well} = ReactBootstrap
-Divider = require './divider'
+Divider = require '../divider'
 {openExternal} = require 'shell'
 
 #i18n = require '../node_modules/i18n'
@@ -33,10 +33,10 @@ AkashicRecordsCheckboxPanel = React.createClass
 
   handleClickCheckbox: (index) ->
     {tabVisibility} = @props
-    tmp = Object.clone tabVisibility
+    tmp = tabVisibility.toArray()
     tmp[index] = not tmp[index]
     config.set "plugin.Akashic.#{@props.contentType}.checkbox", JSON.stringify tmp
-    @props.onCheckboxClick index, not tmp[index]
+    @props.onCheckboxClick index, tmp[index]
     
   handleClickConfigCheckbox: (index) ->
     @props.onConfigListSet index
@@ -46,7 +46,7 @@ AkashicRecordsCheckboxPanel = React.createClass
     val = parseInt @refs.pageSelected.getValue()
     if !val or val < 1
       val = 1
-    @props.onShowAmountSet val
+    @props.onActivePageSet val
 
   render: ->
     <Grid>
@@ -89,6 +89,7 @@ AkashicRecordsCheckboxPanel = React.createClass
                 <Input
                   type='number'
                   placeholder={"#{__ "Page %s", @props.activePage}"}
+                  value={@props.activePage}
                   ref='pageSelected'
                   groupClassName='select-area'
                   onChange={@handleShowPageSelect}/>
