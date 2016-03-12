@@ -6,8 +6,6 @@
   <link rel="stylesheet" id="bootstrap-css" href="">
   <link rel="stylesheet" href="./assets/main.css">
   <link rel="stylesheet" id="font-awesome" href="">
-  <script src="./env-loader.js"></script>
-  <script type="text/coffeescript" src="./akashic-records.coffee"></script>
 </head>
 <body>
   <akashic-records-main>
@@ -16,5 +14,10 @@
   <akashic-records-modal>
     <akashic-records-modal-trigger />
   <akashic-records-modal/>
+  <script>
+    require("./env-loader.js");
+    require("coffee-script/register");
+    require("./akashic-records");
+  </script>
 </body>
 </html>
