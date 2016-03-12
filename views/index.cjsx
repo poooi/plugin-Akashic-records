@@ -19,7 +19,7 @@ AkashicLog = require './akashic-records-log'
 AkashicResourceLog = require './akashic-resource-log'
 AkashicAdvancedModule = require './containers/advanced-module'
 
-$('#font-awesome')?.setAttribute 'href', "#{ROOT}/components/font-awesome/css/font-awesome.min.css"
+$('#font-awesome')?.setAttribute 'href', require.resolve('font-awesome/css/font-awesome.css')
 
 
 attackTableTabEn = ['No.', 'Time', 'World', "Node", "Sortie Type",
