@@ -1,21 +1,22 @@
 {__} = window
 {connect} = require 'react-redux'
-{setFilterKey, setActivePage} = require '../actions'
-TableArea = require '../components/akashic-records-table-area'
-{filterSelectors} = require '../selectors'
+{setFilterKey, setActivePage,
+setShowAmount, setTimeScale} = require '../actions'
+TableArea = require '../components/akashic-resource-table-area'
+{resourceFilter} = require '../selectors'
 
 getPropsFromState = (state, dataType) =>
-  logs = filterSelectors[dataType](state)
-  len = logs.size
+  data = resourceFilter state
+  len = data.size
 
   tableTab: state.tabs
   tabVisibility: state.tabVisibility
-  logs: logs
+  logs: data
   paginationItems: Math.ceil(len/state.showAmount)
   activePage: state.activePage
   showAmount: state.showAmount
-  filterKeys: state.filterKeys
-  configListChecked: state.configListChecked
+  filterKey: state.filterKeys.get(0)
+  timeScale: state.showTimeScale
 
 mapStateToProps = (state, ownProps) =>
   if state[ownProps.contentType]?
@@ -24,10 +25,14 @@ mapStateToProps = (state, ownProps) =>
     {}
 
 mapDispatchToProps = (dispatch, ownProps) =>
-  onFilterKeySet: (index, key) =>
-    dispatch setFilterKey(index, key, ownProps.contentType)
+  onFilterKeySet: (key) =>
+    dispatch setFilterKey(0, key, ownProps.contentType)
   onActivePageSet: (val) =>
     dispatch setActivePage(val, ownProps.contentType)
+  onShowAmountSet: (val) =>
+    dispatch setShowAmount(val, ownProps.contentType)
+  onTimeScaleSet: (val) ->
+    dispatch setTimeScale(val, ownProps.contentType)
 
 module.exports = connect(
   mapStateToProps,

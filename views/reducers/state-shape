@@ -28,3 +28,4 @@ resource
     }
   ]
   filterKeys: [string]
+  showTimeScale: int

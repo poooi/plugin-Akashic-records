@@ -19,6 +19,10 @@ dateToString = (date)->
     second = "0#{second}"
   "#{date.getFullYear()}/#{month}/#{day} #{hour}:#{minute}:#{second}"
 
+dateToDateString = (datetime)->
+  date = new Date(datetime)
+  "#{date.getFullYear()}/#{date.getMonth()}/#{date.getDate()}"
+
 filterRegWindex = (data, index, reg)->
   data.filter (row)=>
     if index is 0
@@ -81,6 +85,42 @@ filterWNindex = (logs, keyword) ->
             return match
         match
 
+resourceFilter = (logs, tabVisibility, keyWord, showScale) ->
+  retLogs = logs
+  if keyWord?
+    retLogs = retLogs.filter (row)->
+      match = false
+      for item, index in row
+        if tabVisibility.get(index+1)
+          if index is 0 and dateToString(new Date(item)).toLowerCase().trim().indexOf(keyWord.toLowerCase().trim()) >= 0
+            match = true
+          if index isnt 0 and "#{item}".toLowerCase().trim().indexOf(keyWord.toLowerCase().trim()) >= 0
+            match = true
+      match
+  if showScale isnt 0
+    dateString = ""
+    retLogs = retLogs.filter (dataitem)->
+      tmp = dateToDateString dataitem[0]
+      if tmp isnt dateString
+        dateString = tmp
+        true
+      else
+        false
+  retLogs
+
+filterAsScale = (data, showScale)->
+  if showScale is 0
+    data
+  else
+    dateString = ""
+    data.filter (dataitem)->
+      tmp = dateToDateString dataitem[0]
+      if tmp isnt dateString
+        dateString = tmp
+        true
+      else
+        false
+
 logSelectorFactory = () ->
   getLogs = (state) -> state.data
   getFilterKeys = (state) ->
@@ -125,3 +165,7 @@ module.exports =
     createship: logSearchSelectorFactory()
     createitem: logSearchSelectorFactory()
     resource: logSearchSelectorFactory()
+  resourceFilter: createSelector [(state) -> state.data,
+  (state) -> state.tabVisibility,
+  (state) -> state.filterKeys.get(0),
+  (state) -> state.showTimeScale], resourceFilter

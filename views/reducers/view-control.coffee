@@ -19,7 +19,7 @@ module.exports =
   configListChecked: (state, action) =>
     if not state?
       state = JSON.parse config.get "plugin.Akashic.#{action.dataType}.configChecked",
-        JSON.stringify [true, true, false, false]
+        JSON.stringify [true, false, false, true]
       state = Immutable.List(state)
     switch action.type
       when 'SET_CONFIG_LIST'
@@ -55,5 +55,14 @@ module.exports =
         true
       when 'HIDDEN_STATICTICS_PANEL'
         false
+      else
+        state
+
+  showTimeScale: (state, action) ->
+    if not state?
+      state = config.get "plugin.Akashic.#{action.dataType}.table.showTimeScale", 0
+    switch action.type
+      when 'SET_TIME_SCALE'
+        action.val
       else
         state

@@ -3,7 +3,8 @@
 {showCheckboxPanel, hiddenCheckboxPanel,
 setTabVisibility, setShowAmount, setActivePage, setConfigList} =
   require '../actions'
-CheckboxPanel = require '../components/akashic-records-checkbox-panel'
+logCP = require '../components/akashic-records-checkbox-panel'
+resourceCP = require '../components/akashic-resource-checkbox-panel'
 
 getPropsFromState = (state) =>
   show: state.checkboxVisible
@@ -35,6 +36,10 @@ mapDispatchToProps = (dispatch, ownProps) =>
   onConfigListSet: (index) =>
     dispatch setConfigList(index, ownProps.contentType)
 
-module.exports = connect(
-  mapStateToProps,
-  mapDispatchToProps)(CheckboxPanel)
+module.exports = 
+  logCP: connect(
+    mapStateToProps,
+    mapDispatchToProps)(logCP)
+  resourceCP: connect(
+    mapStateToProps,
+    mapDispatchToProps)(resourceCP)

@@ -45,6 +45,10 @@ module.exports =
   hiddenStatisticsPanel: (type) ->
     type: 'HIDDEN_STATICTICS_PANEL'
     dataType: type
+  setTimeScale: (val, type) ->
+    type: 'SET_TIME_SCALE'
+    val: val
+    dataType: type
 
   addSearchRule: (type) ->
     type: 'ADD_SEARCH_RULE'

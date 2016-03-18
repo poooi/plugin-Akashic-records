@@ -1,4 +1,4 @@
-CheckboxPanel = require './containers/checkbox-panel'
+CheckboxPanel = (require './containers/checkbox-panel').logCP
 StatisticsPanel = require './containers/statistics-panel'
 VisibleTable = require './containers/visible-table'
 

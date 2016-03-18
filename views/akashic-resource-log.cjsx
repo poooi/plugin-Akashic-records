@@ -5,7 +5,16 @@
 # {__} = i18n
 
 ResourceChart = require './containers/resource-chart'
-AkashicResourceTable = require './akashic-resource-table'
+
+CheckboxPanel = (require './containers/checkbox-panel').resourceCP
+TableArea = require './containers/resource-table'
+
+AkashicResourceTable = React.createClass
+  render: ->
+    <div>
+      <CheckboxPanel contentType='resource'/>
+      <TableArea contentType='resource'/>
+    </div>
 
 AkashicResourceLog = React.createClass
   getInitialState: ->

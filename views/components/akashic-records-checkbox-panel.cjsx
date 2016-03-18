@@ -4,27 +4,6 @@
 Divider = require '../divider'
 {openExternal} = require 'shell'
 
-#i18n = require '../node_modules/i18n'
-# {__} = i18n
-
-dateToString = (date)->
-  month = date.getMonth() + 1
-  if month < 10
-    month = "0#{month}"
-  day = date.getDate()
-  if day < 10
-    day = "0#{day}"
-  hour = date.getHours()
-  if hour < 10
-    hour = "0#{hour}"
-  minute = date.getMinutes()
-  if minute < 10
-    minute = "0#{minute}"
-  second = date.getSeconds()
-  if second < 10
-    second = "0#{second}"
-  "#{date.getFullYear()}/#{month}/#{day} #{hour}:#{minute}:#{second}"
-
 AkashicRecordsCheckboxPanel = React.createClass
   handlePanelShow: ->
     show = not @props.show
@@ -41,6 +20,7 @@ AkashicRecordsCheckboxPanel = React.createClass
   handleClickConfigCheckbox: (index) ->
     @props.onConfigListSet index
   handleShowAmountSelect: (eventKey, selectedKey)->
+    config.set "plugin.Akashic.#{@props.contentType}.showAmount", selectedKey
     @props.onShowAmountSet selectedKey
   handleShowPageSelect: ()->
     val = parseInt @refs.pageSelected.getValue()
@@ -64,7 +44,13 @@ AkashicRecordsCheckboxPanel = React.createClass
             for checkedVal, index in @props.tableTab.toArray()
               continue if !index
               <Col key={index} xs={2}>
-                <Input type='checkbox' value={index} onChange={@handleClickCheckbox.bind(@, index)} checked={@props.tabVisibility.get index} style={verticalAlign: 'middle'} label={checkedVal} />
+                <Input
+                  type='checkbox'
+                  value={index}
+                  onChange={@handleClickCheckbox.bind(@, index)}
+                  checked={@props.tabVisibility.get index}
+                  style={verticalAlign: 'middle'}
+                  label={checkedVal} />
               </Col>
           }
           </Row>
