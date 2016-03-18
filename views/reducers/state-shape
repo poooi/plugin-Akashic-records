@@ -1,0 +1,31 @@
+attack
+mission
+createship
+createitem
+resource
+  data: [array]
+  tabs: [string]
+  language: string
+  tabVisibility: [bool]
+  activePage: int
+  showAmount: int
+  configList: [string, string, string, string]
+  configListChecked: [bool, bool, bool, bool]
+  checkboxVisible: bool
+  statisticsVisible: bool
+  searchRules: [
+    {
+      baseOn: int
+      content: string
+    }, ...
+  ]
+  statisticsRules: [
+    {
+      numeratorType: int
+      denominatorType: int
+      numerator: int
+      denominator: int
+    }
+  ]
+  filterKeys: [string]
+  showTimeScale: int
