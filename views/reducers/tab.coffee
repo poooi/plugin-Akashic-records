@@ -55,3 +55,4 @@ module.exports =
       state.set action.index, action.val
     else
       state
+  oriTableTab: tableTab

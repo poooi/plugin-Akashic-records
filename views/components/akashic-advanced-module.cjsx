@@ -14,6 +14,8 @@ dialog = remote.require 'dialog'
 
 {openExternal} = require 'shell'
 
+{oriTableTab} = require '../reducers/tab'
+
 dateCmp = (a, b)->
   if isNaN a[0]
     a[0] = (new Date(a[0])).getTime()
@@ -74,6 +76,7 @@ translateTableTab = (tableTabEn, locale) ->
   tableTab
 
 resolveFile = (fileContent, tableTabEn)->
+  tableTabEn = oriTableTab
   tableTab = {}
   tableTab['en-US'] = Object.clone tableTabEn
   for key in ['ja-JP', 'zh-CN', 'zh-TW']
@@ -552,23 +555,22 @@ AttackLog = React.createClass
       switch @state.typeChoosed
         when '出击'
           logType = CONST.typeList.attack
-          data = @props.attackData
+          data = @props.attackData.toArray()
         when '远征'
           logType = CONST.typeList.mission
-          data = @props.missionData
+          data = @props.missionData.toArray()
         when '建造'
           logType = CONST.typeList.createShip
-          data = @props.createShipData
+          data = @props.createShipData.toArray()
         when '开发'
           logType = CONST.typeList.createItem
-          data = @props.createItemData
+          data = @props.createItemData.toArray()
         when '资源'
           logType = CONST.typeList.resource
-          data = @props.resourceData
+          data = @props.resourceData.toArray()
         else
           @showMessage '发生错误！请报告开发者'
           return
-      # data = dataManager.getRawData logType
       if process.platform is 'win32'
         if window.language is 'ja-JP'
           codeType = 'shiftjis'
@@ -582,7 +584,7 @@ AttackLog = React.createClass
         title: "保存#{@state.typeChoosed}记录"
         defaultPath: "#{nickNameId}-#{logType}.csv"
       if filename?
-        saveTableTab = @props.tableTab[logType].map (tab) ->
+        saveTableTab = @props.tableTab[logType].toArray().map (tab) ->
           __ tab
         saveData = "#{saveTableTab.slice(1).join(',')}\n"
         for item in data
@@ -620,24 +622,26 @@ AttackLog = React.createClass
               fileContent = iconv.decode fileContentBuffer, 'shiftjis'
             else
               fileContent = iconv.decode fileContentBuffer, 'shiftjis'
-          {logType, data} = resolveFile fileContent, @props.tableTab
+          {logType, data} = resolveFile fileContent
           saveType = -1
           switch logType
             when CONST.typeList.attack
               hint = '出击'
-              saveType = 0
+              oldData = duplicateRemoval @props.attackData.toArray()
             when CONST.typeList.mission
               hint = '远征'
-              saveType = 1
+              oldData = duplicateRemoval @props.attackData.toArray()
             when CONST.typeList.createShip
               hint = '建造'
-              saveType = 3
+              oldData = duplicateRemoval @props.attackData.toArray()
             when CONST.typeList.createItem
               hint = '开发'
-              saveType = 2
+              oldData = duplicateRemoval @props.attackData.toArray()
             when CONST.typeList.resource
               hint = '资源'
-              saveType = 4
+              oldData = duplicateRemoval @props.attackData.toArray()
+            else
+              throw "Type Error!"
           # oldData = duplicateRemoval dataManager.getRawData logType
           oldLength = oldData.length
           newData = oldData.concat data
@@ -653,7 +657,7 @@ AttackLog = React.createClass
           fs.writeFile path.join(APPDATA_PATH, 'akashic-records', "tmp", "data"), saveData
           fs.emptyDirSync path.join(APPDATA_PATH, 'akashic-records', nickNameId.toString(), logType.toLowerCase())
           fs.writeFile path.join(APPDATA_PATH, 'akashic-records', nickNameId.toString(), logType.toLowerCase(), "data"), saveData
-          # @props.setDataHandler saveType, newData
+          @props.onLogsReset newData, logType
           @showMessage "新导入#{newLength - oldLength}条#{hint}记录！"
         catch e
           @showMessage e.message
@@ -696,7 +700,7 @@ AttackLog = React.createClass
                 </ul>
               </Popover>
               }>
-              <Button id='question-btn' bsStyle='default' bsSize='large' onClick={@props.switchShow}>
+              <Button id='question-btn' bsStyle='default' bsSize='large'>
                 <FontAwesome name='question-circle' className="fa-fw" />
               </Button>
             </OverlayTrigger>

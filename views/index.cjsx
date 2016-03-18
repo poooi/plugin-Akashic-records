@@ -17,7 +17,7 @@ apiResolver = new APIResolver(store)
 
 AkashicLog = require './akashic-records-log'
 AkashicResourceLog = require './akashic-resource-log'
-AkashicAdvancedModule = require './akashic-advanced-module'
+AkashicAdvancedModule = require './containers/advanced-module'
 
 $('#font-awesome')?.setAttribute 'href', "#{ROOT}/components/font-awesome/css/font-awesome.min.css"
 
@@ -116,17 +116,8 @@ AkashicRecordsArea = React.createClass
         <Tab eventKey={1} title={__ "Expedition"} ><AkashicLog contentType={CONST.typeList.mission}/></Tab>
         <Tab eventKey={2} title={__ "Construction"} ><AkashicLog contentType={CONST.typeList.createShip}/></Tab>
         <Tab eventKey={3} title={__ "Development"} ><AkashicLog contentType={CONST.typeList.createItem}/></Tab>
-        <Tab eventKey={4} title={__ "Resource"} ><AkashicResourceLog indexKey={4} selectedKey={@state.selectedKey} tableTab={resourceTableTab} mapShowFlag={@state.mapShowFlag} contentType={CONST.typeList.resource}/></Tab>
-        <Tab eventKey={6} title={__ "Others"} >
-          <AkashicAdvancedModule
-            tableTab={
-              'attack': attackTableTabEn
-              'mission': missionTableTabEn
-              'createitem': createItemTableTabEn
-              'createship': createShipTableTabEn
-              'resource': resourceTableTabEn
-            }/>
-        </Tab>
+        <Tab eventKey={4} title={__ "Resource"} ><AkashicResourceLog mapShowFlag={@state.mapShowFlag}/></Tab>
+        <Tab eventKey={6} title={__ "Others"} ><AkashicAdvancedModule /></Tab>
       </Tabs>
     </div>
 

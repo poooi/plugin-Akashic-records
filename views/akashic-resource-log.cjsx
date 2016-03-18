@@ -36,7 +36,7 @@ AkashicResourceLog = React.createClass
     <div>
     <Tabs activeKey={@state.selectedKey} animation={false} onSelect={@handleSelectTab}>
       <Tab eventKey={0} title={__ "Chart"} ><ResourceChart mapShowFlag={@state.mapShowFlag and @props.mapShowFlag}/></Tab>
-      <Tab eventKey={1} title={__ "Table"} ><AkashicResourceTable data={@state.data} tableTab={@props.tableTab} /></Tab>
+      <Tab eventKey={1} title={__ "Table"} ><AkashicResourceTable /></Tab>
     </Tabs>
     </div>
 
