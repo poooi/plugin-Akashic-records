@@ -25,7 +25,7 @@ AkashicRecordsStatisticsPanel = React.createClass
   handleSeaBaseSet: (index)->
     @props.onSeaRuleBaseSet index, parseInt @refs["baseOn#{index}"].getValue()
   handleSeaRuleKeySet: (index)->
-    @props.onSeaRuleKeySet index, parseInt @refs["search#{index}"].getValue()
+    @props.onSeaRuleKeySet index, @refs["search#{index}"].getValue()
 
   handleAddStat: ->
     @props.onStatRuleAdd()
