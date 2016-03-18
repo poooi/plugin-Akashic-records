@@ -1,84 +1,56 @@
 {React, ReactBootstrap, jQuery, config, __, CONST} = window
 {Panel, Button, Col, Input, Grid, Row, ButtonGroup, DropdownButton,
   MenuItem, Table, OverlayTrigger, Popover, Collapse, Well} = ReactBootstrap
-Divider = require './divider'
+Divider = require '../divider'
 {openExternal} = require 'shell'
 
-#i18n = require '../node_modules/i18n'
-# {__} = i18n
-
-
-
-dateToString = (date)->
-  month = date.getMonth() + 1
-  if month < 10
-    month = "0#{month}"
-  day = date.getDate()
-  if day < 10
-    day = "0#{day}"
-  hour = date.getHours()
-  if hour < 10
-    hour = "0#{hour}"
-  minute = date.getMinutes()
-  if minute < 10
-    minute = "0#{minute}"
-  second = date.getSeconds()
-  if second < 10
-    second = "0#{second}"
-  "#{date.getFullYear()}/#{month}/#{day} #{hour}:#{minute}:#{second}"
-
 AkashicRecordsCheckboxPanel = React.createClass
-  getInitialState: ->
-    show: true
-  checkboxChangeFlag: false
-
   handlePanelShow: ->
-    {show} = @state
-    show = not show
-    @setState {show}
+    show = not @props.show
     config.set "plugin.Akashic.#{@props.contentType}.checkboxPanelShow", show
-  
+    @props.setPanelVisibilitiy show
+
   handleClickCheckbox: (index) ->
-    {rowChooseChecked} = @props
-    rowChooseChecked[index] = !rowChooseChecked[index]
-    @props.tabFilterRules rowChooseChecked
-    @checkboxChangeFlag = true
-    config.set "plugin.Akashic.#{@props.contentType}.checkbox", JSON.stringify rowChooseChecked
-  
+    {tabVisibility} = @props
+    tmp = tabVisibility.toArray()
+    tmp[index] = not tmp[index]
+    config.set "plugin.Akashic.#{@props.contentType}.checkbox", JSON.stringify tmp
+    @props.onCheckboxClick index, tmp[index]
+    
   handleClickConfigCheckbox: (index) ->
-    @props.configCheckboxClick index
+    @props.onConfigListSet index
   handleShowAmountSelect: (eventKey, selectedKey)->
-    @props.showRules selectedKey, @props.activePage
+    config.set "plugin.Akashic.#{@props.contentType}.showAmount", selectedKey
+    @props.onShowAmountSet selectedKey
   handleShowPageSelect: ()->
     val = parseInt @refs.pageSelected.getValue()
     if !val or val < 1
       val = 1
-    @props.showRules @props.showAmount, val
-  
-
-  componentWillMount: ->
-    show =
-      config.get "plugin.Akashic.#{@props.contentType}.checkboxPanelShow", true
-    @setState
-      show: show
+    @props.onActivePageSet val
 
   render: ->
     <Grid>
       <Row>
         <Col xs={12}>
           <div onClick={@handlePanelShow}>
-            <Divider text={__ "Filter"} icon={true} hr={true} show={@state.show}/>
+            <Divider text={__ "Filter"} icon={true} hr={true} show={@props.show}/>
           </div>
         </Col>
       </Row>
-      <Collapse className='akashic-records-checkbox-panel' in={@state.show}>
+      <Collapse className='akashic-records-checkbox-panel' in={@props.show}>
         <div>
           <Row>
           {
-            for checkedVal, index in @props.tableTab
+            for checkedVal, index in @props.tableTab.toArray()
               continue if !index
               <Col key={index} xs={2}>
-                <Input type='checkbox' value={index} onChange={@handleClickCheckbox.bind(@, index)} checked={@props.rowChooseChecked[index]} style={verticalAlign: 'middle'} label={checkedVal} />
+                <Input
+                  type='checkbox'
+                  value={index}
+                  onChange={@handleClickCheckbox.bind(@, index)}
+                  checked={@props.tabVisibility.get index}
+                  style={verticalAlign: 'middle'}
+                  label={checkedVal} />
               </Col>
           }
           </Row>
@@ -103,6 +75,7 @@ AkashicRecordsCheckboxPanel = React.createClass
                 <Input
                   type='number'
                   placeholder={"#{__ "Page %s", @props.activePage}"}
+                  value={@props.activePage}
                   ref='pageSelected'
                   groupClassName='select-area'
                   onChange={@handleShowPageSelect}/>
@@ -110,18 +83,18 @@ AkashicRecordsCheckboxPanel = React.createClass
             </Col>
             <Col xs={5}>
             {
-              for checkedVal, index in @props.configList
-                continue if index is 3
+              [0...3].map (index)=>
+                checkedVal = @props.configList.get index
                 <Col key={index} xs={4}>
-                  <Input type='checkbox' value={index} onChange={@handleClickConfigCheckbox.bind(@, index)} checked={@props.configChecked[index]} style={verticalAlign: 'middle'} label={checkedVal} />
+                  <Input type='checkbox' value={index} onChange={@handleClickConfigCheckbox.bind(@, index)} checked={@props.configListChecked.get index} style={verticalAlign: 'middle'} label={checkedVal} />
                 </Col>
             }
             </Col>
             <Col xs={3}>
             {
               index = 3
-              checkedVal = @props.configList[index]
-              <Input type='checkbox' value={index} onChange={@handleClickConfigCheckbox.bind(@, index)} checked={@props.configChecked[index]} style={verticalAlign: 'middle'} label={checkedVal} />
+              checkedVal = @props.configList.get index
+              <Input type='checkbox' value={index} onChange={@handleClickConfigCheckbox.bind(@, index)} checked={@props.configListChecked.get index} style={verticalAlign: 'middle'} label={checkedVal} />
             }
             </Col>
           </Row>

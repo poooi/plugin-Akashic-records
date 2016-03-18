@@ -37,6 +37,8 @@ if not window.ipc?
 
 window.CONST = require path.join(__dirname, 'lib', 'constant')
 
+window.Immutable = Immutable = require('immutable');
+
 switch window.language
   when 'ja-JP'
     windowTitle = 'アカシックレコード'
