@@ -52,7 +52,7 @@ filterWithIndex = (logs, filterKeys) ->
 
 filterWNindex = (logs, keyword) ->
   if keyword is ''
-      Immutable.List()
+      logs
     else
       regFlag = false
       res = keyword.match /^\/(.+)\/([gim]*)$/
@@ -84,7 +84,8 @@ filterWNindex = (logs, keyword) ->
 logSelectorFactory = () ->
   getLogs = (state) -> state.data
   getFilterKeys = (state) ->
-    if state.configListChecked.get(1) or state.configListChecked.get(2)
+    if state.configListChecked.get(1) or state.configListChecked.get(2) or
+    not state.configListChecked.get(3)
       state.filterKeys.toArray()
     else
       []

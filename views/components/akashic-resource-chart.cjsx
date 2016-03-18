@@ -6,9 +6,9 @@ path = require 'path-extra'
 #i18n = require '../node_modules/i18n'
 # {__} = i18n
 
-require '../assets/echarts-all'
-dark = require '../assets/themes/dark'
-macarons = require '../assets/themes/macarons'
+require '../../assets/echarts-all'
+dark = require '../../assets/themes/dark'
+macarons = require '../../assets/themes/macarons'
 
 toDateLabel = (datetime) ->
   date = new Date(datetime)
@@ -119,7 +119,7 @@ AkashicResourceChart = React.createClass
               icon: icon
               onclick: ()=>
                 @showAsDay = not @showAsDay
-                @showData = @dataFilter @props.data
+                @showData = @dataFilter @props.data.toArray()
                 @dataLength = @showData.length
                 @showData.reverse()
                 if @showData.length isnt 0
@@ -337,48 +337,48 @@ AkashicResourceChart = React.createClass
     #
   componentDidUpdate: ->
     if  @resourceChart is 0 and @props.mapShowFlag
-      @showData = @dataFilter @props.data
+      @showData = @dataFilter @props.data.toArray()
       @dataLength = @showData.length
       @showData.reverse()
-      @wholeDataLength = @props.data.length
+      @wholeDataLength = @props.data.size
       @renderChart()
   shouldComponentUpdate: (nextProps, nextState)->
     if @resourceChart is 0
       true
-    else if nextProps.data.length > @wholeDataLength
+    else if nextProps.data.size > @wholeDataLength
       if @wholeDataLength > 0
-        dateString = toDateString nextProps.data[nextProps.data.length-@wholeDataLength][0]
+        dateString = toDateString nextProps.data.get(nextProps.data.size-@wholeDataLength)[0]
       else
         dateString = ""
       if @resourceChart.getSeries()?
         if not @showAsDay
-          for i in [nextProps.data.length-@wholeDataLength-1..0]
-            @showData.push nextProps.data[i]
+          for i in [nextProps.data.size-@wholeDataLength-1..0]
+            @showData.push nextProps.data.get(i)
             dataitem = []
-            for item, j in nextProps.data[i]
+            for item, j in nextProps.data.get(i)
               continue if j is 0
-              dataitem.push [j-1, [nextProps.data[i][0], item, @showData.length-1], false, true, '']
+              dataitem.push [j-1, [nextProps.data.get(i)[0], item, @showData.length-1], false, true, '']
             @resourceChart.addData dataitem
         else
-          for i in [nextProps.data.length-@wholeDataLength-1..0]
-            tmp = toDateString nextProps.data[i][0]
+          for i in [nextProps.data.size-@wholeDataLength-1..0]
+            tmp = toDateString nextProps.data.get(i)[0]
             if dateString isnt tmp
               dateString = tmp
-              @showData.push nextProps.data[i]
+              @showData.push nextProps.data.get(i)
               dataitem = []
-              for item, j in nextProps.data[i]
+              for item, j in nextProps.data.get(i)
                 continue if j is 0
-                dataitem.push [j-1, [nextProps.data[i][0], item, @showData.length-1], false, true, '']
+                dataitem.push [j-1, [nextProps.data.get(i)[0], item, @showData.length-1], false, true, '']
               @resourceChart.addData dataitem
       else
-        @showData = @dataFilter nextProps.data
+        @showData = @dataFilter nextProps.data.toArray()
         @dataLength = @showData.length
         @showData.reverse()
         if @showData.length isnt 0
           @resourceChart.hideLoading()
           @resourceChart.setOption @getEChartsOption(), true
       @dataLength = @showData.length
-      @wholeDataLength = nextProps.data.length
+      @wholeDataLength = nextProps.data.size
       false
     else
       false

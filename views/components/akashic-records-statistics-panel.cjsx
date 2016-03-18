@@ -23,22 +23,22 @@ AkashicRecordsStatisticsPanel = React.createClass
   handleDeleteSearchLine: (index)->
     @props.onSeaRuleDelete index
   handleSeaBaseSet: (index)->
-    @props.onSeaRuleBaseSet index, @refs["baseOn#{index}"].getValue()
+    @props.onSeaRuleBaseSet index, parseInt @refs["baseOn#{index}"].getValue()
   handleSeaRuleKeySet: (index)->
-    @props.onSeaRuleKeySet index, @refs["search#{index}"].getValue()
+    @props.onSeaRuleKeySet index, parseInt @refs["search#{index}"].getValue()
 
   handleAddStat: ->
     @props.onStatRuleAdd()
   handleDeleteStat: (index)->
     @props.onStatRuleDelete index
   handleStatNTypeSet: (index)->
-    @props.onStatRuleNTypeSet index, @refs["NType#{index}"].getValue()
+    @props.onStatRuleNTypeSet index, parseInt @refs["NType#{index}"].getValue()
   handleStatRuleNSet: (index)->
-    @props.onStatRuleNSet index, @refs["numerator#{index}"].getValue()
+    @props.onStatRuleNSet index, parseInt @refs["numerator#{index}"].getValue()
   handleStatDTypeSet: (index)->
-    @props.onStatRuleDTypeSet index, @refs["DType#{index}"].getValue()
+    @props.onStatRuleDTypeSet index, parseInt @refs["DType#{index}"].getValue()
   handleStatRuleDSet: (index)->
-    @props.onStatRuleDSet index, @refs["denominator#{index}"].getValue()
+    @props.onStatRuleDSet index, parseInt @refs["denominator#{index}"].getValue()
 
   render: ->
     <Grid>

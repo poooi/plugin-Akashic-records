@@ -3,8 +3,9 @@
 module.exports = (state = Immutable.List(), action) =>
   switch action.type
     when 'ADD_LOG'
-      state.push Immutable.fromJS action.log
-    when 'INITIALIZE_LOG'
-      Immutable.fromJS action.logs
+      console.log action
+      state.unshift action.log
+    when 'INITIALIZE_LOGS'
+      Immutable.List action.logs
     else
       state

@@ -29,7 +29,7 @@ module.exports = (state, action) =>
          'SET_STATISTICS_RULE_DENOMINATOR_TYPE',\
          'SET_STATISTICS_RULE_NUMERATOR',\
          'SET_STATISTICS_RULE_DENOMINATOR'
-      state.set action.index statisticsRule state.get action.index, action
+      state.set action.index, statisticsRule state.get(action.index), action
     when 'DELETE_STATISTICS_RULE'
       state.delete action.index
     when 'DELETE_SEARCH_RULE'

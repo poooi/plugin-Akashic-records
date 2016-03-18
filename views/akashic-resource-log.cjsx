@@ -4,7 +4,7 @@
 #i18n = require '../node_modules/i18n'
 # {__} = i18n
 
-AkashicResourceChart = require './akashic-resource-chart'
+ResourceChart = require './containers/resource-chart'
 AkashicResourceTable = require './akashic-resource-table'
 
 AkashicResourceLog = React.createClass
@@ -26,7 +26,7 @@ AkashicResourceLog = React.createClass
   render: ->
     <div>
     <Tabs activeKey={@state.selectedKey} animation={false} onSelect={@handleSelectTab}>
-      <Tab eventKey={0} title={__ "Chart"} ><AkashicResourceChart data={@state.data} mapShowFlag={@state.mapShowFlag and @props.mapShowFlag}/></Tab>
+      <Tab eventKey={0} title={__ "Chart"} ><ResourceChart mapShowFlag={@state.mapShowFlag and @props.mapShowFlag}/></Tab>
       <Tab eventKey={1} title={__ "Table"} ><AkashicResourceTable data={@state.data} tableTab={@props.tableTab} /></Tab>
     </Tabs>
     </div>

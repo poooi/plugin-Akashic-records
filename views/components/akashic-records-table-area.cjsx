@@ -69,7 +69,7 @@ AkashicRecordsTableTbodyItem = React.createClass
 
 AkashicRecordsTableArea = React.createClass
   handleKeyWordChange: (index)->
-    @props.onFilterKeySet index,  @refs["input#{index}"].getValue()
+    @props.onFilterKeySet index - 1,  @refs["input#{index}"].getValue()
 
   handlePaginationSelect: (event, selectedEvent)->
     @props.onActivePageSet selectedEvent.eventKey
@@ -119,6 +119,7 @@ AkashicRecordsTableArea = React.createClass
                             placeholder={@props.tableTab.get index}
                             ref="input#{index}"
                             groupClassName='filter-area'
+                            value="#{@props.filterKeys.get(index-1)}"
                             onChange={@handleKeyWordChange.bind(@, index)} />
                         </th> if @props.tabVisibility.get index
                   }
@@ -127,11 +128,13 @@ AkashicRecordsTableArea = React.createClass
               </thead>
               <tbody>
                 {
-                  [0...@props.logs.size].map (index) ->
+                  startLogs = (@props.activePage - 1) * @props.showAmount
+                  endLogs = Math.min(@props.activePage * @props.showAmount, @props.logs.size)
+                  [startLogs...endLogs].map (index) =>
                     item = @props.logs.get(index)
                     <AkashicRecordsTableTbodyItem
                       key = {item[0]}
-                      index = {(@props.activePage-1)*@props.showAmount+index+1};
+                      index = {index+1};
                       data={item}
                       rowChooseChecked={@props.tabVisibility.toArray()}
                       contentType={@props.contentType}

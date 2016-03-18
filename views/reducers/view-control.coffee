@@ -24,16 +24,17 @@ module.exports =
     switch action.type
       when 'SET_CONFIG_LIST'
         if state.get(action.index)
-          state.set(action.index, false)
+          state = state.set(action.index, false)
         else
           if action.index < 2
-            state.set(action.index, true).set(2, false)
+            state = state.set(action.index, true).set(2, false)
           else if action.index is 2
-            state.set(0, false).set(1, false).set(2, true)
+            state = state.set(0, false).set(1, false).set(2, true)
           else
-            state.set(action.index, true)
-      else
-        state
+            state = state.set(action.index, true)
+        config.set "plugin.Akashic.#{action.dataType}.configChecked",
+          JSON.stringify state.toArray()
+    state
 
   checkboxVisible: (state, action) =>
     if not state?

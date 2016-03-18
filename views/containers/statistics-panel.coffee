@@ -17,15 +17,15 @@ calPercent = (num, de) ->
 getSearchItems = (lens, searchRules) ->
   searchRules.map (item, index) ->
     item.set 'res', lens[index+2]
-    .set 'total', lens[item.baseOn]
-    .set 'percent', calPercent lens[index+2], lens[item.baseOn]
+    .set 'total', lens[item.get 'baseOn']
+    .set 'percent', calPercent lens[index+2], lens[item.get 'baseOn']
 
 getStatisticsItems = (lens, statisticsRules) ->
   statisticsRules.map (item) ->
-    if item.numeratorType isnt -1
-      item = item.set 'numerator', lens[item.numeratorType]
-    if item.denominatorType isnt -1
-      item = item.set 'denominator', lens[item.denominatorType]
+    if item.get('numeratorType') isnt -1
+      item = item.set 'numerator', lens[item.get 'numeratorType']
+    if item.get('denominatorType') isnt -1
+      item = item.set 'denominator', lens[item.get 'denominatorType']
     item.set 'percent', calPercent item.get('numerator'), item.get('denominator')
 
 getPropsFromState = (state, dataType) ->

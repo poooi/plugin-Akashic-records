@@ -93,6 +93,9 @@ AkashicRecordsArea = React.createClass
   componentDidMount: ->
     apiResolver.start()
 
+  componentWillUnmount: ->
+    apiResolver.stop()
+
   handleSelectTab: (selectedKey)->
     if selectedKey is 4
       @setState
