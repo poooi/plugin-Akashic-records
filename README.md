@@ -2,4 +2,4 @@
 
 plugin-Akashic-records
 ===========
-Logbook plugin for poi
+Logbook plugin for [POI](https://github.com/poooi/poi)
