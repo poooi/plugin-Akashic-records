@@ -17,7 +17,7 @@ AkashicResourceCheckboxArea = React.createClass
           for checkedVal, index in @props.tableTab.toArray()
             continue if index < 2
             <Col key={index} xs={2}>
-              <Input 
+              <Input
                 type='checkbox'
                 value={index}
                 onChange={@handleClickCheckbox.bind(@, index)}

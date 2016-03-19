@@ -21,42 +21,6 @@ AkashicAdvancedModule = require './containers/advanced-module'
 
 $('#font-awesome')?.setAttribute 'href', require.resolve('font-awesome/css/font-awesome.css')
 
-
-attackTableTabEn = ['No.', 'Time', 'World', "Node", "Sortie Type",
-                  "Battle Result", "Enemy Encounters", "Drop",
-                  "Heavily Damaged", "Flagship",
-                  "Flagship (Second Fleet)", 'MVP',
-                  "MVP (Second Fleet)"]
-missionTableTabEn = ['No.', "Time", "Type", "Result", "Fuel",
-                  "Ammo", "Steel", "Bauxite", "Item 1",
-                   "Number", "Item 2", "Number"]
-createItemTableTabEn = ['No.', "Time", "Result", "Development Item",
-                      "Type", "Fuel", "Ammo", "Steel",
-                      "Bauxite", "Flagship", "Headquarters Level"]
-createShipTableTabEn = ['No.', "Time", "Type", "Ship", "Ship Type",
-                      "Fuel", "Ammo", "Steel", "Bauxite",
-                       "Development Material", "Empty Docks", "Flagship",
-                       "Headquarters Level"]
-resourceTableTabEn = ['No.', "Time", "Fuel", "Ammo", "Steel",
-                    "Bauxite", "Fast Build Item", "Instant Repair Item",
-                     "Development Material", "Improvement Materials"]
-
-attackTableTab = attackTableTabEn.map (tab) ->
-  __(tab)
-
-missionTableTab = missionTableTabEn.map (tab) ->
-  __(tab)
-
-createItemTableTab =createItemTableTabEn.map (tab) ->
-  __(tab)
-
-createShipTableTab = createShipTableTabEn.map (tab) ->
-  __(tab)
-
-resourceTableTab = resourceTableTabEn.map (tab) ->
-  __(tab)
-
-
 # getUseItem: (id)->
 #   switch id
 #     when 10

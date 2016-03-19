@@ -25,10 +25,6 @@ dateToString = (date)->
     second = "0#{second}"
   "#{date.getFullYear()}/#{month}/#{day} #{hour}:#{minute}:#{second}"
 
-boundActivePageNum = (activePage, logLength, showAmount) ->
-  activePage = Math.min activePage, Math.ceil(logLength/showAmount)
-  activePage = Math.max activePage, 1
-
 showBattleDetail = (timestamp) ->
   try
     if not window.ipc?
@@ -73,6 +69,9 @@ AkashicRecordsTableArea = React.createClass
 
   handlePaginationSelect: (event, selectedEvent)->
     @props.onActivePageSet selectedEvent.eventKey
+
+  # componentDidUpdate: ()->
+  #   console.log "Table Area Update"
 
   render: ->
     <div>

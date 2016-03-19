@@ -121,7 +121,7 @@ AkashicResourceTableArea = React.createClass
                 endLogs = Math.min(@props.activePage * @props.showAmount, @props.logs.size)
                 [startLogs...endLogs].map (index) =>
                   item = @props.logs.get(index)
-                  if index + 1 < endLogs
+                  if index + 1 < @props.logs.size
                     lastFlag = false
                     nextItem =@props.logs.get(index + 1)
                   else
