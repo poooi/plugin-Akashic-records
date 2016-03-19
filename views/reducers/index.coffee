@@ -7,3 +7,4 @@ module.exports = combineReducers
   createship: logContent('createship')
   createitem: logContent('createitem')
   resource: logContent('resource')
+  retirement: logContent('retirement')

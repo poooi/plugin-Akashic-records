@@ -82,7 +82,7 @@ class DataCoManager
       data[type] = @_getDataAccordingToNameId @nickNameId, type
     data
 
-  saveLog: (type, log, lazyFlag) ->
+  saveLog: (type, log) ->
     fs.ensureDirSync(path.join(DATA_PATH, 'akashic-records', @nickNameId.toString(), type))
     if type is 'attack'
       date = new Date(log[0])

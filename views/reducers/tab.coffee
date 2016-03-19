@@ -16,6 +16,7 @@ tableTab =
               "Fuel", "Ammo", "Steel", "Bauxite",
               "Development Material", "Empty Docks", "Flagship",
               "Headquarters Level")
+  retirement: Immutable.List.of('No.', "Time", "Type", "Ship Type", "Ship")
   resource: Immutable.List.of('No.', "Time", "Fuel", "Ammo", "Steel",
             "Bauxite", "Fast Build Item", "Instant Repair Item",
             "Development Material", "Improvement Materials")

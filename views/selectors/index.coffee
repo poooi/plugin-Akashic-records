@@ -158,12 +158,14 @@ module.exports =
     mission: logSelectorFactory()
     createship: logSelectorFactory()
     createitem: logSelectorFactory()
+    retirement: logSelectorFactory()
     resource: logSelectorFactory()
   searchSelectors:
     attack: logSearchSelectorFactory()
     mission: logSearchSelectorFactory()
     createship: logSearchSelectorFactory()
     createitem: logSearchSelectorFactory()
+    retirement: logSearchSelectorFactory()
     resource: logSearchSelectorFactory()
   resourceFilter: createSelector [(state) -> state.data,
   (state) -> state.tabVisibility,

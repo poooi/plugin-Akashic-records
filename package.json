@@ -35,9 +35,11 @@
     "jschardet": "^1.3.0",
     "redux": "^3.3.1",
     "react-redux": "^4.4.0",
-    "redux-devtools": "^3.1.1",
     "immutable": "^3.7.6",
     "reselect": "^2.1.0"
+  },
+  "devDependencies": {
+    "redux-devtools": "^3.1.1"
   },
   "poiPlugin": {
     "title": "Logbook",

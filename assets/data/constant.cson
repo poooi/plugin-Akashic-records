@@ -4,6 +4,7 @@ typeList:
   createShip: 'createship'
   createItem: 'createitem'
   resource: 'resource'
+  retirement: 'retirement'
 eventList:
   dataChange: 'datachange'
   filteredDataChange: 'filtereddatachange'

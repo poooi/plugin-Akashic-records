@@ -80,7 +80,8 @@ AkashicRecordsArea = React.createClass
         <Tab eventKey={1} title={__ "Expedition"} ><AkashicLog contentType={CONST.typeList.mission}/></Tab>
         <Tab eventKey={2} title={__ "Construction"} ><AkashicLog contentType={CONST.typeList.createShip}/></Tab>
         <Tab eventKey={3} title={__ "Development"} ><AkashicLog contentType={CONST.typeList.createItem}/></Tab>
-        <Tab eventKey={4} title={__ "Resource"} ><AkashicResourceLog mapShowFlag={@state.mapShowFlag}/></Tab>
+        <Tab eventKey={4} title={__ "Retirement"} ><AkashicLog contentType={CONST.typeList.retirement}/></Tab>
+        <Tab eventKey={5} title={__ "Resource"} ><AkashicResourceLog mapShowFlag={@state.mapShowFlag}/></Tab>
         <Tab eventKey={6} title={__ "Others"} ><AkashicAdvancedModule /></Tab>
       </Tabs>
     </div>

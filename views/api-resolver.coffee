@@ -53,6 +53,7 @@ class APIResolver
     material: []
     kdockId: 0
 
+    @bindHandleRequest = @handleRequest.bind @
     @bindHandleResponse = @handleResponse.bind @
     @bindHandleBattleResultResponse = @handleBattleResultResponse.bind @
 
@@ -75,13 +76,49 @@ class APIResolver
       @updateLogs()
 
   start: () ->
+    window.addEventListener 'game.request', @bindHandleRequest
     window.addEventListener 'game.response', @bindHandleResponse
     window.addEventListener 'battle.result', @bindHandleBattleResultResponse
     @updateUser()
 
   stop: () ->
+    window.removeEventListener 'game.request', @bindHandleRequest
     window.removeEventListener 'game.response', @bindHandleResponse
     window.removeEventListener 'battle.result', @bindHandleBattleResultResponse
+
+  handleRequest: (e) ->
+    {path, body} = e.detail
+    urlpath = e.detail.path
+    switch urlpath
+      # 解体
+      when '/kcsapi/api_req_kousyou/destroyship'
+        _ships = window._ships
+        $shiptypes = window.$shipTypes
+        dataItem = []
+        nowDate = new Date()
+        dataItem.push nowDate.getTime()
+        dataItem.push '解体'
+        shipId = body.api_ship_id
+        dataItem.push $shiptypes[_ships[shipId].api_stype].api_name
+        dataItem.push "#{_ships[shipId].api_name}(Lv.#{_ships[shipId].api_lv})"
+        dataCoManager.saveLog('retirement', dataItem)
+        @store.dispatch(addLog(dataItem, 'retirement'))
+
+      # 改修
+      when '/kcsapi/api_req_kaisou/powerup'
+        {api_id, api_id_items} = e.detail.body
+        _ships = window._ships
+        $shiptypes = window.$shipTypes
+        dateTime = new Date().getTime()
+        # Read the status before modernization
+        for shipId in api_id_items.split ','
+          dataItem = []
+          dataItem.push dateTime++
+          dataItem.push '改修'
+          dataItem.push $shiptypes[_ships[shipId].api_stype].api_name
+          dataItem.push "#{_ships[shipId].api_name}(Lv.#{_ships[shipId].api_lv})"
+          dataCoManager.saveLog('retirement', dataItem)
+          @store.dispatch(addLog(dataItem, 'retirement'))
 
   handleResponse: (e) ->
     {method, body, postBody} = e.detail
@@ -158,7 +195,7 @@ class APIResolver
           dataItem.push body.api_get_item2.api_useitem_count
         else
           dataItem.push "", ""
-        dataCoManager.saveLog(CONST.typeList.mission, dataItem, true)
+        dataCoManager.saveLog(CONST.typeList.mission, dataItem)
         @store.dispatch(addLog(dataItem, CONST.typeList.mission))
 
       # 开发
@@ -183,7 +220,7 @@ class APIResolver
         _decks = window._decks
         dataItem.push "#{@_ships[_decks[0].api_ship[0]].api_name}(Lv.#{@_ships[_decks[0].api_ship[0]].api_lv})"
         dataItem.push window._teitokuLv
-        dataCoManager.saveLog(CONST.typeList.createItem, dataItem, true)
+        dataCoManager.saveLog(CONST.typeList.createItem, dataItem)
         @store.dispatch(addLog(dataItem, CONST.typeList.createItem))
 
       # 建造
@@ -219,7 +256,7 @@ class APIResolver
           dataItem.push remainNum
           dataItem.push "#{@_ships[_decks[0].api_ship[0]].api_name}(Lv.#{@_ships[_decks[0].api_ship[0]].api_lv})"
           dataItem.push window._teitokuLv
-          dataCoManager.saveLog(CONST.typeList.createShip, dataItem, true)
+          dataCoManager.saveLog(CONST.typeList.createShip, dataItem)
           @store.dispatch(addLog(dataItem, CONST.typeList.createShip))
           @createShipFlag = false
 
@@ -234,8 +271,10 @@ class APIResolver
           dataItem = []
           dataItem.push nowDate.getTime()
           dataItem.push item.api_value for item in body.api_material
-          dataCoManager.saveLog('resource', dataItem, true)
+          dataCoManager.saveLog('resource', dataItem)
           @store.dispatch(addLog(dataItem, 'resource'))
+
+
 
   handleBattleResultResponse: (e) ->
     {map, quest, boss, mapCell, rank, deckHp, deckShipId, enemy, dropItem, dropShipId, combined, mvp} = e.detail
@@ -314,7 +353,7 @@ class APIResolver
       tmp[1] = "#{@_ships[deckShipId[6]].api_name}(Lv.#{@_ships[deckShipId[6]].api_lv})"
       tmp[3] = "#{@_ships[deckShipId[6 + mvp[1]]].api_name}(Lv.#{@_ships[deckShipId[6 + mvp[1]]].api_lv})"
     dataItem = dataItem.concat tmp
-    dataCoManager.saveLog(CONST.typeList.attack, dataItem, true)
+    dataCoManager.saveLog(CONST.typeList.attack, dataItem)
     @store.dispatch(addLog(dataItem, CONST.typeList.attack))
 
 module.exports = APIResolver
