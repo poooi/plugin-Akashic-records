@@ -61,7 +61,7 @@ AkashicRecordsArea = React.createClass
     apiResolver.stop()
 
   handleSelectTab: (selectedKey)->
-    if selectedKey is 4
+    if selectedKey is 5
       @setState
         mapShowFlag: true
         selectedKey: selectedKey
