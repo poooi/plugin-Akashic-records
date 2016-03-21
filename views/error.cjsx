@@ -26,14 +26,19 @@
 #     else
 #       "特殊的东西"
 
+errorMessage = __('''
+Please make sure you are using the lastest version of poi, and you did not interrupt the installation process of the plugin, so that it is correctly installed.
+''') + ' ' + __ '''
+If errors still happen, please uninstall the plugin and try to install again.
+'''
 AkashicRecordsArea = React.createClass
   getInitialState: ->
-    warning: '请确保使用的 POI 是最新版本，以及安装插件时未中断，插件已完整安装！若仍然黑屏，请尝试卸载插件，重新安装。'
+    warning: errorMessage
 
   render: ->
     <div>
       <div  style={'fontSize': 18}>
-        <Label bsStyle="danger">{@state.warning}</Label>
+        <Label bsStyle="danger" style={'whiteSpace': 'normal'}>{@state.warning}</Label>
       </div>
     </div>
 
