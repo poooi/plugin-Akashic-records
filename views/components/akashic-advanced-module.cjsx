@@ -630,16 +630,16 @@ AttackLog = React.createClass
               oldData = duplicateRemoval @props.attackData.toArray()
             when CONST.typeList.mission
               hint = '远征'
-              oldData = duplicateRemoval @props.attackData.toArray()
+              oldData = duplicateRemoval @props.missionData.toArray()
             when CONST.typeList.createShip
               hint = '建造'
-              oldData = duplicateRemoval @props.attackData.toArray()
+              oldData = duplicateRemoval @props.createShipData.toArray()
             when CONST.typeList.createItem
               hint = '开发'
-              oldData = duplicateRemoval @props.attackData.toArray()
+              oldData = duplicateRemoval @props.createItemData.toArray()
             when CONST.typeList.resource
               hint = '资源'
-              oldData = duplicateRemoval @props.attackData.toArray()
+              oldData = duplicateRemoval @props.resourceData.toArray()
             else
               throw "Type Error!"
           # oldData = duplicateRemoval dataManager.getRawData logType
