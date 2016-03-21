@@ -139,6 +139,19 @@ resolveFile = (fileContent, tableTabEn)->
         logItem
       data = data.filter (log) ->
         log.length is 10
+    when tableTab['en-US'][CONST.typeList.retirement], \
+    tableTab['ja-JP'][CONST.typeList.retirement], \
+    tableTab['zh-CN'][CONST.typeList.retirement], \
+    tableTab['zh-TW'][CONST.typeList.retirement]
+      logType = CONST.typeList.retirement
+      data = logs.slice(1).map (logItem) ->
+        logItem = logItem.split ','
+        if logItem.length isnt 4
+          return []
+        logItem[0] = (new Date(logItem[0])).getTime()
+        logItem
+      data = data.filter (log) ->
+        log.length is 4
     when tableTab['en-US'][CONST.typeList.resource], \
     tableTab['ja-JP'][CONST.typeList.resource], \
     tableTab['zh-CN'][CONST.typeList.resource], \
@@ -565,6 +578,9 @@ AttackLog = React.createClass
         when '开发'
           logType = CONST.typeList.createItem
           data = @props.createItemData.toArray()
+        when '除籍'
+          logType = CONST.typeList.retirement
+          data = @props.retirementData.toArray()
         when '资源'
           logType = CONST.typeList.resource
           data = @props.resourceData.toArray()
@@ -637,6 +653,9 @@ AttackLog = React.createClass
             when CONST.typeList.createItem
               hint = '开发'
               oldData = duplicateRemoval @props.createItemData.toArray()
+            when CONST.typeList.retirement
+              hint = '除籍'
+              oldData = duplicateRemoval @props.retirementData.toArray()
             when CONST.typeList.resource
               hint = '资源'
               oldData = duplicateRemoval @props.resourceData.toArray()
@@ -713,7 +732,8 @@ AttackLog = React.createClass
               <option key={1} value={'远征'}>{__ "Expedition"}</option>
               <option key={2} value={'建造'}>{__ "Construction"}</option>
               <option key={3} value={'开发'}>{__ "Development"}</option>
-              <option key={4} value={'资源'}>{__ "Resource"}</option>
+              <option key={4} value={'除籍'}>{__ "Retirement"}</option>
+              <option key={5} value={'资源'}>{__ "Resource"}</option>
             </Input>
           </Col>
           <Col xs={4}>

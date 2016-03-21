@@ -11,6 +11,7 @@ mapStateToProps = (state, ownProps) =>
   missionData: state.mission.data
   createShipData: state.createship.data
   createItemData: state.createitem.data
+  retirementData: state.retirement.data
   resourceData: state.resource.data
   tableTab: tabs
 
