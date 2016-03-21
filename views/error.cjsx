@@ -27,7 +27,7 @@
 #       "特殊的东西"
 
 errorMessage = __('''
-Please make sure you are using the lastest version of poi, and you did not interrupt the installation process of the plugin, so that it is correctly installed.
+Please make sure you are using the lastest version of poi, and that you did not interrupt the installation process of the plugin, so that it is correctly installed.
 ''') + ' ' + __ '''
 If errors still happen, please uninstall the plugin and try to install again.
 '''
