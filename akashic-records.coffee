@@ -37,7 +37,16 @@ if not window.ipc?
 
 window.CONST = require path.join(__dirname, 'lib', 'constant')
 
-window.Immutable = Immutable = require('immutable');
+try
+  window.Immutable = Immutable = require('immutable');
+  require 'iconv-lite'
+  require 'jschardet'
+  require 'react-redux'
+  require 'redux'
+  require 'reselect'
+  requirePass = true
+catch e
+  requirePass = false
 
 switch window.language
   when 'ja-JP'
@@ -51,5 +60,8 @@ switch window.language
 
 document.title = windowTitle
 
-require './views'
+if requirePass
+  require './views'
+else
+  require './views/error'
 require './views/modal'
