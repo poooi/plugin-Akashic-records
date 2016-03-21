@@ -95,5 +95,7 @@
   "Bug Report & Suggestion": "バグ報告とアドバイス",
   "Battle Detail": "戦闘詳細",
   "Your POI is out of date! You may need to visit http://0u0.moe/poi to get POI's latest release.": "Your POI is out of date! You may need to visit http://0u0.moe/poi to get POI's latest release.",
-  "In order to find the detailed battle log, you need to download the latest battle-detail plugin and enable it.": "In order to find the detailed battle log, you need to download the latest battle-detail plugin and enable it."
+  "In order to find the detailed battle log, you need to download the latest battle-detail plugin and enable it.": "In order to find the detailed battle log, you need to download the latest battle-detail plugin and enable it.",
+  "Please make sure you are using the lastest version of poi, and you did not interrupt the installation process of the plugin, so that it is correctly installed." : "poi は最新版であること、そしてプラグインを正しくインストールされていることを確認してください。",
+  "If errors still happen, please uninstall the plugin and try to install again.": "それでもエラーが出る場合、プラグインを削除して、再インストールしてください。"
 }
