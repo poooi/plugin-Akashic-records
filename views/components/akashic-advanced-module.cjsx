@@ -1,6 +1,8 @@
 {React, ReactBootstrap, ROOT, FontAwesome, __, translate, CONST} = window
 {Grid, Row, Col, Input, Button, OverlayTrigger, Popover, Input} = ReactBootstrap
 
+DATA_PATH = config.get "plugin.Akashic.dataPath", APPDATA_PATH
+
 fs = require 'fs-extra'
 iconv = require 'iconv-lite'
 
@@ -669,13 +671,13 @@ AttackLog = React.createClass
           else
             newData = duplicateRemoval newData
           newLength = newData.length
-          fs.emptyDirSync path.join(APPDATA_PATH, 'akashic-records', "tmp")
+          fs.emptyDirSync path.join(DATA_PATH, 'akashic-records', "tmp")
           saveData = ""
           for item in newData
             saveData = "#{saveData}#{item.join(',')}\n"
-          fs.writeFile path.join(APPDATA_PATH, 'akashic-records', "tmp", "data"), saveData
-          fs.emptyDirSync path.join(APPDATA_PATH, 'akashic-records', nickNameId.toString(), logType.toLowerCase())
-          fs.writeFile path.join(APPDATA_PATH, 'akashic-records', nickNameId.toString(), logType.toLowerCase(), "data"), saveData
+          fs.writeFile path.join(DATA_PATH, 'akashic-records', "tmp", "data"), saveData
+          fs.emptyDirSync path.join(DATA_PATH, 'akashic-records', nickNameId.toString(), logType.toLowerCase())
+          fs.writeFile path.join(DATA_PATH, 'akashic-records', nickNameId.toString(), logType.toLowerCase(), "data"), saveData
           @props.onLogsReset newData, logType
           @showMessage "新导入#{newLength - oldLength}条#{hint}记录！"
         catch e
