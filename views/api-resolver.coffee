@@ -262,6 +262,7 @@ class APIResolver
 
       # 资源
       when '/kcsapi/api_port/port'
+        @updateUser()
         @enableRecord = true
         dataItem = []
         nowDate = new Date()
