@@ -2,7 +2,7 @@
 {Grid, Row, Col, Table, ButtonGroup, DropdownButton, MenuItem, Input, Pagination, OverlayTrigger, Popover} = ReactBootstrap
 path = require 'path-extra'
 {log, warn, error} = require path.join(ROOT, 'lib/utils')
-{openExternal} = require 'shell'
+{openExternal} = require('electron').shell
 
 #i18n = require '../node_modules/i18n'
 # {__} = i18n

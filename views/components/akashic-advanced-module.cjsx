@@ -11,10 +11,10 @@ jschardet.Constants.MINIMUM_THRESHOLD = 0.10
 
 path = require 'path-extra'
 
-remote = require 'remote'
-dialog = remote.require 'dialog'
+{remote, shell} = require 'electron'
+{dialog} = remote.require 'electron'
 
-{openExternal} = require 'shell'
+{openExternal} = shell
 
 {oriTableTab} = require '../reducers/tab'
 

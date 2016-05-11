@@ -1,4 +1,4 @@
-remote = require 'remote'
+{remote} = require 'electron'
 windowManager = remote.require './lib/window'
 path = require 'path-extra'
 fs = require 'fs-extra'

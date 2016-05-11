@@ -1,4 +1,4 @@
-window.remote = require('remote');
+window.remote = require('electron').remote;
 
 window.ROOT = remote.getGlobal('ROOT');
 
