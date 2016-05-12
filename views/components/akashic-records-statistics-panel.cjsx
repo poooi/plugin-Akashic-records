@@ -2,7 +2,7 @@
 {Panel, Button, Col, Input, Grid, Row, ButtonGroup, DropdownButton,
   MenuItem, Table, OverlayTrigger, Popover, Collapse, Well} = ReactBootstrap
 Divider = require '../divider'
-{openExternal} = require 'shell'
+{openExternal} = require('electron').shell
 
 boundActivePageNum = (activePage, logLength, showAmount) ->
   activePage = Math.min activePage, Math.ceil(logLength/showAmount)

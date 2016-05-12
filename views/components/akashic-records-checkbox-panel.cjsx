@@ -2,7 +2,7 @@
 {Panel, Button, Col, Input, Grid, Row, ButtonGroup, DropdownButton,
   MenuItem, Table, OverlayTrigger, Popover, Collapse, Well} = ReactBootstrap
 Divider = require '../divider'
-{openExternal} = require 'shell'
+{openExternal} = require('electron').shell
 
 AkashicRecordsCheckboxPanel = React.createClass
   handlePanelShow: ->
@@ -16,7 +16,7 @@ AkashicRecordsCheckboxPanel = React.createClass
     tmp[index] = not tmp[index]
     config.set "plugin.Akashic.#{@props.contentType}.checkbox", JSON.stringify tmp
     @props.onCheckboxClick index, tmp[index]
-    
+
   handleClickConfigCheckbox: (index) ->
     @props.onConfigListSet index
   handleShowAmountSelect: (eventKey, selectedKey)->
