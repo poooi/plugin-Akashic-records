@@ -47,6 +47,7 @@ class APIResolver
     @_ships = []
     @timeString = ""
     @mapLv = []
+    @battleStart = false
 
     createShipFlag: false   #注意！之后要用config处理关于建造中正好猫了导致log数据遗失的问题！
     largeFlag: false
@@ -148,8 +149,10 @@ class APIResolver
       '/kcsapi/api_req_combined_battle/midnight_battle', \
       '/kcsapi/api_req_combined_battle/sp_midnight', \
       '/kcsapi/api_req_combined_battle/battle_water'
-        @_ships = window._ships
-        @nowDate = new Date().getTime()
+        if not @battleStart
+          @_ships = window._ships
+          @nowDate = new Date().getTime()
+          @battleStart = true
 
       # 远征
       when '/kcsapi/api_req_mission/result'
@@ -278,6 +281,7 @@ class APIResolver
 
 
   handleBattleResultResponse: (e) ->
+    @battleStart = false
     {map, quest, boss, mapCell, rank, deckHp, deckShipId, enemy, dropItem, dropShipId, combined, mvp} = e.detail
     if not @enableRecord
       return
