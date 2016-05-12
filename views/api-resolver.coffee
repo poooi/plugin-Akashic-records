@@ -139,8 +139,12 @@ class APIResolver
       when '/kcsapi/api_req_map/start'
         @_ships = window._ships
         @isStart = true
-      when '/kcsapi/api_req_map/next', \
-      '/kcsapi/api_req_sortie/battle', \
+        @battleStart = false
+      when '/kcsapi/api_req_map/next'
+        @_ships = window._ships
+        @nowDate = new Date().getTime()
+        @battleStart = false
+      when '/kcsapi/api_req_sortie/battle', \
       '/kcsapi/api_req_battle_midnight/sp_midnight', \
       '/kcsapi/api_req_sortie/airbattle', \
       '/kcsapi/api_req_battle_midnight/battle', \
