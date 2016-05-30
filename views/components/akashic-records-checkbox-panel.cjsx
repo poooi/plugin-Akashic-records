@@ -5,6 +5,10 @@ Divider = require '../divider'
 {openExternal} = require('electron').shell
 
 AkashicRecordsCheckboxPanel = React.createClass
+  lastClick: -1
+  componentDidUpdate: ()->
+    @lastClick = -1
+
   handlePanelShow: ->
     show = not @props.show
     config.set "plugin.Akashic.#{@props.contentType}.checkboxPanelShow", show
@@ -18,7 +22,9 @@ AkashicRecordsCheckboxPanel = React.createClass
     @props.onCheckboxClick index, tmp[index]
 
   handleClickConfigCheckbox: (index) ->
-    @props.onConfigListSet index
+    if index isnt @lastClick
+      @props.onConfigListSet index
+      @lastClick = index
   handleShowAmountSelect: (eventKey, selectedKey)->
     config.set "plugin.Akashic.#{@props.contentType}.showAmount", selectedKey
     @props.onShowAmountSet selectedKey
@@ -27,6 +33,7 @@ AkashicRecordsCheckboxPanel = React.createClass
     if !val or val < 1
       val = 1
     @props.onActivePageSet val
+
 
   render: ->
     <Grid>
