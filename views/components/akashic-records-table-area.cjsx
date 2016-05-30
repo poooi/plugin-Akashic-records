@@ -67,8 +67,8 @@ AkashicRecordsTableArea = React.createClass
   handleKeyWordChange: (index)->
     @props.onFilterKeySet index - 1,  @refs["input#{index}"].getValue()
 
-  handlePaginationSelect: (event, selectedEvent)->
-    @props.onActivePageSet selectedEvent.eventKey
+  handlePaginationSelect: (key, selectedEvent)->
+    @props.onActivePageSet selectedEvent.eventKey || key
 
   # componentDidUpdate: ()->
   #   console.log "Table Area Update"
