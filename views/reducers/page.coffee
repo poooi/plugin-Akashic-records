@@ -13,6 +13,7 @@ module.exports =
   showAmount: (state, action) =>
     if not state?
       state = parseInt config.get "plugin.Akashic.#{action.dataType}.showAmount", 20
+      state = Math.min(state, 100)
     if action.type is "SET_SHOW_AMOUNT"
       parseInt action.val
     else
