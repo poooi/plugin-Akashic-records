@@ -64,7 +64,8 @@ AkashicRecordsTableTbodyItem = React.createClass
     </tr>
 
 AkashicRecordsTableArea = React.createClass
-  input: {}
+  componentWillMount: () ->
+    @input = {}
   handleKeyWordChange: (index)->
     @props.onFilterKeySet index - 1,  @input["input#{index}"].value
 

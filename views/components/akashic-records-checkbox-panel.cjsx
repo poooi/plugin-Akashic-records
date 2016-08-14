@@ -5,7 +5,9 @@ Divider = require '../divider'
 {openExternal} = require('electron').shell
 
 AkashicRecordsCheckboxPanel = React.createClass
-  lastClick: -1
+  componentWillMount: () ->
+    @lastClick = -1
+
   componentDidUpdate: ()->
     @lastClick = -1
 
