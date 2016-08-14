@@ -1,5 +1,5 @@
 {React, ReactBootstrap, ROOT, FontAwesome, __, translate, CONST} = window
-{Grid, Row, Col, Input, Button, OverlayTrigger, Popover, Input} = ReactBootstrap
+{Grid, Row, Col, FormControl, Button, OverlayTrigger, Popover} = ReactBootstrap
 
 DATA_PATH = config.get "plugin.Akashic.dataPath", APPDATA_PATH
 
@@ -557,7 +557,7 @@ AttackLog = React.createClass
       forceMinimize: not @state.forceMinimize
   handleSetType: ->
     @setState
-      typeChoosed: @refs.type.getValue()
+      typeChoosed: @type.value
   showMessage: (message)->
     dialog.showMessageBox
       type: 'info'
@@ -729,14 +729,18 @@ AttackLog = React.createClass
         </Row>
         <Row>
           <Col xs={4}>
-            <Input type="select" ref="type" value={@state.typeChoosed} onChange={@handleSetType}>
+            <FormControl
+              componentClass="select"
+              ref={(ref) => @type = ReactDOM.findDOMNode(ref)}
+              value={@state.typeChoosed}
+              onChange={@handleSetType}>
               <option key={0} value={'出击'}>{__ "Sortie"}</option>
               <option key={1} value={'远征'}>{__ "Expedition"}</option>
               <option key={2} value={'建造'}>{__ "Construction"}</option>
               <option key={3} value={'开发'}>{__ "Development"}</option>
               <option key={4} value={'除籍'}>{__ "Retirement"}</option>
               <option key={5} value={'资源'}>{__ "Resource"}</option>
-            </Input>
+            </FormControl>
           </Col>
           <Col xs={4}>
              <Button bsStyle='primary' style={width: '100%'} onClick={@saveLogHandle}>{__ "Export"}</Button>

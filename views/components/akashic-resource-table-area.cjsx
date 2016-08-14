@@ -1,7 +1,7 @@
 path = require 'path-extra'
 
 {React, ReactBootstrap, ROOT, __} = window
-{Grid, Row, Col, Table, ButtonGroup, DropdownButton, MenuItem, Input, Pagination} = ReactBootstrap
+{Grid, Row, Col, Table, ButtonGroup, DropdownButton, MenuItem, FormControl, Pagination} = ReactBootstrap
 {log, warn, error} = require path.join(ROOT, 'lib/utils')
 
 # i18n = require '../node_modules/i18n'
@@ -48,17 +48,17 @@ AkashicResourceTableTbodyItem = React.createClass
 
 AkashicResourceTableArea = React.createClass
   handleKeyWordChange: ->
-    @props.onFilterKeySet @refs.input.getValue()
+    @props.onFilterKeySet @input.value
   handleShowAmountSelect: (eventKey, selectedKey)->
-    config.set "plugin.Akashic.resource.showAmount", selectedKey
-    @props.onShowAmountSet selectedKey
+    config.set "plugin.Akashic.resource.showAmount", eventKey
+    @props.onShowAmountSet eventKey
   handleShowPageSelect: (eventKey, selectedKey)->
-    @props.onActivePageSet selectedKey
+    @props.onActivePageSet eventKey
   handleTimeScaleSelect: (eventKey, selectedKey)->
-    config.set "plugin.Akashic.resource.table.showTimeScale", selectedKey
-    @props.onTimeScaleSet selectedKey
-  handlePaginationSelect: (event, selectedEvent)->
-    @props.onActivePageSet selectedEvent.eventKey
+    config.set "plugin.Akashic.resource.table.showTimeScale", eventKey
+    @props.onTimeScaleSet eventKey
+  handlePaginationSelect: (eventKey)->
+    @props.onActivePageSet eventKey
 
   render: ->
     <div>
@@ -95,12 +95,12 @@ AkashicResourceTableArea = React.createClass
             </ButtonGroup>
           </Col>
           <Col xs={3}>
-            <Input
+            <FormControl
               type='text'
               value={@props.filterKey}
               placeholder={__ "Keywords"}
               hasFeedback
-              ref='input'
+              ref={(ref) => @input = ReactDOM.findDOMNode(ref)}
               onChange={@handleKeyWordChange} />
           </Col>
         </Row>

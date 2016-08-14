@@ -1,5 +1,5 @@
 {React, ReactBootstrap, jQuery, config, __, CONST} = window
-{Panel, Button, Col, Input, Grid, Row, ButtonGroup, DropdownButton,
+{Panel, Button, Col, FormControl, Grid, Row, ButtonGroup, DropdownButton,
   MenuItem, Table, OverlayTrigger, Popover, Collapse, Well} = ReactBootstrap
 Divider = require '../divider'
 {openExternal} = require('electron').shell
@@ -9,6 +9,9 @@ boundActivePageNum = (activePage, logLength, showAmount) ->
   activePage = Math.max activePage, 1
 
 AkashicRecordsStatisticsPanel = React.createClass
+  componentWillMount: () ->
+    @input = {}
+    @baseOn = {}
   shouldComponentUpdate: (nextProps, nextState)->
     @props.show isnt nextProps.show or
     not @props.searchItems.equals(nextProps.searchItems) or
@@ -23,22 +26,22 @@ AkashicRecordsStatisticsPanel = React.createClass
   handleDeleteSearchLine: (index)->
     @props.onSeaRuleDelete index
   handleSeaBaseSet: (index)->
-    @props.onSeaRuleBaseSet index, parseInt @refs["baseOn#{index}"].getValue()
+    @props.onSeaRuleBaseSet index, parseInt @baseOn["baseOn#{index}"].value
   handleSeaRuleKeySet: (index)->
-    @props.onSeaRuleKeySet index, @refs["search#{index}"].getValue()
+    @props.onSeaRuleKeySet index, @input["search#{index}"].value
 
   handleAddStat: ->
     @props.onStatRuleAdd()
   handleDeleteStat: (index)->
     @props.onStatRuleDelete index
   handleStatNTypeSet: (index)->
-    @props.onStatRuleNTypeSet index, parseInt @refs["NType#{index}"].getValue()
+    @props.onStatRuleNTypeSet index, parseInt @baseOn["NType#{index}"].value
   handleStatRuleNSet: (index)->
-    @props.onStatRuleNSet index, parseInt @refs["numerator#{index}"].getValue()
+    @props.onStatRuleNSet index, parseInt @input["numerator#{index}"].value
   handleStatDTypeSet: (index)->
-    @props.onStatRuleDTypeSet index, parseInt @refs["DType#{index}"].getValue()
+    @props.onStatRuleDTypeSet index, parseInt @baseOn["DType#{index}"].value
   handleStatRuleDSet: (index)->
-    @props.onStatRuleDSet index, parseInt @refs["denominator#{index}"].getValue()
+    @props.onStatRuleDSet index, parseInt @input["denominator#{index}"].value
 
   render: ->
     <Grid>
@@ -94,7 +97,15 @@ AkashicRecordsStatisticsPanel = React.createClass
                         }
                         <td>{index+1}</td>
                         <td>
-                          <Input type="select" ref="baseOn#{index}" groupClassName='search-area' value={"#{@props.searchItems.get(index).get('baseOn')}"} onChange={@handleSeaBaseSet.bind(@, index)}>
+                          <FormControl
+                            componentClass="select"
+                            ref={
+                              do () =>
+                                tmp = index
+                                (ref) => @baseOn["baseOn#{tmp}"] = ReactDOM.findDOMNode(ref)}
+                            groupClassName='search-area'
+                            value={"#{@props.searchItems.get(index).get('baseOn')}"}
+                            onChange={@handleSeaBaseSet.bind(@, index)}>
                             <option key={CONST.search.rawDataIndex} value={CONST.search.rawDataIndex}>
                               {__ "All Data"}
                             </option>
@@ -107,14 +118,19 @@ AkashicRecordsStatisticsPanel = React.createClass
                                   {__ "Search Result No. %s", i}
                                 </option>
                             }
-                          </Input>
+                          </FormControl>
                         </td>
                         <td>
-                           <Input
+                           <FormControl
                               type='text'
-                              value={@props.searchItems.get(index).get('content')}
                               placeholder={__ "Keywords"}
-                              ref="search#{index}"
+                              ref={
+                                do () =>
+                                  tmp = index
+                                  (ref) =>
+                                    @input["search#{tmp}"] = ReactDOM.findDOMNode(ref)
+                              }
+                              value={@props.searchItems.get(index).get('content')}
                               groupClassName='search-area'
                               onChange={@handleSeaRuleKeySet.bind(@, index)} />
                         </td>
@@ -151,7 +167,15 @@ AkashicRecordsStatisticsPanel = React.createClass
                         }
                         <td>{index+1}</td>
                         <td>
-                          <Input type="select" ref="NType#{index}" groupClassName='search-area' value={"#{@props.statisticsItems.get(index).get('numeratorType')}"} onChange={@handleStatNTypeSet.bind(@, index)}>
+                          <FormControl
+                            componentClass="select"
+                            ref={
+                              do () =>
+                                tmp = index
+                                (ref) => @baseOn["NType#{tmp}"] = ReactDOM.findDOMNode(ref)}
+                            groupClassName='search-area'
+                            value={"#{@props.statisticsItems.get(index).get('numeratorType')}"}
+                            onChange={@handleStatNTypeSet.bind(@, index)}>
                             <option key={CONST.search.rawDataIndex} value={CONST.search.rawDataIndex}>{__ "All Data"}</option>
                             <option key={CONST.search.filteredDataIndex} value={CONST.search.filteredDataIndex}>{__ "Filtered"}</option>
                             {
@@ -159,10 +183,18 @@ AkashicRecordsStatisticsPanel = React.createClass
                                 <option key={CONST.search.indexBase + i} value={CONST.search.indexBase + i}>{__ "Search Result No. %s", i}</option>
                             }
                             <option key={-1} value={-1}>{__ "Custom"}</option>
-                          </Input>
+                          </FormControl>
                         </td>
                         <td>
-                          <Input type="select" ref="DType#{index}" groupClassName='search-area' value={"#{@props.statisticsItems.get(index).get('denominatorType')}"} onChange={@handleStatDTypeSet.bind(@, index)}>
+                          <FormControl
+                            componentClass="select"
+                            ref={
+                              do () =>
+                                tmp = index
+                                (ref) => @baseOn["DType#{tmp}"] = ReactDOM.findDOMNode(ref)}
+                            groupClassName='search-area'
+                            value={"#{@props.statisticsItems.get(index).get('denominatorType')}"}
+                            onChange={@handleStatDTypeSet.bind(@, index)}>
                             <option key={CONST.search.rawDataIndex} value={CONST.search.rawDataIndex}>{__ "All Data"}</option>
                             <option key={CONST.search.filteredDataIndex} value={CONST.search.filteredDataIndex}>{__ "Filtered"}</option>
                             {
@@ -170,16 +202,19 @@ AkashicRecordsStatisticsPanel = React.createClass
                                 <option key={CONST.search.indexBase + i} value={CONST.search.indexBase + i}>{__ "Search Result No. %s", i}</option>
                             }
                             <option key={-1} value={-1}>{__ "Custom"}</option>
-                          </Input>
+                          </FormControl>
                         </td>
                         {
                           if @props.statisticsItems.get(index).get('numeratorType') is -1
                             <td>
-                              <Input
+                              <FormControl
                                 type='number'
                                 placeholder={"0"}
                                 value={"#{@props.statisticsItems.get(index).get('numerator')}"}
-                                ref="numerator#{index}"
+                                ref={
+                                  do () =>
+                                    tmp = index
+                                    (ref) => @input["numerator#{tmp}"] = ReactDOM.findDOMNode(ref)}
                                 groupClassName='search-area'
                                 onChange={@handleStatRuleNSet.bind(@, index)} />
                             </td>
@@ -189,11 +224,14 @@ AkashicRecordsStatisticsPanel = React.createClass
                         {
                           if @props.statisticsItems.get(index).get('denominatorType') is -1
                             <td>
-                              <Input
+                              <FormControl
                                 type='number'
                                 placeholder={"0"}
                                 value={"#{@props.statisticsItems.get(index).get('denominator')}"}
-                                ref="denominator#{index}"
+                                ref={
+                                  do () =>
+                                    tmp = index
+                                    (ref) => @input["denominator#{tmp}"] = ReactDOM.findDOMNode(ref)}@
                                 groupClassName='search-area'
                                 onChange={@handleStatRuleDSet.bind(@, index)} />
                             </td>

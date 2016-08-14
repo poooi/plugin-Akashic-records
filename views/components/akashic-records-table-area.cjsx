@@ -1,5 +1,5 @@
 {React, ReactBootstrap, ROOT, config, __, FontAwesome, CONST} = window
-{Grid, Row, Col, Table, ButtonGroup, DropdownButton, MenuItem, Input, Pagination, OverlayTrigger, Popover} = ReactBootstrap
+{Grid, Row, Col, Table, ButtonGroup, DropdownButton, MenuItem, FormControl, Pagination, OverlayTrigger, Popover} = ReactBootstrap
 path = require 'path-extra'
 {log, warn, error} = require path.join(ROOT, 'lib/utils')
 {openExternal} = require('electron').shell
@@ -64,8 +64,9 @@ AkashicRecordsTableTbodyItem = React.createClass
     </tr>
 
 AkashicRecordsTableArea = React.createClass
+  input: {}
   handleKeyWordChange: (index)->
-    @props.onFilterKeySet index - 1,  @refs["input#{index}"].getValue()
+    @props.onFilterKeySet index - 1,  @input["input#{index}"].value
 
   handlePaginationSelect: (key, selectedEvent)->
     @props.onActivePageSet selectedEvent.eventKey || key
@@ -112,11 +113,16 @@ AkashicRecordsTableArea = React.createClass
                         </th>
                       else
                         <th key={index} className="table-search">
-                          <Input
+                          <FormControl
                             type='text'
                             label={if showLabel then @props.tableTab.get index else ''}
                             placeholder={@props.tableTab.get index}
-                            ref="input#{index}"
+                            ref={
+                              do () =>
+                                i = index
+                                (ref) =>
+                                  @input["input#{i}"] = ReactDOM.findDOMNode(ref)
+                            }
                             groupClassName='filter-area'
                             value="#{@props.filterKeys.get(index-1)}"
                             onChange={@handleKeyWordChange.bind(@, index)} />

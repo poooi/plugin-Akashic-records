@@ -1,5 +1,5 @@
 {React, ReactBootstrap, jQuery} = window
-{Panel, Button, Col, Input, Grid, Row, ButtonGroup} = ReactBootstrap
+{Panel, Button, Col, F, Grid, Row, ButtonGroup, Checkbox} = ReactBootstrap
 
 AkashicResourceCheckboxArea = React.createClass
   handleClickCheckbox: (index) ->
@@ -17,13 +17,13 @@ AkashicResourceCheckboxArea = React.createClass
           for checkedVal, index in @props.tableTab.toArray()
             continue if index < 2
             <Col key={index} xs={2}>
-              <Input
-                type='checkbox'
+              <Checkbox
                 value={index}
                 onChange={@handleClickCheckbox.bind(@, index)}
                 checked={@props.tabVisibility.get index}
-                style={verticalAlign: 'middle'}
-                label={checkedVal} />
+                style={verticalAlign: 'middle'}>
+                {checkedVal}
+              </Checkbox>
             </Col>
         }
         </Row>

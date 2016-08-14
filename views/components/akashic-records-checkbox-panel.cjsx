@@ -1,5 +1,5 @@
 {React, ReactBootstrap, jQuery, config, __, CONST} = window
-{Panel, Button, Col, Input, Grid, Row, ButtonGroup, DropdownButton,
+{Panel, Button, Col, FormControl, Checkbox, Grid, Row, ButtonGroup, DropdownButton,
   MenuItem, Table, OverlayTrigger, Popover, Collapse, Well} = ReactBootstrap
 Divider = require '../divider'
 {openExternal} = require('electron').shell
@@ -25,11 +25,11 @@ AkashicRecordsCheckboxPanel = React.createClass
     if index isnt @lastClick
       @props.onConfigListSet index
       @lastClick = index
-  handleShowAmountSelect: (eventKey, selectedKey)->
-    config.set "plugin.Akashic.#{@props.contentType}.showAmount", selectedKey
-    @props.onShowAmountSet selectedKey
+  handleShowAmountSelect: (eventKey)->
+    config.set "plugin.Akashic.#{@props.contentType}.showAmount", eventKey
+    @props.onShowAmountSet eventKey
   handleShowPageSelect: ()->
-    val = parseInt @refs.pageSelected.getValue()
+    val = parseInt @pageSelected.value
     if !val or val < 1
       val = 1
     @props.onActivePageSet val
@@ -51,13 +51,13 @@ AkashicRecordsCheckboxPanel = React.createClass
             for checkedVal, index in @props.tableTab.toArray()
               continue if !index
               <Col key={index} xs={2}>
-                <Input
-                  type='checkbox'
+                <Checkbox
                   value={index}
                   onChange={@handleClickCheckbox.bind(@, index)}
                   checked={@props.tabVisibility.get index}
-                  style={verticalAlign: 'middle'}
-                  label={checkedVal} />
+                  style={verticalAlign: 'middle'}>
+                  {checkedVal}
+                </Checkbox>
               </Col>
           }
           </Row>
@@ -79,11 +79,11 @@ AkashicRecordsCheckboxPanel = React.createClass
                 {__ "Jump to"}
               </div>
               <div style={flex: 1, minWidth: 64}>
-                <Input
+                <FormControl
                   type='number'
                   placeholder={"#{__ "Page %s", @props.activePage}"}
                   value={@props.activePage}
-                  ref='pageSelected'
+                  ref={(ref) => @pageSelected = ReactDOM.findDOMNode(ref)}
                   groupClassName='select-area'
                   onChange={@handleShowPageSelect}/>
               </div>
@@ -93,7 +93,9 @@ AkashicRecordsCheckboxPanel = React.createClass
               [0...3].map (index)=>
                 checkedVal = @props.configList.get index
                 <Col key={index} xs={4}>
-                  <Input type='checkbox' value={index} onChange={@handleClickConfigCheckbox.bind(@, index)} checked={@props.configListChecked.get index} style={verticalAlign: 'middle'} label={checkedVal} />
+                  <Checkbox value={index} onChange={@handleClickConfigCheckbox.bind(@, index)} checked={@props.configListChecked.get index} style={verticalAlign: 'middle'}>
+                    {checkedVal}
+                  </Checkbox>
                 </Col>
             }
             </Col>
@@ -101,7 +103,9 @@ AkashicRecordsCheckboxPanel = React.createClass
             {
               index = 3
               checkedVal = @props.configList.get index
-              <Input type='checkbox' value={index} onChange={@handleClickConfigCheckbox.bind(@, index)} checked={@props.configListChecked.get index} style={verticalAlign: 'middle'} label={checkedVal} />
+              <Checkbox value={index} onChange={@handleClickConfigCheckbox.bind(@, index)} checked={@props.configListChecked.get index} style={verticalAlign: 'middle'}>
+                {checkedVal}
+              </Checkbox>
             }
             </Col>
           </Row>
