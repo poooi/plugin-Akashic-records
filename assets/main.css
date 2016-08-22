@@ -10,7 +10,7 @@ a, table span.fa{
 }
 
 #Akashic .show-grid {
-	padding: 10px;
+  padding: 10px;
 }
 
 akashic-records .nav {
@@ -27,7 +27,7 @@ akashic-records .nav li a {
 }
 
 akashic-records .container {
-	width: 100%; !important
+  width: 100%; !important
 }
 
 .akashic-records-settings {
@@ -47,7 +47,7 @@ akashic-records .container {
 .col-xs-2 .form-group, .col-xs-3 .form-group, .col-xs-4 .form-group{
   margin-bottom: 0px;
 }
-.col-xs-2 .form-group .checkbox, .col-xs-3 .form-group .checkbox, .col-xs-4 .form-group .checkbox{
+.col-xs-2 .checkbox, .col-xs-3 .checkbox, .col-xs-4 .checkbox{
   margin-top: 0px;
   margin-bottom: 0px;
 }
@@ -83,29 +83,32 @@ td.table-search{
   padding-right: 1px !important;
 }
 
-.form-group.select-area, .form-group.search-area, .form-group.filter-area{
+.select-area, .search-area, .filter-area{
   margin: 0px;
   max-width: 150px;
 }
 
-.form-group.filter-area input.form-control{
+.filter-area input.form-control{
   height: 24px;
   padding-top: 1px;
   padding-bottom: 1px;
   padding-left: 1px;
   padding-right: 3px;
-  font-size: 13px;
+  font-size: 14px;
 }
 
-.form-group.select-area input.form-control, .form-group.search-area input.form-control, .form-group.search-area select.form-control{
+table select.form-control, input.form-control, .select-area input.form-control, .search-area input.form-control, .search-area select.form-control{
   height: 20px;
   padding-top: 1px;
   padding-bottom: 1px;
   padding-left: 1px;
   padding-right: 3px;
-  font-size: 12px;
+  font-size: 14px;
 }
 
+table input[type=text].form-control {
+  font-size: 14px;
+}
 
 akashic-records table td {
   white-space: nowrap !important;

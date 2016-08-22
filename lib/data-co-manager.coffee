@@ -3,7 +3,6 @@
 fs = require 'fs-extra'
 glob = require 'glob'
 path = require 'path-extra'
-_ = require 'underscore'
 
 {APPDATA_PATH, CONST, config} = window
 
