@@ -204,6 +204,41 @@ resolveFile = (fileContent, tableTabEn)->
         retData
       data = data.filter (log) ->
         log.length is 12
+    when "No.,日付,海域,マス,出撃,ランク,敵艦隊,ドロップ艦種,ドロップ艦娘,ドロップアイテム,大破艦,旗艦,旗艦(第二艦隊),MVP,MVP(第二艦隊)"
+      logType = CONST.typeList.attack
+      data = logs.slice(1).map (logItem) ->
+        logItem = logItem.split ','
+        if logItem.length isnt 15
+          return []
+        retData = []
+        retData.push (new Date(logItem[1].replace(/-/g, "/"))).getTime()
+        tmpArray = logItem[3].match(/:\d+(-\d+)?/g)
+        retData.push "#{logItem[2]}(#{tmpArray[0].substring(1)})"
+        if logItem[4] is "ボス"
+          tmp = "Boss点"
+        else
+          tmp = "道中"
+        retData.push "#{tmpArray[1].substring(1)}(#{tmp})"
+        if logItem[4] is "出撃"
+          tmp = "出撃"
+        else
+          tmp = "進撃"
+        retData.push tmp
+        retData.push logItem[5]
+        retData.push logItem[6]
+        retData.push "#{logItem[8]}#{if logItem[8] != '' and logItem[9] != '' then ' & ' else ''}#{logItem[9]}"
+        if logItem[10] is ""
+          tmp = "无"
+        else
+          tmp = "有"
+        retData.push tmp
+        retData.push logItem[11]
+        retData.push logItem[12]
+        retData.push logItem[13]
+        retData.push logItem[14]
+        retData
+      data = data.filter (log) ->
+        log.length is 12
     when "日付,海域,マス,出撃,ランク,敵艦隊,ドロップ艦種,ドロップ艦娘,大破艦,旗艦,旗艦(第二艦隊),MVP,MVP(第二艦隊)"
       logType = CONST.typeList.attack
       data = logs.slice(1).map (logItem) ->
