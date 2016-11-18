@@ -60,6 +60,10 @@ switch window.language
 
 document.title = windowTitle
 
+FontAwesome = if require('react-fontawesome')?.default? then require('react-fontawesome').default else require('react-fontawesome')
+
+window.FontAwesome = FontAwesome
+
 if requirePass
   require './views'
 else
