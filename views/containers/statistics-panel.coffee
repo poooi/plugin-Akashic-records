@@ -1,12 +1,12 @@
 {__} = window
-{connect} = require 'react-redux'
+import { connect } from 'react-redux'
 {showStatisticsPanel, hiddenStatisticsPanel,
 addSearchRule, deleteSearchRule, setSearchRuleBase, setSearchRuleKey,
 addStatisticsRule, deleteStatisticsRule,
 setStatisticsRuleNumeratorType, setStatisticsRuleDenominatorType,
 setStatisticsRuleNumerator, setStatisticsRuleDenominator} = require '../actions'
-StatisticsPanel = require '../components/akashic-records-statistics-panel'
-{filterSelectors, searchSelectors} = require '../selectors'
+import StatisticsPanel from '../components/akashic-records-statistics-panel'
+import { filterSelectors, searchSelectors } from '../selectors'
 
 calPercent = (num, de) ->
   if de != 0

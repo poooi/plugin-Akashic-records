@@ -1,10 +1,10 @@
 {React, ReactBootstrap, ROOT, config, __, FontAwesome, CONST} = window
 {Grid, Row, Col, Table, ButtonGroup, DropdownButton, MenuItem, FormControl, Pagination, OverlayTrigger, Popover} = ReactBootstrap
-path = require 'path-extra'
+import path from 'path-extra'
 {log, warn, error} = require path.join(ROOT, 'lib/utils')
 {openExternal} = require('electron').shell
 
-#i18n = require '../node_modules/i18n'
+#import i18n from '../node_modules/i18n'
 # {__} = i18n
 
 dateToString = (date)->

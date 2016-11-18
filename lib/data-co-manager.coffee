@@ -1,8 +1,8 @@
 "use strict"
 
-fs = require 'fs-extra'
-glob = require 'glob'
-path = require 'path-extra'
+import fs from 'fs-extra'
+import glob from 'glob'
+import path from 'path-extra'
 
 {APPDATA_PATH, CONST, config} = window
 

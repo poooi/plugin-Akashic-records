@@ -1,7 +1,7 @@
 {remote} = require 'electron'
 windowManager = remote.require './lib/window'
-path = require 'path-extra'
-fs = require 'fs-extra'
+import path from 'path-extra'
+import fs from 'fs-extra'
 
 {_, React, ReactBootstrap, APPDATA_PATH, remote} = window
 {Grid, Row, Col, Button} = ReactBootstrap

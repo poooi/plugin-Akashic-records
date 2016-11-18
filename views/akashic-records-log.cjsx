@@ -1,6 +1,6 @@
 CheckboxPanel = (require './containers/checkbox-panel').logCP
-StatisticsPanel = require './containers/statistics-panel'
-VisibleTable = require './containers/visible-table'
+import StatisticsPanel from './containers/statistics-panel'
+import VisibleTable from './containers/visible-table'
 
 
 AkashicLog = React.createClass

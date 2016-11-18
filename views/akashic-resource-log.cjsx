@@ -1,13 +1,13 @@
 {React, ReactBootstrap, __} = window
 {Tabs, Tab} = ReactBootstrap
 
-#i18n = require '../node_modules/i18n'
+#import i18n from '../node_modules/i18n'
 # {__} = i18n
 
-ResourceChart = require './containers/resource-chart'
+import ResourceChart from './containers/resource-chart'
 
 CheckboxPanel = (require './containers/checkbox-panel').resourceCP
-TableArea = require './containers/resource-table'
+import TableArea from './containers/resource-table'
 
 AkashicResourceTable = React.createClass
   render: ->

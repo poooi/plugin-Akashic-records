@@ -1,4 +1,4 @@
-{createSelector,} = require 'reselect'
+import { createSelector, } from 'reselect'
 {APPDATA_PATH, CONST, config, Immutable} = window
 
 dateToString = (date)->

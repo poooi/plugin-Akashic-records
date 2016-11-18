@@ -1,8 +1,8 @@
 {__} = window
-{connect} = require 'react-redux'
-{setFilterKey, setActivePage} = require '../actions'
-TableArea = require '../components/akashic-records-table-area'
-{filterSelectors} = require '../selectors'
+import { connect } from 'react-redux'
+import { setFilterKey, setActivePage } from '../actions'
+import TableArea from '../components/akashic-records-table-area'
+import { filterSelectors } from '../selectors'
 
 getPropsFromState = (state, dataType) =>
   logs = filterSelectors[dataType](state)

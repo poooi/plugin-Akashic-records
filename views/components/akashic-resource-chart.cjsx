@@ -1,14 +1,14 @@
-path = require 'path-extra'
+import path from 'path-extra'
 {React, ReactBootstrap, $, err, config, ROOT, __} = window
 {Grid, Row, Col, ButtonGroup, DropdownButton, MenuItem} = ReactBootstrap
 {error} = require path.join(ROOT, 'lib/utils')
 
-#i18n = require '../node_modules/i18n'
+#import i18n from '../node_modules/i18n'
 # {__} = i18n
 
 require '../../assets/echarts-all'
-dark = require '../../assets/themes/dark'
-macarons = require '../../assets/themes/macarons'
+import dark from '../../assets/themes/dark'
+import macarons from '../../assets/themes/macarons'
 
 toDateLabel = (datetime) ->
   date = new Date(datetime)

@@ -1,7 +1,7 @@
 {__} = window
-{connect} = require 'react-redux'
-{initializeLogs} = require '../actions'
-AdvancedModule = require '../components/akashic-advanced-module'
+import { connect } from 'react-redux'
+import { initializeLogs } from '../actions'
+import AdvancedModule from '../components/akashic-advanced-module'
 
 mapStateToProps = (state, ownProps) =>
   tabs = []

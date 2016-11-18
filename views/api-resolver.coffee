@@ -1,9 +1,9 @@
 "use strict"
 
 {APPDATA_PATH, CONST, config} = window
-{initializeLogs, addLog} = require './actions'
+import { initializeLogs, addLog } from './actions'
 
-dataCoManager = require '../lib/data-co-manager'
+import dataCoManager from '../lib/data-co-manager'
 
 judgeIfDemage = (nowHp, beforeHp) ->
   DemageFlag = false

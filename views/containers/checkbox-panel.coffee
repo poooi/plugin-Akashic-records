@@ -1,10 +1,10 @@
 {__} = window
-{connect} = require 'react-redux'
+import { connect } from 'react-redux'
 {showCheckboxPanel, hiddenCheckboxPanel,
 setTabVisibility, setShowAmount, setActivePage, setConfigList} =
   require '../actions'
-logCP = require '../components/akashic-records-checkbox-panel'
-resourceCP = require '../components/akashic-resource-checkbox-panel'
+import logCP from '../components/akashic-records-checkbox-panel'
+import resourceCP from '../components/akashic-resource-checkbox-panel'
 
 getPropsFromState = (state) =>
   show: state.checkboxVisible
@@ -36,7 +36,7 @@ mapDispatchToProps = (dispatch, ownProps) =>
   onConfigListSet: (index) =>
     dispatch setConfigList(index, ownProps.contentType)
 
-module.exports = 
+module.exports =
   logCP: connect(
     mapStateToProps,
     mapDispatchToProps)(logCP)

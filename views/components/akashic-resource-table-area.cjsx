@@ -1,10 +1,10 @@
-path = require 'path-extra'
+import path from 'path-extra'
 
 {React, ReactBootstrap, ROOT, __} = window
 {Grid, Row, Col, Table, ButtonGroup, DropdownButton, MenuItem, FormControl, Pagination} = ReactBootstrap
 {log, warn, error} = require path.join(ROOT, 'lib/utils')
 
-# i18n = require '../node_modules/i18n'
+# import i18n from '../node_modules/i18n'
 # {__} = i18n
 
 dateToString = (date)->

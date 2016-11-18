@@ -1,9 +1,9 @@
 {__} = window
-{connect} = require 'react-redux'
+import { connect } from 'react-redux'
 {setFilterKey, setActivePage,
 setShowAmount, setTimeScale} = require '../actions'
-TableArea = require '../components/akashic-resource-table-area'
-{resourceFilter} = require '../selectors'
+import TableArea from '../components/akashic-resource-table-area'
+import { resourceFilter } from '../selectors'
 
 getPropsFromState = (state, dataType) =>
   data = resourceFilter state

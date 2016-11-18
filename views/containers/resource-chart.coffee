@@ -1,6 +1,6 @@
 {__} = window
-{connect} = require 'react-redux'
-ChartArea = require '../components/akashic-resource-chart'
+import { connect } from 'react-redux'
+import ChartArea from '../components/akashic-resource-chart'
 
 mapStateToProps = (state, ownProps) =>
   data: state.resource.data

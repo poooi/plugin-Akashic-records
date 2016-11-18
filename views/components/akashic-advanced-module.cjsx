@@ -3,20 +3,20 @@
 
 DATA_PATH = config.get "plugin.Akashic.dataPath", APPDATA_PATH
 
-fs = require 'fs-extra'
-iconv = require 'iconv-lite'
+import fs from 'fs-extra'
+import iconv from 'iconv-lite'
 
-jschardet = require 'jschardet'
+import jschardet from 'jschardet'
 jschardet.Constants.MINIMUM_THRESHOLD = 0.10
 
-path = require 'path-extra'
+import path from 'path-extra'
 
-{remote, shell} = require 'electron'
+import { remote, shell } from 'electron'
 {dialog} = remote.require 'electron'
 
 {openExternal} = shell
 
-{oriTableTab} = require '../reducers/tab'
+import { oriTableTab } from '../reducers/tab'
 
 dateCmp = (a, b)->
   if isNaN a[0]

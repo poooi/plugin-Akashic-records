@@ -1,7 +1,7 @@
 {React, ReactBootstrap, jQuery, config, __, CONST} = window
 {Panel, Button, Col, FormControl, Checkbox, Grid, Row, ButtonGroup, DropdownButton,
   MenuItem, Table, OverlayTrigger, Popover, Collapse, Well} = ReactBootstrap
-Divider = require '../divider'
+import Divider from '../divider'
 {openExternal} = require('electron').shell
 
 AkashicRecordsCheckboxPanel = React.createClass
