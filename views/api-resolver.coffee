@@ -129,7 +129,7 @@ class APIResolver
         @updateUser()
       # Map selected rank
       when '/kcsapi/api_get_member/mapinfo'
-        for map in body
+        for map in body.api_map_info
           @mapLv[map.api_id] = 0
           if map.api_eventmap?
             @mapLv[map.api_id] = map.api_eventmap.api_selected_rank
