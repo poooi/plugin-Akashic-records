@@ -1,8 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import ReactBootstrap from 'react-bootstrap'
+import { Label } from 'react-bootstrap'
 const { __, $ } = window
-const { Label } = ReactBootstrap
 
 // getUseItem: (id)->
 //   switch id
