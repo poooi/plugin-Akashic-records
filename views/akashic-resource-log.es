@@ -6,24 +6,27 @@ const { __ } = window
 
 import ResourceChart from './containers/resource-chart'
 
-import { resourceCP as CheckboxPanel } from './containers/checkbox-panel'
+import { ResourceCP } from './containers/checkbox-panel'
 import TableArea from './containers/resource-table'
 
 const AkashicResourceTable = () => (
   <div>
-    <CheckboxPanel contentType='resource'/>
+    <ResourceCP contentType='resource'/>
     <TableArea contentType='resource'/>
   </div>
 )
 
 class AkashicResourceLog extends React.Component {
-  state = {
-    mapShowFlag: true,
-    selectedKey: 0,
-    data: [],
+  constructor(props) {
+    super(props)
+    this.state = {
+      mapShowFlag: true,
+      selectedKey: 0,
+      data: [],
+    }
   }
 
-  handleSelectTab(selectedKey) {
+  handleSelectTab = (selectedKey) => {
     this.setState({
       mapShowFlag: selectedKey === 0,
       selectedKey: selectedKey,
@@ -42,4 +45,4 @@ class AkashicResourceLog extends React.Component {
   }
 }
 
-module.exports = AkashicResourceLog
+export default AkashicResourceLog

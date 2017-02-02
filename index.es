@@ -1,4 +1,4 @@
-import remote from 'electron'
+import { remote } from 'electron'
 import fs from 'fs-extra'
 import React, { Component } from 'react'
 import { Grid, Row, Col, Button } from 'react-bootstrap'
@@ -91,14 +91,9 @@ export const windowOptions = {
 
 export const windowURL = `file://${__dirname}/index.html`
 export const useEnv = true
-export const settingsClass = React.createClass({
-  getInitialState: () => ({
-    defaultVal: config.get("plugin.Akashic.dataPath", APPDATA_PATH),
-  }),
-  render: () => (
-    <FolderPickerConfig
-        label={__('Data Folder')}
-        configName="plugin.Akashic.dataPath"
-        defaultVal={this.state.defaultVal}/>
-  ),
-})
+export const settingsClass = () => (
+  <FolderPickerConfig
+      label={__('Data Folder')}
+      configName="plugin.Akashic.dataPath"
+      defaultVal={config.get("plugin.Akashic.dataPath", APPDATA_PATH)}/>
+)

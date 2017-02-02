@@ -33,10 +33,10 @@ const logContent = combineReducers({
   showTimeScale,
 })
 
-const boundActivePageNum = (state, dataType) => {
+function boundActivePageNum(state, dataType) {
   const logLength =
-    dataType === 'resource' ? resourceFilter(state).size
-                            : filterSelectors[dataType](state).size
+    dataType === 'resource' ? resourceFilter(state).length
+                            : filterSelectors[dataType](state).length
   let { activePage } = state
   activePage = Math.min(activePage, Math.ceil(logLength/state.showAmount))
   activePage = Math.max(activePage, 1)
@@ -50,15 +50,15 @@ export default function (type) {
     if (action.type === 'SET_LANGUAGE')
       return logContent(state, action)
     else if (action.dataType === type) {
-      const state = logContent(state, action)
+      const ret = logContent(state, action)
       if (['INITIALIZE_LOGS', 'SET_FILTER_KEY',
            'SET_SHOW_AMOUNT', 'SET_ACTIVE_PAGE',
            'SET_TIME_SCALE'].includes(action.type))
-        return boundActivePageNum(state, type)
-      return state
-    } else if (!state) {
+        return boundActivePageNum(ret, type)
+      return ret
+    } else if (state == null) {
       return logContent(state, {
-        ...type,
+        type: 'NONE',
         dataType: type,
       })
     } else

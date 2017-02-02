@@ -4,18 +4,22 @@ import { Modal, Button } from 'react-bootstrap'
 const { $, __ } = window
 
 // Notification modal
-const ModalTrigger = React.createClass({
-  getInitialState: () => ({
-    isModalOpen: false,
-    title: null,
-    content: null,
-  }),
-  handleToggle: () => {
+class ModalTrigger extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      isModalOpen: false,
+      title: null,
+      content: null,
+    }
+  }
+
+  handleToggle = () => {
     window.modalLocked = false
     this.setState({ isModalOpen: false })
     window.showModal()
-  },
-  handleModal: (e) => {
+  }
+  handleModal = (e) => {
     window.modalLocked = true
     this.setState({
       isModalOpen: true,
@@ -23,12 +27,14 @@ const ModalTrigger = React.createClass({
       content: e.detail.content,
       footer: e.detail.footer,
     })
-  },
-  componentDidMount: () =>
-    window.addEventListener('poi.modal', this.handleModal),
-  componentWillUnmount: () =>
-    window.removeEventListener('poi.modal', this.handleModal),
-  renderFooter: (footer) => {
+  }
+  componentDidMount() {
+    window.addEventListener('poi.modal', this.handleModal)
+  }
+  componentWillUnmount() {
+    window.removeEventListener('poi.modal', this.handleModal)
+  }
+  renderFooter(footer) {
     if (!footer || !footer.length) return
     const self = this
     return footer.map((button, index) => (
@@ -40,8 +46,9 @@ const ModalTrigger = React.createClass({
               bsStyle={button.style}>
         {button.name}
       </Button>))
-  },
-  render: () => (
+  }
+  render() {
+    return (
     <Modal autoFocus={true}
            animation={true}
            show={this.state.isModalOpen}
@@ -56,8 +63,9 @@ const ModalTrigger = React.createClass({
         <Button onClick={this.handleToggle}>{__('Close')}</Button>
         {this.renderFooter(this.state.footer)}
       </Modal.Footer>
-    </Modal>),
-})
+    </Modal>)
+  }
+}
 
 export default { ModalTrigger: ModalTrigger }
 ReactDOM.render(

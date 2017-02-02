@@ -35,6 +35,7 @@ class DataCoManager {
         return []
       }
     })
+    datalogs = datalogs.reduce((ret, cur) => ret.concat(cur), [])
     datalogs.reverse()
     datalogs.sort((a, b) => {
       if (isNaN(a[0]))
@@ -49,7 +50,8 @@ class DataCoManager {
   initializeData(id) {
     this.nickNameId = id
     const data = {}
-    for (const type of Object.values(CONST.typeList)) {
+    for (const k of Object.keys(CONST.typeList)) {
+      const type = CONST.typeList[k]
       data[type] = this._getDataAccordingToNameId(this.nickNameId, type)
     }
     return data
@@ -61,9 +63,9 @@ class DataCoManager {
       const date = new Date(log[0])
       const year = date.getFullYear()
       const month = date.getMonth() < 9 ?
-        `0${date.getMonth() + 1}` : `${date.getMonth + 1}`
+        `0${date.getMonth() + 1}` : `${date.getMonth() + 1}`
       const day = date.getDate() < 9 ?
-        `0${date.getDate() + 1}` : `${date.getDate + 1}`
+        `0${date.getDate() + 1}` : `${date.getDate() + 1}`
       fs.appendFile(
         path.join(DATA_PATH, 'akashic-records', this.nickNameId.toString(),
           type, `${year}${month}${day}`),

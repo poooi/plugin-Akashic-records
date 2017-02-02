@@ -1,5 +1,6 @@
 import React from 'react'
 import { Grid, Row, Col, FormControl, Button, OverlayTrigger, Popover } from 'react-bootstrap'
+import { findDOMNode } from 'react-dom'
 import FontAwesome from 'react-fontawesome'
 import fs from 'fs-extra'
 import iconv from 'iconv-lite'
@@ -10,7 +11,7 @@ import { oriTableTab } from '../reducers/tab'
 
 const { __, translate, CONST, config, APPDATA_PATH } = window
 const DATA_PATH = config.get("plugin.Akashic.dataPath", APPDATA_PATH)
-const {dialog} = remote.require('electron')
+const { dialog } = remote.require('electron')
 const {openExternal} = shell
 
 jschardet.Constants.MINIMUM_THRESHOLD = 0.10
@@ -26,15 +27,15 @@ function dateCmp(a, b) {
 
 const dateToString = (date) => {
   const month = date.getMonth() < 9 ?
-    `0${date.getMonth() + 1}` : `${date.getMonth + 1}`
+    `0${date.getMonth() + 1}` : `${date.getMonth() + 1}`
   const day = date.getDate() < 9 ?
-    `0${date.getDate() + 1}` : `${date.getDate + 1}`
+    `0${date.getDate() + 1}` : `${date.getDate() + 1}`
   const hour = date.getHours() < 9 ?
-    `0${date.getHours() + 1}` : `${date.getHours + 1}`
+    `0${date.getHours() + 1}` : `${date.getHours() + 1}`
   const minute = date.getMinutes() < 9 ?
-    `0${date.getMinutes() + 1}` : `${date.getMinutes + 1}`
+    `0${date.getMinutes() + 1}` : `${date.getMinutes() + 1}`
   const second = date.getSeconds() < 9 ?
-    `0${date.getSeconds() + 1}` : `${date.getSeconds + 1}`
+    `0${date.getSeconds() + 1}` : `${date.getSeconds() + 1}`
   return `${date.getFullYear()}/${month}/${day} ${hour}:${minute}:${second}`
 }
 
@@ -502,27 +503,34 @@ function resolveFile(fileContent, tableTabEn = oriTableTab) {
   }
 }
 
-const AttackLog = React.createClass({
-  getInitialState: () => ({
-    typeChoosed: '出击',
-    forceMinimize: false,
-  }),
-  componentWillMount: () =>
-    this.setState({
+class AdvancedModule extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      typeChoosed: '出击',
       forceMinimize: config.get("plugin.Akashic.forceMinimize", false),
-    }),
-  handleClickCheckbox: () => {
+    }
+  }
+
+  handleClickCheckbox = () => {
     config.set("plugin.Akashic.forceMinimize", !this.state.forceMinimize)
     this.setState({ forceMinimize: !this.state.forceMinimize })
-  },
-  handleSetType: () => this.setState({ typeChoosed: !this.type.value }),
-  showMessage: (message) => dialog.showMessage({
-    type: 'info',
-    buttons: ['OK'],
-    title: 'Warning',
-    message: message,
-  }),
-  saveLogHandle: () => {
+  }
+
+  handleSetType = () => {
+    this.setState({ typeChoosed: findDOMNode(this.type).value })
+  }
+
+  showMessage(message) {
+    dialog.showMessageBox({
+      type: 'info',
+      buttons: ['OK'],
+      title: 'Warning',
+      message: message,
+    })
+  }
+
+  saveLogHandle = () => {
     const nickNameId = window._nickNameId
     let logType = null
     let data = null
@@ -587,9 +595,9 @@ const AttackLog = React.createClass({
     } else {
       this.showMessage('未找到相应的提督！是不是还没登录？')
     }
-  },
+  }
 
-  importLogHandle: () => {
+  importLogHandle = () => {
     const nickNameId = window._nickNameId
     if (nickNameId == null || nickNameId === 0) {
       this.showMessage('请先登录再导入数据！')
@@ -684,76 +692,82 @@ const AttackLog = React.createClass({
       }
     }
     // console.log "import log"
-  },
+  }
 
-  render: () => (
-    <div className="advancedmodule">
-      <Grid>
-        <Row className="title">
-          <Col xs={12}>
-            <span style={{fontSize: "24px"}}>{__("Importing/Exporting")}</span>
-            <OverlayTrigger trigger='click' rootClose={true} placement='right' overlay={
-              <Popover id="about-message" title={__("About")}>
-                <h5>{__("Exporting")}</h5>
-                <ul>
-                  <li>{__("Choose the data you want to export")}</li>
-                  <li>{__("The file's encoding is determined by the OS. Win -> GB2312, Others -> utf8")}</li>
-                </ul>
-                <h5>{__("Importing")}</h5>
-                <ul>
-                  <li>{__("Support List")}
-                    <ul>
-                      <li>阿克夏记录</li>
-                      <li>航海日誌 拡張版 (某些版本)</li>
-                      <li>KCV-yuyuvn</li>
-                    </ul>
-                  </li>
-                </ul>
-                <h5>{__("Need more?")}</h5>
-                <ul>
-                  <li>
-                    <a onClick={openExternal.bind(this, "https://github.com/poooi/plugin-Akashic-records/issues/new")}>{__("open a new issue on github")}</a>
-                  </li>
-                  <li style={{ whiteSpace: "nowrap" }}>{__("or email")} jenningswu@gmail.com </li>
-                </ul>
-              </Popover>
-              }>
-              <Button id='question-btn' bsStyle='default' bsSize='large'>
-                <FontAwesome name='question-circle' className="fa-fw" />
-              </Button>
-            </OverlayTrigger>
-          </Col>
-        </Row>
-        <Row>
-          <Col xs={4}>
-            <FormControl
-              componentClass="select"
-              ref={(ref) => this.type = ref}
-              value={this.state.typeChoosed}
-              onChange={this.handleSetType}>
-              <option key={0} value={'出击'}>{__("Sortie")}</option>
-              <option key={1} value={'远征'}>{__("Expedition")}</option>
-              <option key={2} value={'建造'}>{__("Construction")}</option>
-              <option key={3} value={'开发'}>{__("Development")}</option>
-              <option key={4} value={'除籍'}>{__("Retirement")}</option>
-              <option key={5} value={'资源'}>{__("Resource")}</option>
-            </FormControl>
-          </Col>
-          <Col xs={4}>
-             <Button bsStyle='primary' style={{width: '100%'}} onClick={this.saveLogHandle}>{__("Export")}</Button>
-          </Col>
-          <Col xs={4}>
-             <Button bsStyle='primary' style={{width: '100%'}} onClick={this.importLogHandle}>{__("Import")}</Button>
-          </Col>
-        </Row>
-        <Row style={{marginTop:"10px"}}>
-          <Col xs={12}>
-            <a style={{marginLeft: "30px"}} onClick={openExternal.bind(this, "https://github.com/yudachi/plugin-Akashic-records")}>{__("Bug Report & Suggestion")}</a>
-          </Col>
-        </Row>
-      </Grid>
-    </div>
-  ),
-})
+  render() {
+    return (
+      <div className="advancedmodule">
+        <Grid>
+          <Row className="title">
+            <Col xs={12}>
+              <span style={{fontSize: "24px"}}>{__("Importing/Exporting")}</span>
+              <OverlayTrigger trigger='click' rootClose={true} placement='right' overlay={
+                <Popover id="about-message" title={__("About")}>
+                  <h5>{__("Exporting")}</h5>
+                  <ul>
+                    <li>{__("Choose the data you want to export")}</li>
+                    <li>{__("The file's encoding is determined by the OS. Win -> GB2312, Others -> utf8")}</li>
+                  </ul>
+                  <h5>{__("Importing")}</h5>
+                  <ul>
+                    <li>{__("Support List")}
+                      <ul>
+                        <li>阿克夏记录</li>
+                        <li>航海日誌 拡張版 (某些版本)</li>
+                        <li>KCV-yuyuvn</li>
+                      </ul>
+                    </li>
+                  </ul>
+                  <h5>{__("Need more?")}</h5>
+                  <ul>
+                    <li>
+                      <a onClick={openExternal.bind(this, "https://github.com/poooi/plugin-Akashic-records/issues/new")}>{__("open a new issue on github")}</a>
+                    </li>
+                    <li style={{ whiteSpace: "nowrap" }}>{__("or email")} jenningswu@gmail.com </li>
+                  </ul>
+                </Popover>
+                }>
+                <Button id='question-btn' bsStyle='default' bsSize='large'>
+                  <FontAwesome name='question-circle' className="fa-fw" />
+                </Button>
+              </OverlayTrigger>
+            </Col>
+          </Row>
+          <Row>
+            <Col xs={4}>
+              <FormControl
+                componentClass="select"
+                ref={(ref) => {
+                  this.type = ref
+                }}
+                value={this.state.typeChoosed}
+                onChange={() => {
+                  this.handleSetType()
+                }}>
+                <option key={0} value={'出击'}>{__("Sortie")}</option>
+                <option key={1} value={'远征'}>{__("Expedition")}</option>
+                <option key={2} value={'建造'}>{__("Construction")}</option>
+                <option key={3} value={'开发'}>{__("Development")}</option>
+                <option key={4} value={'除籍'}>{__("Retirement")}</option>
+                <option key={5} value={'资源'}>{__("Resource")}</option>
+              </FormControl>
+            </Col>
+            <Col xs={4}>
+               <Button bsStyle='primary' style={{width: '100%'}} onClick={this.saveLogHandle}>{__("Export")}</Button>
+            </Col>
+            <Col xs={4}>
+               <Button bsStyle='primary' style={{width: '100%'}} onClick={this.importLogHandle}>{__("Import")}</Button>
+            </Col>
+          </Row>
+          <Row style={{marginTop:"10px"}}>
+            <Col xs={12}>
+              <a style={{marginLeft: "30px"}} onClick={openExternal.bind(this, "https://github.com/yudachi/plugin-Akashic-records")}>{__("Bug Report & Suggestion")}</a>
+            </Col>
+          </Row>
+        </Grid>
+      </div>
+    )
+  }
+}
 
-module.exports = AttackLog
+export default AdvancedModule

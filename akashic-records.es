@@ -26,7 +26,7 @@ function setTheme(theme) {
     cssDom.setAttribute('href',
       theme === '__default__'
       ? "file://" + require.resolve('bootstrap/dist/css/bootstrap.css')
-      : `file://${ROOT}/assets/themes/#{theme}/css/#{theme}.css`)
+      : `file://${ROOT}/assets/themes/${theme}/css/${theme}.css`)
   }
 }
 setTheme(config.get('poi.theme', '__default__'))

@@ -6,7 +6,7 @@ const initConfigList = [
 ]
 
 function getTabs() {
-  initConfigList.map((tab) => __(tab))
+  return initConfigList.map((tab) => __(tab))
 }
 
 export function configList(state = getTabs(), action) {
@@ -33,7 +33,7 @@ export function configListChecked(state, action) {
         newState = [
           ...state.slice(0, action.index),
           true,
-          ...state.slice(action.index, 2),
+          ...state.slice(action.index + 1, 2),
           false,
           state.slice[3],
         ]

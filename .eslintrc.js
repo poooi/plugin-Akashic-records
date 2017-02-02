@@ -55,6 +55,7 @@ module.exports = {
       'react-fontawesome',
       'path-extra',
       'fs-extra',
+      'cson',
     ],
   },
 }

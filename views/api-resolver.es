@@ -130,7 +130,7 @@ class APIResolver {
 
     // Map selected rank
     case '/kcsapi/api_get_member/mapinfo':
-      for (const map of body) {
+      for (const map of body.api_map_info) {
         this.mapLv[map.api_id] = 0
         if (map.api_eventmap)
           this.mapLv[map.api_id] = map.api_eventmap.api_selected_rank
@@ -185,7 +185,7 @@ class APIResolver {
       if (body.api_clear_result === 0)
         dataItem.push(0, 0, 0, 0)
       else {
-        dataItem.push(...body.api_get_material.slice(0, 4)[0])
+        dataItem.push(...body.api_get_material.slice(0, 4))
       }
 
       const useItemFlag = body.api_useitem_flag;
@@ -290,7 +290,7 @@ class APIResolver {
     case '/kcsapi/api_port/port': {
       this.updateUser()
       this.enableRecord = true
-      const nowDate =
+      const nowDate = new Date()
       this.deckCombinedFlag = body.api_combined_flag
       if (this.timeString !== timeToBString(nowDate.getTime())) {
         this.timeString = timeToBString(nowDate.getTime())

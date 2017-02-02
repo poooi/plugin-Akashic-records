@@ -3,15 +3,15 @@ const { CONST } = window
 
 const dateToString = (date) => {
   const month = date.getMonth() < 9 ?
-    `0${date.getMonth() + 1}` : `${date.getMonth + 1}`
+    `0${date.getMonth() + 1}` : `${date.getMonth() + 1}`
   const day = date.getDate() < 9 ?
-    `0${date.getDate() + 1}` : `${date.getDate + 1}`
+    `0${date.getDate() + 1}` : `${date.getDate() + 1}`
   const hour = date.getHours() < 9 ?
-    `0${date.getHours() + 1}` : `${date.getHours + 1}`
+    `0${date.getHours() + 1}` : `${date.getHours() + 1}`
   const minute = date.getMinutes() < 9 ?
-    `0${date.getMinutes() + 1}` : `${date.getMinutes + 1}`
+    `0${date.getMinutes() + 1}` : `${date.getMinutes() + 1}`
   const second = date.getSeconds() < 9 ?
-    `0${date.getSeconds() + 1}` : `${date.getSeconds + 1}`
+    `0${date.getSeconds() + 1}` : `${date.getSeconds() + 1}`
   return `${date.getFullYear()}/${month}/${day} ${hour}:${minute}:${second}`
 }
 
@@ -128,8 +128,8 @@ const logSelectorFactory = () => {
 
 const logSearchSelectorBaseFactory = (old, num) => {
   const getLogs = (logsRes, searchRule) => logsRes[searchRule.baseOn]
-  const getSearchKey = (logsRes, searchRule) => searchRule.content;
-  [...Array(num).keys()].map((index) =>
+  const getSearchKey = (logsRes, searchRule) => searchRule.content
+  return [...Array(num).keys()].map((index) =>
     old[index] || createSelector([getLogs, getSearchKey], filterWNindex)
   )
 }
@@ -140,15 +140,15 @@ const logSearchSelectorFactory = () => {
     let lastLogs = null
     return (logs, filteredLogs, searchRules) => {
       if (selector == null || lastLogs !== logs)
-        selector = logSearchSelectorBaseFactory([], searchRules.size)
+        selector = logSearchSelectorBaseFactory([], searchRules.length)
       lastLogs = logs
-      if (selector.length !== searchRules.size)
-        selector = logSearchSelectorBaseFactory(selector, searchRules.size)
+      if (selector.length !== searchRules.length)
+        selector = logSearchSelectorBaseFactory(selector, searchRules.length)
       const logsRes = [logs, filteredLogs]
       searchRules.forEach((searchRule, i) =>
         logsRes[CONST.search.indexBase+i+1] = selector[i](logsRes, searchRule)
       )
-      return logsRes.map((logs) => logs.size)
+      return logsRes.map((logs) => logs.length)
     }
   })()
 }
