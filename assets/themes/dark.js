@@ -1,4 +1,4 @@
-var dark = {
+const dark = {
     // 全图默认背景
     // backgroundColor: '#1b1b1b',
 
@@ -330,4 +330,4 @@ var dark = {
     }
 };
 
-module.exports = dark;
+exports.default = dark
