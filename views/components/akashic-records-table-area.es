@@ -45,7 +45,7 @@ function showBattleDetail(timestamp) {
       throw `${__("In order to find the detailed battle log, you need to download the latest battle-detail plugin and enable it.")}`
     }
 
-    const timestamp = (new Date(timestamp)).getTime()
+    timestamp = (new Date(timestamp)).getTime()
     battleDetail.showBattleWithTimestamp(timestamp, (message) => {
       if (message) {
         window.toggleModal("Warning", `${__('Battle Detail')}: ${message}`)

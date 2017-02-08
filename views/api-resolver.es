@@ -324,6 +324,7 @@ class APIResolver {
       combined,
       mvp,
     } = e.detail
+
     if (!this.enableRecord)
       return
     if (combined == null) {
@@ -342,7 +343,16 @@ class APIResolver {
     if (!this.compatible)
       return
 
-    let dataItem = [this.nowDate]
+    const {
+      time,
+      deckInitHp,
+    } = e.detail
+
+    if (time == null || deckInitHp == null) {
+      console.warn("Suggest to use up-to-date POI.")
+    }
+
+    let dataItem = [time || this.nowDate]
     const selectedRank = ['', ' 丙', '  乙', ' 甲'][this.mapLv[map] || 0] || ''
     dataItem.push(
       `${quest}(${Math.floor(map / 10)}-${map % 10}${selectedRank})`,
@@ -350,7 +360,7 @@ class APIResolver {
       this.isStart ? '出撃' : '進撃'
     )
     this.isStart = false
-    const beforeHp = deckShipId.map((id) => id !== -1 ? this._ships[id].api_nowhp : -1)
+    const beforeHp = deckInitHp || deckShipId.map((id) => id !== -1 ? this._ships[id].api_nowhp : -1)
     switch (rank) {
     case 'S':
       dataItem.push(judgeIfDemage(deckHp, beforeHp) ? '勝利S' : '完全勝利!!!S')
