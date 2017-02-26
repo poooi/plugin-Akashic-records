@@ -8,6 +8,7 @@ import jschardet from 'jschardet'
 import path from 'path-extra'
 import { remote, shell } from 'electron'
 import { oriTableTab } from '../reducers/tab'
+import { dateToString } from '../../lib/utils'
 
 const { __, translate, CONST, config, APPDATA_PATH } = window
 const DATA_PATH = config.get("plugin.Akashic.dataPath", APPDATA_PATH)
@@ -25,24 +26,10 @@ function dateCmp(a, b) {
   return b[0] - a[0]
 }
 
-const dateToString = (date) => {
-  const month = date.getMonth() < 9 ?
-    `0${date.getMonth() + 1}` : `${date.getMonth() + 1}`
-  const day = date.getDate() < 9 ?
-    `0${date.getDate() + 1}` : `${date.getDate() + 1}`
-  const hour = date.getHours() < 9 ?
-    `0${date.getHours() + 1}` : `${date.getHours() + 1}`
-  const minute = date.getMinutes() < 9 ?
-    `0${date.getMinutes() + 1}` : `${date.getMinutes() + 1}`
-  const second = date.getSeconds() < 9 ?
-    `0${date.getSeconds() + 1}` : `${date.getSeconds() + 1}`
-  return `${date.getFullYear()}/${month}/${day} ${hour}:${minute}:${second}`
-}
-
 function duplicateRemoval(arr) {
   arr.sort(dateCmp)
   let lastTmp = 0
-  arr.filter((log) => {
+  return arr.filter((log) => {
     const tmp = dateToString(new Date(log[0]))
     if (tmp !== lastTmp) {
       lastTmp = tmp
@@ -246,6 +233,25 @@ function resolveFile(fileContent, tableTabEn = oriTableTab) {
     data = data.filter((log) => log.length ===12)
     break
   }
+  case "日付,海域,マス,ランク,敵艦隊,ドロップ艦種,ドロップ艦娘,味方艦1,味方艦1HP,味方艦2,味方艦2HP,味方艦3,味方艦3HP,味方艦4,味方艦4HP,味方艦5,味方艦5HP,味方艦6,味方艦6HP,敵艦1,敵艦1HP,敵艦2,敵艦2HP,敵艦3,敵艦3HP,敵艦4,敵艦4HP,敵艦5,敵艦5HP,敵艦6,敵艦6HP": {
+    logType = CONST.typeList.attack
+    data = logs.slice(1).map((logItem) => {
+      logItem = logItem.split(',')
+      if (logItem.length !== 31)
+        return []
+      const retData = [(new Date(logItem[0].replace(/-/g, "/"))).getTime()]
+      const tmpArray = logItem[2].match(/:\d+(-\d+)?/g)
+      retData.push(`${logItem[1]}(${tmpArray[0].substring(1)})`)
+      retData.push(`${tmpArray[1].substring(1)}(${logItem[3] === 'ボス' ? 'Boss点' : '道中'})`)
+      retData.push('')
+      retData.push(logItem[3], logItem[4], logItem[6])
+      retData.push('')
+      retData.push(logItem[7], '', '', '')
+      return retData
+    })
+    data = data.filter((log) => log.length ===12)
+    break
+  }
   case "No.,日付,結果,遠征,燃料,弾薬,鋼材,ボーキ,アイテム1,個数,アイテム2,個数": {
     logType = CONST.typeList.mission
     data = logs.slice(1).map((logItem) => {
@@ -410,6 +416,24 @@ function resolveFile(fileContent, tableTabEn = oriTableTab) {
       ]
     })
     data = data.filter((log) => log.length ===9)
+    break
+  }
+  case "日付,種別,個別ID,名前,原因": {
+    logType = CONST.typeList.retirement
+    data = logs.slice(1).map((logItem) => {
+      logItem = logItem.split(',')
+      if (logItem.length !== 5)
+        return []
+      if (logItem[1] === "艦娘")
+        return [
+          (new Date(logItem[0].replace(/-/g, "/"))).getTime(),
+          logItem[4].length > 4 ? logItem[4].substring(3).trim() : logItem[4].trim(),
+          '',
+          logItem[3],
+        ]
+      else return []
+    })
+    data = data.filter((log) => log.length === 4)
     break
   }
 
@@ -623,7 +647,9 @@ class AdvancedModule extends React.Component {
         case 'UTF-8':
           fileContent = fileContentBuffer.toString()
           break
-        case 'GB2312', 'GB18030', 'GBK':
+        case 'GB2312':
+        case 'GB18030':
+        case 'GBK':
           fileContent = iconv.decode(fileContentBuffer, 'GBK')
           break
         case 'SHIFT_JIS':
@@ -678,7 +704,7 @@ class AdvancedModule extends React.Component {
         const newLength = newData.length
         fs.emptyDirSync(path.join(DATA_PATH, 'akashic-records', "tmp"))
         let saveData = ''
-        for (const item in newData) {
+        for (const item of newData) {
           saveData = `${saveData}${item.join(',')}\n`
         }
         fs.writeFile(path.join(DATA_PATH, 'akashic-records', "tmp", "data"), saveData)

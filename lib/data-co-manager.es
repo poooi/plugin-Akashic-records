@@ -58,6 +58,7 @@ class DataCoManager {
   }
 
   saveLog(type, log) {
+    log = log.map(item => typeof item == 'string' ? item.trim() : item)
     fs.ensureDirSync(path.join(DATA_PATH, 'akashic-records', this.nickNameId.toString(), type))
     if (type === 'attack') {
       const date = new Date(log[0])
