@@ -73,7 +73,7 @@ const filterWNindex = (logs, keyword) => {
         if (i === 0) {
           searchText = dateToString(new Date(searchText))
         } else if (!regFlag){
-          searchText = "#{searchText}".toLowerCase().trim()
+          searchText = `${searchText}`.toLowerCase().trim()
         }
         return regFlag ? keyword.test(searchText)
                         : searchText.indexOf(keyword.toLowerCase().trim()) >= 0
