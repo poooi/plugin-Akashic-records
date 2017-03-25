@@ -284,7 +284,7 @@ class AkashicResourceChart extends React.Component {
         {
           name: __('Fuel'),
           type:"line",
-          yaxisIndex: 0,
+          yAxisIndex: 0,
           itemStyle: {
             normal: { color: '#1b9d19' },
           },
@@ -295,7 +295,7 @@ class AkashicResourceChart extends React.Component {
         {
           name:__('Ammo'),
           type:"line",
-          yaxisIndex: 0,
+          yAxisIndex: 0,
           itemStyle: {
             normal: { color: '#663910' },
           },
@@ -306,7 +306,7 @@ class AkashicResourceChart extends React.Component {
         {
           name:__('Steel'),
           type:"line",
-          yaxisIndex: 0,
+          yAxisIndex: 0,
           itemStyle: {
             normal: { color: '#919191' },
           },
@@ -317,7 +317,7 @@ class AkashicResourceChart extends React.Component {
         {
           name:__('Bauxite'),
           type:"line",
-          yaxisIndex: 0,
+          yAxisIndex: 0,
           itemStyle: {
             normal: { color: '#b37c50' },
           },
@@ -328,7 +328,7 @@ class AkashicResourceChart extends React.Component {
         {
           name:__('Fast Build Item'),
           type:"line",
-          yaxisIndex: 1,
+          yAxisIndex: 1,
           itemStyle: {
             normal: { color: '#fb8a00' },
           },
@@ -339,7 +339,7 @@ class AkashicResourceChart extends React.Component {
         {
           name:__('Instant Repair Item'),
           type:"line",
-          yaxisIndex: 1,
+          yAxisIndex: 1,
           itemStyle: {
             normal: { color: '#32eca1' },
           },
@@ -350,7 +350,7 @@ class AkashicResourceChart extends React.Component {
         {
           name:__('Development Material'),
           type:"line",
-          yaxisIndex: 1,
+          yAxisIndex: 1,
           itemStyle: {
             normal: { color: '#419ba9' },
           },
@@ -361,7 +361,7 @@ class AkashicResourceChart extends React.Component {
         {
           name:__('Improvement Materials'),
           type:"line",
-          yaxisIndex: 1,
+          yAxisIndex: 1,
           itemStyle: {
             normal: { color: '#aaaaaa' },
           },
