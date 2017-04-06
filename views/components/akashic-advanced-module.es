@@ -42,7 +42,7 @@ function duplicateRemoval(arr) {
 function duplicateResourceRemoval(arr) {
   arr.sort(dateCmp)
   let lastTmp = 0
-  arr.filter((log) => {
+  return arr.filter((log) => {
     const tmpDate = new Date(log[0])
     const tmp = `${tmpDate.getFullYear()}/${tmpDate.getMonth()}/${tmpDate.getDate()}/${tmpDate.getHours()}`
     if (tmp !== lastTmp) {
