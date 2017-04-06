@@ -164,7 +164,7 @@ class AkashicResourceChart extends React.Component {
             return {
               show: true,
               ...opt,
-              onclick() {
+              onclick: () => {
                 this.showAsDay = !this.showAsDay
                 this.showData = this.dataFilter(this.props.data)
                 this.dataLength = this.showData.length
@@ -192,7 +192,7 @@ class AkashicResourceChart extends React.Component {
             const showType = {
               show: true,
               ...opt,
-              onclick() {
+              onclick: () => {
                 this.showAllSymbol = !this.showAllSymbol
                 this.resourceChart.setOption(this.getEChartsOption(), true)
                 config.set("plugin.Akashic.resource.chart.showAllSymbol", this.showAllSymbol)
@@ -213,7 +213,7 @@ class AkashicResourceChart extends React.Component {
             return {
               show: true,
               ...opt,
-              onclick() {
+              onclick: () => {
                 this.sleepMode = !sleepMode
                 this.resourceChart.setTheme(this.sleepMode ? dark : macarons)
                 this.resourceChart.setOption(this.getEChartsOption(), true)
