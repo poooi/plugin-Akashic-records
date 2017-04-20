@@ -33,6 +33,15 @@ const statisticsRule = (state, action) => {
   }
 }
 
+function deleteIndex(old, del) {
+  if (old > del + 2) {
+    return old - 1;
+  } else if (old === del + 2) {
+    return 1;
+  }
+  return old;
+}
+
 export default (state, action) => {
   if (state == null) {
     state = [statisticsRule(undefined, {type: 'ADD_STATISTICS_RULE'})]
@@ -56,26 +65,12 @@ export default (state, action) => {
     ]
   case 'DELETE_SEARCH_RULE':
     return state.map((item) => {
-      if (item.numeratorType > action.index + 2) {
-        return {
-          ...item,
-          numeratorType: item.numeratorType - 1,
-        }
-      } else if (item.numeratorType === action.index + 2) {
-        return {
-          ...item,
-          numeratorType: 1,
-        }
-      } else if (item.denominatorType > action.index + 2) {
-        return {
-          ...item,
-          denominatorType: item.denominatorType - 1,
-        }
-      } else if (item.denominatorType === action.index + 2) {
-        return {
-          ...item,
-          denominatorType: 1,
-        }
+      let { numeratorType, denominatorType } = item
+      const { index } = action
+      return {
+        ...item,
+        numeratorType: deleteIndex(numeratorType, index),
+        denominatorType: deleteIndex(denominatorType, index),
       }
     })
   default:
