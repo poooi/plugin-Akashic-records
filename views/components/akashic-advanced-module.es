@@ -240,16 +240,44 @@ function resolveFile(fileContent, tableTabEn = oriTableTab) {
       if (logItem.length !== 31)
         return []
       const retData = [(new Date(logItem[0].replace(/-/g, "/"))).getTime()]
-      const tmpArray = logItem[2].match(/:\d+(-\d+)?/g)
-      retData.push(`${logItem[1]}(${tmpArray[0].substring(1)})`)
-      retData.push(`${tmpArray[1].substring(1)}(${logItem[3] === 'ボス' ? 'Boss点' : '道中'})`)
-      retData.push('')
-      retData.push(logItem[3], logItem[4], logItem[6])
-      retData.push('')
-      retData.push(logItem[7], '', '', '')
+      if (!isNaN(logItem[2])) {
+        retData.push(logItem[1], logItem[2])
+        retData.push('')
+        retData.push(logItem[3], logItem[4], logItem[6])
+        retData.push('')
+        retData.push(logItem[7], '', '', '')
+      } else {
+        const tmpArray = logItem[2].match(/:\d+(-\d+)?/g)
+        retData.push(`${logItem[1]}(${tmpArray[0].substring(1)})`)
+        retData.push(`${tmpArray[1].substring(1)}(${logItem[2].indexOf('ボス') > -1 ? 'Boss点' : '道中'})`)
+        retData.push('')
+        retData.push(logItem[3], logItem[4], logItem[6])
+        retData.push('')
+        retData.push(logItem[7], '', '', '')
+      }
       return retData
     })
     data = data.filter((log) => log.length ===12)
+    break
+  }
+  case "日付,結果,遠征,燃料,弾薬,鋼材,ボーキ": {
+    logType = CONST.typeList.mission
+    data = logs.slice(1).map((logItem) => {
+      logItem = logItem.split(',')
+      if (logItem.length !== 7)
+        return []
+      return [
+        (new Date(logItem[0].replace(/-/g, "/"))).getTime(),
+        logItem[2],
+        logItem[1],
+        logItem[3],
+        logItem[4],
+        logItem[5],
+        logItem[6],
+        '', '', '', '',
+      ]
+    })
+    data = data.filter((log) => log.length ===11)
     break
   }
   case "No.,日付,結果,遠征,燃料,弾薬,鋼材,ボーキ,アイテム1,個数,アイテム2,個数": {
