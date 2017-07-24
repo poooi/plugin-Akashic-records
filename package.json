@@ -6,7 +6,8 @@
   "scripts": {
     "win-publish": "npm publish",
     "win-prerelease": "npm publish --tag beta",
-    "win-build": "cjsx -cb . && del /s \"*.cjsx\"",
+    "prepack": "poi-util-transpile --sm --replace",
+    "postpublish": "npm run reset",
     "reset": "git checkout . && git clean -f",
     "compile": "cjsx -cb .",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -39,6 +40,7 @@
     "eslint": "^3.5.0",
     "eslint-plugin-import": "^1.14.0",
     "eslint-plugin-react": "^6.2.0",
+    "poi-util-transpile": "^7.6.1",
     "redux-devtools": "^3.1.1"
   },
   "poiPlugin": {
@@ -48,7 +50,8 @@
     "priority": 10,
     "apiVer": {
       "6.99.99": "5.0.1",
-      "7.3.0": "5.0.6"
+      "7.3.0": "5.0.6",
+      "7.5.99": "6.0.5"
     }
   }
 }
