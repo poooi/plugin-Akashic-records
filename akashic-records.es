@@ -1,8 +1,8 @@
 const { ROOT } = window
-require(`${ROOT}/views/env`)
-require(`${ROOT}/views/battle-env`)
+import 'views/env'
+import 'views/battle-env'
 
-const { config, $ } = window
+const { $ } = window
 
 import path from 'path-extra'
 
@@ -18,20 +18,6 @@ const i18n = new (require('i18n-2'))({
 i18n.setLocale(window.language)
 window.__ = i18n.__.bind(i18n)
 window.translate = i18n.translate.bind(i18n)
-
-function setTheme(theme) {
-  window.theme = theme
-  const cssDom = $('#bootstrap-css')
-  if (cssDom != null) {
-    cssDom.setAttribute('href',
-      theme === '__default__'
-      ? "file://" + require.resolve('bootstrap/dist/css/bootstrap.css')
-      : `file://${ROOT}/assets/themes/${theme}/css/${theme}.css`)
-  }
-}
-setTheme(config.get('poi.theme', '__default__'))
-
-window.addEventListener('theme.change', (e) => setTheme(e.detail.theme))
 
 if (window.ipc == null) {
   try {
