@@ -137,6 +137,9 @@ class AkashicResourceChart extends React.Component {
           __('Development Material'),
           __('Improvement Materials'),
         ],
+        textStyle: this.sleepMode ? {
+          color: '#fff'
+        } : {},
       },
       toolbox: {
         show: true,
