@@ -214,7 +214,7 @@ class AkashicResourceChart extends React.Component {
               show: true,
               ...opt,
               onclick: () => {
-                this.sleepMode = !sleepMode
+                this.sleepMode = !this.sleepMode
                 this.resourceChart.setTheme(this.sleepMode ? dark : macarons)
                 this.resourceChart.setOption(this.getEChartsOption(), true)
                 config.set("plugin.Akashic.resource.chart.sleepMode", this.sleepMode)
