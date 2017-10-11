@@ -1,13 +1,16 @@
+function pad(str, max = 2) {
+  let ret = `${str}`
+  while (ret.length < max) {
+    ret = `0${ret}`
+  }
+  return ret
+}
+
 export function dateToString(date) {
-  const month = date.getMonth() < 9 ?
-    `0${date.getMonth() + 1}` : `${date.getMonth() + 1}`
-  const day = date.getDate() < 9 ?
-    `0${date.getDate()}` : `${date.getDate()}`
-  const hour = date.getHours() < 9 ?
-    `0${date.getHours()}` : `${date.getHours()}`
-  const minute = date.getMinutes() < 9 ?
-    `0${date.getMinutes()}` : `${date.getMinutes()}`
-  const second = date.getSeconds() < 9 ?
-    `0${date.getSeconds()}` : `${date.getSeconds()}`
+  const month = pad(date.getMonth() + 1)
+  const day = pad(date.getDate())
+  const hour = pad(date.getHours())
+  const minute = pad(date.getMinutes())
+  const second = pad(date.getSeconds())
   return `${date.getFullYear()}/${month}/${day} ${hour}:${minute}:${second}`
 }
