@@ -399,7 +399,7 @@ class AkashicResourceChart extends React.Component {
     if (nextProps.data.length > this.wholeDataLength) {
       let dateString = ''
       if (this.wholeDataLength > 0) {
-        dateString = toDateString(nextProps.data[nextProps.data && -this.wholeDataLength][0])
+        dateString = toDateString(nextProps.data[nextProps.data.length - this.wholeDataLength][0])
       }
       if (this.resourceChart.getSeries() != null) {
         if (!this.showAsDay) {
