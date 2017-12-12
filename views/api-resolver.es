@@ -86,15 +86,17 @@ class APIResolver {
     case '/kcsapi/api_req_kousyou/destroyship': {
       const _ships = window._ships
       const $shiptypes = window.$shipTypes
-      const dataItem = []
-      dataItem.push((new Date()).getTime(), '解体')
-      const shipId = body.api_ship_id
-      dataItem.push(
-        $shiptypes[_ships[shipId].api_stype].api_name,
-        `${_ships[shipId].api_name}(Lv.${_ships[shipId].api_lv})`
-      )
-      dataCoManager.saveLog('retirement', dataItem)
-      this.store.dispatch(addLog(dataItem, 'retirement'))
+      let dateTime = new Date().getTime()
+      for (const shipId of body.api_ship_id.split(',')) {
+        const dataItem = [
+          dateTime++,
+          '解体',
+          $shiptypes[_ships[shipId].api_stype].api_name,
+          `${_ships[shipId].api_name}(Lv.${_ships[shipId].api_lv})`
+        ]
+        dataCoManager.saveLog('retirement', dataItem)
+        this.store.dispatch(addLog(dataItem, 'retirement'))
+      }
       break
     }
 
