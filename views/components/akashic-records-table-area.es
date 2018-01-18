@@ -9,11 +9,12 @@ import {
   Table,
   OverlayTrigger,
   Popover,
-  Pagination,
 } from 'react-bootstrap'
 import { findDOMNode } from 'react-dom'
 import FontAwesome from 'react-fontawesome'
 import { dateToString } from '../../lib/utils'
+
+import Pagination from './pagination'
 
 const { __, ipc } = window
 const {openExternal} = require('electron').shell
@@ -76,8 +77,8 @@ class AkashicRecordsTableArea extends React.Component {
     this.props.onFilterKeySet(index - 1,  findDOMNode(this.input[`input${index}`]).value)
   }
 
-  handlePaginationSelect = (key, selectedEvent) => {
-    this.props.onActivePageSet(selectedEvent.eventKey || key)
+  handlePaginationSelect = (idx) => {
+    this.props.onActivePageSet(idx)
   }
 
   // # componentDidUpdate: ()=>
@@ -176,15 +177,9 @@ class AkashicRecordsTableArea extends React.Component {
           <Row>
             <Col xs={12}>
               <Pagination className='akashic-table-pagination'
-                prev={false}
-                next={false}
-                first={true}
-                last={true}
-                ellipsis={true}
-                items={this.props.paginationItems}
-                maxButtons={Math.min(this.props.paginationItems, 5)}
-                activePage={this.props.activePage}
-                onSelect={this.handlePaginationSelect}
+                max={this.props.paginationItems}
+                curr={this.props.activePage}
+                handlePaginationSelect={this.handlePaginationSelect}
               />
             </Col>
           </Row>

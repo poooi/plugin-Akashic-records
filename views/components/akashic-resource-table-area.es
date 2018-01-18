@@ -5,7 +5,6 @@ import {
   Grid,
   Row,
   Table,
-  Pagination,
   ButtonGroup,
   DropdownButton,
   MenuItem,
@@ -17,6 +16,8 @@ const { __, config } = window
 import { dateToString } from '../../lib/utils'
 // # import i18n from '../node_modules/i18n'
 // # {__} = i18n
+
+import Pagination from './pagination'
 
 const AkashicResourceTableTbodyItem = (props) => (
   <tr>
@@ -161,15 +162,9 @@ class AkashicResourceTableArea extends React.Component {
           <Row>
             <Col xs={12}>
               <Pagination className='akashic-table-pagination'
-                prev={false}
-                next={false}
-                first={true}
-                last={true}
-                ellipsis={true}
-                items={this.props.paginationItems}
-                maxButtons={Math.min(this.props.paginationItems, 5)}
-                activePage={this.props.activePage}
-                onSelect={this.handlePaginationSelect}
+                max={this.props.paginationItems}
+                curr={this.props.activePage}
+                handlePaginationSelect={this.handlePaginationSelect}
               />
             </Col>
           </Row>

@@ -56,6 +56,7 @@ module.exports = {
       'path-extra',
       'fs-extra',
       'cson',
+      'lodash',
     ],
   },
 }
