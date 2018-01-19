@@ -73,6 +73,11 @@ class AkashicRecordsArea extends React.Component {
       selectedKey: selectedKey,
     })
   }
+
+  componentDidCatch(error, info) {
+    console.log(error, info)
+  }
+
   render() {
     return (
       <div>
