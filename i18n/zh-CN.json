@@ -97,5 +97,8 @@
   "Your POI is out of date! You may need to visit http://0u0.moe/poi to get POI's latest release.": "当前 poi 版本过低，不支持查看战斗详情功能，请至 htp://0u0.moe/poi 下载最新版本。",
   "In order to find the detailed battle log, you need to download the latest battle-detail plugin and enable it.": "欲查看战斗详情，请先下载并启用「战斗详情」插件。",
   "Please make sure you are using the lastest version of poi, and that you did not interrupt the installation process of the plugin, so that it is correctly installed." : "请确保使用的 POI 是最新版本，以及安装插件时未中断，插件已完整安装！",
-  "If errors still happen, please uninstall the plugin and try to install again.": "若仍然黑屏，请尝试卸载插件，重新安装。"
+  "If errors still happen, please uninstall the plugin and try to install again.": "若仍然黑屏，请尝试卸载插件，重新安装。",
+  "Copy to clipboard": "复制到剪贴板",
+  "A 🐢 found": "插件变成了🐢",
+  "Something went wrong in the plugin, you may report this to the poi dev team, with the code below.": "插件当中发生了某些异常，你可以将它汇报给 poi 开发团队，并附上如下代码。"
 }

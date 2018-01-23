@@ -19,6 +19,8 @@ import AkashicLog from './akashic-records-log'
 import AkashicResourceLog from './akashic-resource-log'
 import AkashicAdvancedModule from './containers/advanced-module'
 
+import ErrorBoundary from './error-boundary'
+
 if ($('#font-awesome')) {
   $('#font-awesome').setAttribute('href', require.resolve('font-awesome/css/font-awesome.css'))
 }
@@ -85,13 +87,27 @@ class AkashicRecordsArea extends React.Component {
           <Label bsStyle="danger">{this.state.warning}</Label>
         </div>
         <Tabs id="" activeKey={this.state.selectedKey} animation={false} onSelect={this.handleSelectTab}>
-          <Tab id="0" eventKey={0} title={__("Sortie")} ><AkashicLog contentType={CONST.typeList.attack}/></Tab>
-          <Tab id="1" eventKey={1} title={__("Expedition")} ><AkashicLog contentType={CONST.typeList.mission}/></Tab>
-          <Tab id="2" eventKey={2} title={__("Construction")} ><AkashicLog contentType={CONST.typeList.createShip}/></Tab>
-          <Tab id="3" eventKey={3} title={__("Development")} ><AkashicLog contentType={CONST.typeList.createItem}/></Tab>
-          <Tab id="4" eventKey={4} title={__("Retirement")} ><AkashicLog contentType={CONST.typeList.retirement}/></Tab>
-          <Tab id="5" eventKey={5} title={__("Resource")} ><AkashicResourceLog mapShowFlag={this.state.mapShowFlag}/></Tab>
-          <Tab id="6" eventKey={6} title={__("Others")} ><AkashicAdvancedModule /></Tab>
+          <Tab id="0" eventKey={0} title={__("Sortie")} >
+            <ErrorBoundary component={AkashicLog} contentType={CONST.typeList.attack}/>
+          </Tab>
+          <Tab id="1" eventKey={1} title={__("Expedition")} >
+            <ErrorBoundary component={AkashicLog} contentType={CONST.typeList.mission}/>
+          </Tab>
+          <Tab id="2" eventKey={2} title={__("Construction")} >
+            <ErrorBoundary component={AkashicLog} contentType={CONST.typeList.createShip}/>
+          </Tab>
+          <Tab id="3" eventKey={3} title={__("Development")} >
+            <ErrorBoundary component={AkashicLog} contentType={CONST.typeList.createItem}/>
+          </Tab>
+          <Tab id="4" eventKey={4} title={__("Retirement")} >
+            <ErrorBoundary component={AkashicLog} contentType={CONST.typeList.retirement}/>
+          </Tab>
+          <Tab id="5" eventKey={5} title={__("Resource")} >
+            <ErrorBoundary component={AkashicResourceLog} mapShowFlag={this.state.mapShowFlag}/>
+          </Tab>
+          <Tab id="6" eventKey={6} title={__("Others")} >
+            <ErrorBoundary component={AkashicAdvancedModule} />
+          </Tab>
         </Tabs>
       </div>
     )
