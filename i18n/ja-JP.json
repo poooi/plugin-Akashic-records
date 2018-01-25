@@ -97,5 +97,8 @@
   "Your POI is out of date! You may need to visit http://0u0.moe/poi to get POI's latest release.": "Your POI is out of date! You may need to visit http://0u0.moe/poi to get POI's latest release.",
   "In order to find the detailed battle log, you need to download the latest battle-detail plugin and enable it.": "In order to find the detailed battle log, you need to download the latest battle-detail plugin and enable it.",
   "Please make sure you are using the lastest version of poi, and that you did not interrupt the installation process of the plugin, so that it is correctly installed." : "poi は最新版であること、そしてプラグインを正しくインストールされていることを確認してください。",
-  "If errors still happen, please uninstall the plugin and try to install again.": "それでもエラーが出る場合、プラグインを削除して、再インストールしてください。"
+  "If errors still happen, please uninstall the plugin and try to install again.": "それでもエラーが出る場合、プラグインを削除して、再インストールしてください。",
+  "Copy to clipboard": "クリップボードえコピー",
+  "A 🐢 found": "このプラグインは　🐢　になりました",
+  "Something went wrong in the plugin, you may report this to the poi dev team, with the code below.": "プラグイン不具合が発生しました。poi の開発チームに下記のコードを報告してください。"
 }

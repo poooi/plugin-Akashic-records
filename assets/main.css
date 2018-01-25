@@ -174,3 +174,11 @@ akashic-records .akashic-records-statistics .btn {
   border-radius: 3px;
   text-align: center;
 }
+
+.error-message {
+  padding: 1em;
+}
+
+.error-message textarea {
+  height: 20em;
+}
