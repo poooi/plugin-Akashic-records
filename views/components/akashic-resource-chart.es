@@ -56,11 +56,17 @@ class AkashicResourceChart extends React.Component {
     this.showAllSymbol = config.get("plugin.Akashic.resource.chart.showAllSymbol", false)
     this.sleepMode = config.get("plugin.Akashic.resource.chart.sleepMode", true)
     window.onresize = () => {
-      document.getElementById('ECharts').style.height = `${window.remote.getCurrentWindow().getBounds().height - 150}px`
-      if (this.resourceChart !== 0) {
-        this.resourceChart.resize()
+      try {
+        document.getElementById('ECharts').style.height = `${window.remote.getCurrentWindow().getBounds().height - 150}px`
+        if (this.resourceChart !== 0) {
+          this.resourceChart.resize()
+        }
+        return true
+      } catch(err) {
+        console.log(err)
+      } finally {
+        return true
       }
-      return true
     }
   }
 
@@ -406,7 +412,7 @@ class AkashicResourceChart extends React.Component {
           for (let i = nextProps.data.length - this.wholeDataLength - 1; i >= 0; --i) {
             this.showData.push(nextProps.data[i])
             const dataitem = []
-            for (const [j, item] of nextProps.data[i].entries()) {
+            for (const [j, item] of nextProps.data[i]) {
               if (j === 0) continue
               dataitem.push([j - 1, [nextProps.data[i][0], item, this.showData.length - 1], false, true, ''])
             }
