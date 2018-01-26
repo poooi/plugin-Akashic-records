@@ -411,11 +411,13 @@ class AkashicResourceChart extends React.Component {
         if (!this.showAsDay) {
           for (let i = nextProps.data.length - this.wholeDataLength - 1; i >= 0; --i) {
             this.showData.push(nextProps.data[i])
-            const dataitem = []
-            for (const [j, item] of nextProps.data[i]) {
-              if (j === 0) continue
-              dataitem.push([j - 1, [nextProps.data[i][0], item, this.showData.length - 1], false, true, ''])
-            }
+            const dataitem = nextProps.data[i].slice(1).map((item, idx) => ([
+              idx,
+              [nextProps.data[i][0], item, this.showData.length - 1],
+              false,
+              true,
+              '',
+            ]))
             this.resourceChart.addData(dataitem)
           }
         } else {
@@ -424,11 +426,13 @@ class AkashicResourceChart extends React.Component {
             if (dateString !== tmp) {
               dateString = tmp
               this.showData.push(nextProps.data[i])
-              const dataitem = []
-              for (const [j, item] of nextProps.data[i]) {
-                if (j === 0) continue
-                dataitem.push([j - 1, [nextProps.data[i][0], item, this.showData.length - 1], false, true, ''])
-              }
+              const dataitem = nextProps.data[i].slice(1).map((item, idx) => ([
+                idx,
+                [nextProps.data[i][0], item, this.showData.length - 1],
+                false,
+                true,
+                '',
+              ]))
               this.resourceChart.addData(dataitem)
             }
           }
