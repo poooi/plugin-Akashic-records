@@ -355,7 +355,7 @@ class APIResolver {
     }
 
     let dataItem = [time || this.nowDate]
-    const selectedRank = ['', ' 丙', '  乙', ' 甲'][this.mapLv[map] || 0] || ''
+    const selectedRank = ['', ' 丁', ' 丙', '  乙', ' 甲'][this.mapLv[map] || 0] || ''
     dataItem.push(
       `${quest}(${Math.floor(map / 10)}-${map % 10}${selectedRank})`,
       `${mapCell}(${boss ? 'Boss点' : '道中'})`,
