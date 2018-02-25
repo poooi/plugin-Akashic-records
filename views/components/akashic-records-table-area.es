@@ -44,6 +44,27 @@ function showBattleDetail(timestamp) {
   }
 }
 
+const parseMapInfo = (mapStr) => {
+  if (!mapStr.includes('|'))
+    return mapStr
+
+  const match = mapStr.match(/\((\d+)-\d+ /)
+  if (!match)
+    return mapStr
+
+  const eventId = parseInt(match[1], 10)
+  if (`${eventId}` !== match[1])
+    return mapStr
+
+  const parts =mapStr.split('|')
+  const rank = parseInt(parts[1], 10) || 0
+  const rankText = (eventId < 41)
+    ? ['', '丙', '乙', '甲'][rank]
+    : ['', '丁', '丙', '乙', '甲'][rank]
+
+  return parts[0].trim().replace('%rank', rankText)
+}
+
 const AkashicRecordsTableTbodyItem = (props) => (
   <tr>
     <td>
@@ -57,7 +78,9 @@ const AkashicRecordsTableTbodyItem = (props) => (
       props.data.map((item, index) => {
         if (index === 0 && props.rowChooseChecked[1]) {
           return (<td key={index}>{dateToString(new Date(item))}</td>)
-        } else if (props.contentType === 'attack' && props.tableTab[index+1] === '大破舰') {
+        } else if (props.contentType === 'attack' && index === 1) {
+          return (props.rowChooseChecked[2]) ? (<td key={index}>{parseMapInfo(item)}</td>) : null
+        } else if (props.contentType === 'attack' && index === 7) {
           return (props.rowChooseChecked[8]) ? (<td key={index} className="enable-auto-newline">{item}</td>) : null
         } else {
           return (props.rowChooseChecked[index+1]) ? (<td key={index}>{item}</td>) : null
