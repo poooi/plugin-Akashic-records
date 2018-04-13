@@ -7,6 +7,7 @@ import {
 } from 'react-bootstrap'
 import { findDOMNode } from 'react-dom'
 const { config, ROOT } = window
+import { WindowEnv } from 'views/components/etc/window-env'
 
 const { __ } = window.i18n['poi-plugin-akashic-records']
 
@@ -46,28 +47,24 @@ class AkashicResourceChart extends React.Component {
       rowChooseChecked: [true, true, true, true, true, true, true, true, true, true, true, true,
                         true, true],
     }
-    this.showAsDay = true
-    this.showAllSymbol = false
-    this.sleepMode = false
+    this.showAsDay = config.get("plugin.Akashic.resource.chart.showAsDay", true)
+    this.showAllSymbol = config.get("plugin.Akashic.resource.chart.showAllSymbol", false)
+    this.sleepMode = config.get("plugin.Akashic.resource.chart.sleepMode", true)
     this.resourceChart = 0
     this.wholeDataLength = 0
     this.dataLength = 0
     this.showData = []
-  }
-  componentWillMount() {
-    this.showAsDay = config.get("plugin.Akashic.resource.chart.showAsDay", true)
-    this.showAllSymbol = config.get("plugin.Akashic.resource.chart.showAllSymbol", false)
-    this.sleepMode = config.get("plugin.Akashic.resource.chart.sleepMode", true)
-    window.onresize = () => {
+
+    props.window.onresize = () => {
       try {
-        document.getElementById('ECharts').style.height = `${window.remote.getCurrentWindow().getBounds().height - 150}px`
+        const { window } = props
+        window.document.getElementById('ECharts').style.height = `${window.innerHeight - 150}px`
         if (this.resourceChart !== 0) {
           this.resourceChart.resize()
         }
         return true
       } catch(err) {
         console.log(err)
-      } finally {
         return true
       }
     }
@@ -467,4 +464,8 @@ class AkashicResourceChart extends React.Component {
   }
 }
 
-export default AkashicResourceChart
+export default props => (
+  <WindowEnv.Consumer>
+    {({ window }) => <AkashicResourceChart window={window} {...props} />}
+  </WindowEnv.Consumer>
+)
