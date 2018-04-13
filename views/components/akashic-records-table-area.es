@@ -31,17 +31,30 @@ function showBattleDetail(timestamp) {
       throw `${__("Your POI is out of date! You may need to visit http://0u0.moe/poi to get POI's latest release.")}`
     }
 
-    const battleDetail = ipc.access('BattleDetail')
-    if (battleDetail == null || battleDetail.showBattleWithTimestamp == null) {
+    const battleDetailPlugin = window.getStore('plugins').find(p => p.id === 'poi-plugin-battle-detail')
+    if (!battleDetailPlugin || !battleDetailPlugin.enabled) {
       throw `${__("In order to find the detailed battle log, you need to download the latest battle-detail plugin and enable it.")}`
     }
 
     timestamp = (new Date(timestamp)).getTime()
-    battleDetail.showBattleWithTimestamp(timestamp, (message) => {
-      if (message) {
-        window.toggleModal("Warning", `${__('Battle Detail')}: ${message}`)
-      }
-    })
+
+    const battleDetail = ipc.access('BattleDetail')
+    if (battleDetail == null || battleDetail.showBattleWithTimestamp == null) {
+      ipc.register("BattleDetail", {
+        timestamp,
+      })
+    } else {
+      battleDetail.showBattleWithTimestamp(timestamp, (message) => {
+        if (message) {
+          window.toggleModal("Warning", `${__('Battle Detail')}: ${message}`)
+        }
+      })
+    }
+
+    const mainWindow = ipc.access('MainWindow')
+    if (mainWindow && mainWindow.ipcFocusPlugin) {
+      mainWindow.ipcFocusPlugin('poi-plugin-battle-detail')
+    }
   } catch (e) {
     window.toggleModal('Warning', e)
   }
