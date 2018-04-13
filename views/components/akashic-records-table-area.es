@@ -16,7 +16,10 @@ import { dateToString } from '../../lib/utils'
 
 import Pagination from './pagination'
 
-const { __, ipc } = window
+const { ipc } = window
+
+const { __ } = window.i18n['poi-plugin-akashic-records']
+
 const {openExternal} = require('electron').shell
 
 // import i18n from '../node_modules/i18n'

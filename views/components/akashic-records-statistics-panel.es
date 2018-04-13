@@ -13,7 +13,12 @@ import { findDOMNode } from 'react-dom'
 import FontAwesome from 'react-fontawesome'
 import Divider from '../divider'
 
-const { config, __, CONST } = window
+import CONST from '../../lib/constant'
+
+const { config } = window
+
+const { __ } = window.i18n['poi-plugin-akashic-records']
+
 const { openExternal } = require('electron').shell
 
 // function boundActivePageNum(activePage, logLength, showAmount) {

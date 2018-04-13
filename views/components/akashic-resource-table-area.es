@@ -11,7 +11,9 @@ import {
 } from 'react-bootstrap'
 import { findDOMNode } from 'react-dom'
 
-const { __, config } = window
+const { config } = window
+
+const { __ } = window.i18n['poi-plugin-akashic-records']
 
 import { dateToString } from '../../lib/utils'
 // # import i18n from '../node_modules/i18n'

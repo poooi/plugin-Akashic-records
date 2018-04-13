@@ -4,7 +4,9 @@ import fs from 'fs-extra'
 import glob from 'glob'
 import path from 'path-extra'
 
-const { APPDATA_PATH, CONST, config } = window
+import CONST from '../lib/constant'
+
+const { APPDATA_PATH, config } = window
 
 const DATA_PATH = config.get("plugin.Akashic.dataPath", APPDATA_PATH)
 

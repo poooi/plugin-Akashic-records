@@ -6,7 +6,10 @@ import {
   Col,
 } from 'react-bootstrap'
 import { findDOMNode } from 'react-dom'
-const { config, ROOT, __ } = window
+const { config, ROOT } = window
+
+const { __ } = window.i18n['poi-plugin-akashic-records']
+
 const {error} = require(path.join(ROOT, 'lib/utils'))
 
 // #import i18n from '../node_modules/i18n'
@@ -144,7 +147,7 @@ class AkashicResourceChart extends React.Component {
           __('Improvement Materials'),
         ],
         textStyle: this.sleepMode ? {
-          color: '#fff'
+          color: '#fff',
         } : {},
       },
       toolbox: {
@@ -165,10 +168,10 @@ class AkashicResourceChart extends React.Component {
             const opt = showAsDay
               ? {
                 title: __("Show by %s", __("Day")),
-                icon: './assets/echarts-day.png',
+                icon: path.join(__dirname, '../../assets/echarts-day.png'),
               } : {
                 title:  __("Show by %s", __("Hour")),
-                icon: './assets/echarts-hour.png',
+                icon: path.join(__dirname, '../../assets/echarts-hour.png'),
               }
             return {
               show: true,
@@ -193,10 +196,10 @@ class AkashicResourceChart extends React.Component {
             const opt = showAllSymbol
               ? {
                 title: __("Show node"),
-                icon: `./assets/echarts-with-node${suffix}.png`,
+                icon: path.join(__dirname, `../../assets/echarts-with-node${suffix}.png`),
               } : {
                 title: __("Hide node"),
-                icon: `./assets/echarts-no-node${suffix}.png`,
+                icon: path.join(__dirname, `../../assets/echarts-no-node${suffix}.png`),
               }
             const showType = {
               show: true,
@@ -214,10 +217,10 @@ class AkashicResourceChart extends React.Component {
           themeMode: ((sleepMode) => {
             const opt = sleepMode ? {
               title: __("Sleep mode"),
-              icon: './assets/echarts-moon.png',
+              icon: path.join(__dirname, '../../assets/echarts-moon.png'),
             } : {
               title: __("Light mode"),
-              icon: './assets/echarts-sun.png',
+              icon: path.join(__dirname, '../../assets/echarts-sun.png'),
             }
             return {
               show: true,

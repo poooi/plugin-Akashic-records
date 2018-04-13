@@ -7,7 +7,21 @@ const { config, APPDATA_PATH } = window
 
 const { dialog } = remote.require('electron')
 
-const __ = window.i18n['poi-plugin-akashic-records'].__.bind(window.i18n['poi-plugin-akashic-records'])
+const { __ } = window.i18n['poi-plugin-akashic-records']
+
+export const windowMode = true
+
+export { reactClass } from './views'
+
+import { apiResolver } from './views/api-resolver'
+
+export function pluginDidLoad() {
+  apiResolver.start()
+}
+
+export function pluginWillUnload() {
+  apiResolver.stop()
+}
 
 // # Parameters:
 // #   label       String         The title to display
@@ -82,15 +96,6 @@ class FolderPickerConfig extends Component {
   }
 }
 
-export const windowOptions = {
-  x: config.get('poi.window.x', 0),
-  y: config.get('poi.window.y', 0),
-  width: 820,
-  height: 650,
-}
-
-export const windowURL = `file://${__dirname}/index.html`
-export const useEnv = true
 export const settingsClass = () => (
   <FolderPickerConfig
       label={__('Data Folder')}

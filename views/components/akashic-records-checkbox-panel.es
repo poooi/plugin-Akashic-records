@@ -13,7 +13,9 @@ import {
 import { findDOMNode } from 'react-dom'
 import Divider from '../divider'
 
-const { config, __ } = window
+const { config } = window
+
+const { __ } = window.i18n['poi-plugin-akashic-records']
 
 class AkashicRecordsCheckboxPanel extends React.Component {
   constructor(props) {

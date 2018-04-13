@@ -1,7 +1,9 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import { Modal, Button } from 'react-bootstrap'
-const { $, __ } = window
+const { $ } = window
+
+const { __ } = window.i18n['poi-plugin-akashic-records']
 
 // Notification modal
 class ModalTrigger extends React.Component {

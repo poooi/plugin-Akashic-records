@@ -1,7 +1,10 @@
-const {CONST, config} = window
+const { config } = window
+import CONST from '../lib/constant'
 import { initializeLogs, addLog } from './actions'
 
 import dataCoManager from '../lib/data-co-manager'
+
+import { store } from './create-store'
 
 const judgeIfDemage = (nowHp, beforeHp) => {
   return nowHp.some((hp, i) => hp < beforeHp[i])
@@ -92,7 +95,7 @@ class APIResolver {
           dateTime++,
           '解体',
           $shiptypes[_ships[shipId].api_stype].api_name,
-          `${_ships[shipId].api_name}(Lv.${_ships[shipId].api_lv})`
+          `${_ships[shipId].api_name}(Lv.${_ships[shipId].api_lv})`,
         ]
         dataCoManager.saveLog('retirement', dataItem)
         this.store.dispatch(addLog(dataItem, 'retirement'))
@@ -409,4 +412,5 @@ class APIResolver {
   }
 }
 
+export const apiResolver = new APIResolver(store)
 export default APIResolver

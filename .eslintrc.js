@@ -57,6 +57,7 @@ module.exports = {
       'fs-extra',
       'cson',
       'lodash',
+      'redux',
     ],
   },
 }

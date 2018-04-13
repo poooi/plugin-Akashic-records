@@ -1,41 +1,44 @@
-*, body, h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
-  font-family: "Ubuntu", "Helvetica Neue", "Helvetica", "Arial", "Heiti SC", "WenQuanYi Micro Hei", "Microsoft YaHei", sans-serif;
-}
-body {
-  font-size: 13px;
-}
-
-a, table span.fa{
+#akashic-records-main-wrapper a,
+#akashic-records-main-wrapper table span.fa,
+#akashic-records-main-wrapper table span.fa::before{
   cursor: pointer;
 }
 
-#Akashic .show-grid {
+#akashic-records-main-wrapper hr {
+  display: block;
+}
+
+#akashic-records-main-wrapper table {
+  table-layout: auto;
+}
+
+#akashic-records-main-wrapper .show-grid {
   padding: 10px;
 }
 
-akashic-records .nav {
+#akashic-records-main-wrapper .nav {
   display: flex;
 }
-akashic-records .nav li {
+#akashic-records-main-wrapper .nav li {
   flex: 1;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-akashic-records .nav li a {
+#akashic-records-main-wrapper .nav li a {
   text-align: center;
 }
 
-akashic-records .container {
+#akashic-records-main-wrapper .container {
   width: 100%; !important
 }
 
-.akashic-records-settings {
+#akashic-records-main-wrapper .akashic-records-settings {
   margin-top: 10px;
   margin-bottom: 15px;
 }
 
-#myChart {
+#akashic-records-main-wrapper #myChart {
   min-height: 350px !important;
   height: 100% !important;
   padding-left: 7x;
@@ -44,15 +47,19 @@ akashic-records .container {
   padding-bottom: 12px;
 }
 
-.col-xs-2 .form-group, .col-xs-3 .form-group, .col-xs-4 .form-group{
+#akashic-records-main-wrapper .col-xs-2 .form-group,
+#akashic-records-main-wrapper .col-xs-3 .form-group,
+#akashic-records-main-wrapper .col-xs-4 .form-group {
   margin-bottom: 0px;
 }
-.col-xs-2 .checkbox, .col-xs-3 .checkbox, .col-xs-4 .checkbox{
+#akashic-records-main-wrapper .col-xs-2 .checkbox,
+#akashic-records-main-wrapper .col-xs-3 .checkbox,
+#akashic-records-main-wrapper .col-xs-4 .checkbox {
   margin-top: 0px;
   margin-bottom: 0px;
 }
 
-.akashic-table-pagination {
+#akashic-records-main-wrapper .akashic-table-pagination {
   width: -webkit-fit-content;
   width: fit-content;
   margin-left: auto;
@@ -60,35 +67,37 @@ akashic-records .container {
   display: flex;
 }
 
-#question-btn {
+#akashic-records-main-wrapper #question-btn {
   padding: 0 5px;
   background-color: transparent;
   vertical-align: text-bottom;
 }
 
-.advancedmodule .title {
+#akashic-records-main-wrapper .advancedmodule .title {
   margin-bottom: 4px
 }
 
-#ECharts {
+#akashic-records-main-wrapper #ECharts {
   margin-top: 15px;
 }
 
-akashic-records .advancedmodule {
+#akashic-records-main-wrapper .advancedmodule {
   padding-top: 5px;
 }
 
-td.table-search{
+#akashic-records-main-wrapper td.table-search{
   padding-left: 0px !important;
   padding-right: 1px !important;
 }
 
-.select-area, .search-area, .filter-area{
+#akashic-records-main-wrapper .select-area,
+#akashic-records-main-wrapper .search-area,
+#akashic-records-main-wrapper .filter-area{
   margin: 0px;
   max-width: 150px;
 }
 
-.filter-area input.form-control{
+#akashic-records-main-wrapper .filter-area input.form-control{
   height: 24px;
   padding-top: 1px;
   padding-bottom: 1px;
@@ -97,7 +106,11 @@ td.table-search{
   font-size: 14px;
 }
 
-table select.form-control, input.form-control, .select-area input.form-control, .search-area input.form-control, .search-area select.form-control{
+#akashic-records-main-wrapper table select.form-control,
+#akashic-records-main-wrapper input.form-control,
+#akashic-records-main-wrapper .select-area input.form-control,
+#akashic-records-main-wrapper .search-area input.form-control,
+#akashic-records-main-wrapper .search-area select.form-control {
   height: 20px;
   padding-top: 1px;
   padding-bottom: 1px;
@@ -106,79 +119,79 @@ table select.form-control, input.form-control, .select-area input.form-control, 
   font-size: 14px;
 }
 
-table input[type=text].form-control {
+#akashic-records-main-wrapper table input[type=text].form-control {
   font-size: 14px;
 }
 
-akashic-records table td {
+#akashic-records-main-wrapper table td {
   white-space: nowrap !important;
 }
 
-akashic-records table td.enable-auto-newline {
+#akashic-records-main-wrapper table td.enable-auto-newline {
   white-space: normal !important;
 }
 
-akashic-records .divider hr{
+#akashic-records-main-wrapper .divider hr{
   margin-top: 0px;
 }
 
-akashic-records .divider h5{
+#akashic-records-main-wrapper .divider h5{
   margin-top: 12px;
   -webkit-user-select: none;
   margin-bottom: 10px;
 }
 
-akashic-records hr{
+#akashic-records-main-wrapper hr{
   margin-top: 10px;
   margin-bottom: 8px;
 }
 
-akashic-records .divider hr{
+#akashic-records-main-wrapper .divider hr{
   margin-top: 10px;
   margin-bottom: 8px;
 }
 
-akashic-records .akashic-records-filter .checkbox,
-akashic-records .akashic-records-statistics .checkbox{
+#akashic-records-main-wrapper .akashic-records-filter .checkbox,
+#akashic-records-main-wrapper .akashic-records-statistics .checkbox{
   margin-top: 0px;
 }
 
 
-akashic-records .akashic-records-filter .btn,
-akashic-records .akashic-records-statistics .btn {
+#akashic-records-main-wrapper .akashic-records-filter .btn,
+#akashic-records-main-wrapper .akashic-records-statistics .btn {
     padding-top: 3px;
     padding-bottom: 3px;
 }
 
 @media (max-width: 720px) {
-  akashic-records table td {
+  #akashic-records-main-wrapper table td {
     white-space: normal !important;
   }
 }
 
-.akashic-senka-title{
+#akashic-records-main-wrapper .akashic-senka-title{
   width: 50px;
   font-size: 50px;
   word-wrap: break-word;
   letter-spacing: 20px;
 }
-.akashic-senka-time{
+#akashic-records-main-wrapper .akashic-senka-time{
   width: 30px;
   font-size: 30px;
   word-wrap: break-word;
   letter-spacing: 10px;
 }
-.akashic-senka-alert{
+#akashic-records-main-wrapper .akashic-senka-alert{
   color: black;
   background-color: rgba(230, 230, 230, 0.91);
   border-radius: 3px;
   text-align: center;
 }
 
-.error-message {
+#akashic-records-main-wrapper .error-message {
   padding: 1em;
 }
 
-.error-message textarea {
+#akashic-records-main-wrapper .error-message textarea {
   height: 20em;
 }

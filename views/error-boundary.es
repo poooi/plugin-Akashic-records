@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { FormControl, Button } from 'react-bootstrap'
 import { clipboard } from 'electron'
 
-const { __ } = window
+const { __ } = window.i18n['poi-plugin-akashic-records']
 
 class ErrorBoundary extends Component {
   state = {

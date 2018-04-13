@@ -1,8 +1,7 @@
 import React from 'react'
 import { Tabs, Tab } from 'react-bootstrap'
-const { __ } = window
-// import i18n from '../node_modules/i18n'
-//  {__} = i18n
+
+const { __ } = window.i18n['poi-plugin-akashic-records']
 
 import ResourceChart from './containers/resource-chart'
 

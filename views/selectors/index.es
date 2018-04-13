@@ -1,6 +1,7 @@
 import { createSelector } from 'reselect'
 import { dateToString } from '../../lib/utils'
-const { CONST } = window
+
+import CONST from '../../lib/constant'
 
 const dateToDateString = (datetime) => {
   const date = new Date(datetime)

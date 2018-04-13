@@ -7,13 +7,21 @@ import iconv from 'iconv-lite'
 import jschardet from 'jschardet'
 import path from 'path-extra'
 import { remote, shell } from 'electron'
+
+import i18next from 'views/env-parts/i18next'
+
 import { oriTableTab } from '../reducers/tab'
 import { dateToString } from '../../lib/utils'
+import CONST from '../../lib/constant'
 
-const { __, translate, CONST, config, APPDATA_PATH } = window
+const { config, APPDATA_PATH } = window
 const DATA_PATH = config.get("plugin.Akashic.dataPath", APPDATA_PATH)
 const { dialog } = remote.require('electron')
 const {openExternal} = shell
+
+const translate = (locale, str) => i18next.getFixedT(locale, 'poi-plugin-akashic-records')(str)
+
+const { __ } = window.i18n['poi-plugin-akashic-records']
 
 jschardet.Constants.MINIMUM_THRESHOLD = 0.10
 
