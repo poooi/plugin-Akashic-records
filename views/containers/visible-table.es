@@ -1,7 +1,7 @@
 import { connect } from 'react-redux'
 import { setFilterKey, setActivePage } from '../actions'
 import TableArea from '../components/akashic-records-table-area'
-import { filterSelectors } from '../selectors'
+import { filterSelectors, pluginDataSelector } from '../selectors'
 
 function getPropsFromState(state, dataType) {
   const logs = filterSelectors[dataType](state)
@@ -18,7 +18,8 @@ function getPropsFromState(state, dataType) {
   }
 }
 
-function mapStateToProps(state, ownProps) {
+function mapStateToProps(poi_state, ownProps) {
+  const state = pluginDataSelector(poi_state)
   return (state[ownProps.contentType] != null)
     ? getPropsFromState(state[ownProps.contentType], ownProps.contentType)
     : {}

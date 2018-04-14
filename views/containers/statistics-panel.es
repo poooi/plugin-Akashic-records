@@ -1,4 +1,6 @@
 import { connect } from 'react-redux'
+import { createSelector } from 'reselect'
+
 import {
   showStatisticsPanel,
   hiddenStatisticsPanel,
@@ -14,7 +16,7 @@ import {
   setStatisticsRuleDenominator,
 } from '../actions'
 import StatisticsPanel from '../components/akashic-records-statistics-panel'
-import { filterSelectors, searchSelectors } from '../selectors'
+import { filterSelectors, searchSelectors, pluginDataSelector } from '../selectors'
 
 function calPercent(num, de) {
   return (de !== 0) ? `${Math.round(num*10000/de) / 100}%` : '0'
@@ -53,20 +55,34 @@ function getStatisticsItems(lens, statisticsRules) {
   })
 }
 
-function getPropsFromState(state, dataType) {
-  const filteredLogs = filterSelectors[dataType](state)
-  const loglens = searchSelectors[dataType](
-    state.data, filteredLogs, state.searchRules)
-  return {
-    show: state.statisticsVisible,
-    searchItems: getSearchItems(loglens, state.searchRules),
-    statisticsItems: getStatisticsItems(loglens, state.statisticsRules),
+const getPropsFromState = (() => {
+  const selectors = {}
+  return (dataType) => {
+    if (selectors[dataType] == null) {
+      selectors[dataType] = createSelector([
+        state => state.statisticsVisible,
+        state => state.data,
+        state => filterSelectors[dataType](state),
+        state => state.searchRules,
+        state => state.statisticsRules,
+      ], (show, logs, filteredLogs, searchRules, statisticsRules) => {
+        const loglens = searchSelectors[dataType](
+          { logs, filteredLogs, searchRules })
+        return {
+          show,
+          searchItems: getSearchItems(loglens, searchRules),
+          statisticsItems: getStatisticsItems(loglens, statisticsRules),
+        }
+      })
+    }
+    return selectors[dataType]
   }
-}
+})()
 
-function mapStateToProps(state, ownProps) {
+function mapStateToProps(poi_state, ownProps) {
+  const state = pluginDataSelector(poi_state)
   return (state[ownProps.contentType] != null)
-    ? getPropsFromState(state[ownProps.contentType], ownProps.contentType)
+    ? getPropsFromState(ownProps.contentType)(state[ownProps.contentType])
     : {}
 }
 

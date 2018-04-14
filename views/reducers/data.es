@@ -1,8 +1,8 @@
 export default function (state = [], action) {
   switch (action.type) {
-  case 'ADD_LOG':
+  case '@@poi-plugin-akashic-records/ADD_LOG':
     return [action.log, ...state]
-  case 'INITIALIZE_LOGS':
+  case '@@poi-plugin-akashic-records/INITIALIZE_LOGS':
     return action.logs
   default:
     return state

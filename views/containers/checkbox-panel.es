@@ -10,6 +10,8 @@ import {
 import logComponent from '../components/akashic-records-checkbox-panel'
 import resourceComponent from '../components/akashic-resource-checkbox-panel'
 
+import { pluginDataSelector } from '../selectors'
+
 function getPropsFromState(state) {
   return {
     show: state.checkboxVisible,
@@ -22,7 +24,8 @@ function getPropsFromState(state) {
   }
 }
 
-function mapStateToProps(state, ownProps) {
+function mapStateToProps(poi_state, ownProps) {
+  const state = pluginDataSelector(poi_state)
   return (state[ownProps.contentType] != null)
     ? getPropsFromState(state[ownProps.contentType])
     : {}

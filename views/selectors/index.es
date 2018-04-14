@@ -3,6 +3,15 @@ import { dateToString } from '../../lib/utils'
 
 import CONST from '../../lib/constant'
 
+import { extensionSelectorFactory } from 'views/utils/selectors'
+
+const empty = {}
+
+export const pluginDataSelector = createSelector(
+  extensionSelectorFactory('poi-plugin-akashic-records'),
+  (state) => state || empty
+)
+
 const dateToDateString = (datetime) => {
   const date = new Date(datetime)
   return `${date.getFullYear()}/${date.getMonth()}/${date.getDate()}`
@@ -104,13 +113,13 @@ const resourceApplyFilter = (logs, tabVisibility, keyWord, showScale) => {
   return filterAsScale(retLogs, showScale)
 }
 
-
+const emptyArr = []
 const logSelectorFactory = () => {
   const getLogs = (state) => state.data
   const getFilterKeys = (state) =>
     (state.configListChecked[1] || state.configListChecked[2] || !state.configListChecked[3])
     ? state.filterKeys
-    : []
+    : emptyArr
   return createSelector([getLogs, getFilterKeys], filterWithIndex)
 }
 
@@ -126,18 +135,25 @@ const logSearchSelectorFactory = () => {
   return (function() {
     let selector = null
     let lastLogs = null
-    return (logs, filteredLogs, searchRules) => {
-      if (selector == null || lastLogs !== logs)
-        selector = logSearchSelectorBaseFactory([], searchRules.length)
-      lastLogs = logs
-      if (selector.length !== searchRules.length)
-        selector = logSearchSelectorBaseFactory(selector, searchRules.length)
-      const logsRes = [logs, filteredLogs]
-      searchRules.forEach((searchRule, i) =>
-        logsRes[CONST.search.indexBase+i+1] = selector[i](logsRes, searchRule)
-      )
-      return logsRes.map((logs) => logs.length)
-    }
+    return createSelector(
+      [
+        params => params.logs,
+        params => params.filteredLogs,
+        params => params.searchRules,
+      ],
+      (logs, filteredLogs, searchRules) => {
+        if (selector == null || lastLogs !== logs)
+          selector = logSearchSelectorBaseFactory([], searchRules.length)
+        lastLogs = logs
+        if (selector.length !== searchRules.length)
+          selector = logSearchSelectorBaseFactory(selector, searchRules.length)
+        const logsRes = [logs, filteredLogs]
+        searchRules.forEach((searchRule, i) =>
+          logsRes[CONST.search.indexBase+i+1] = selector[i](logsRes, searchRule)
+        )
+        return logsRes.map((logs) => logs.length)
+      }
+    )
   })()
 }
 
@@ -166,4 +182,24 @@ export const resourceFilter = createSelector(
     (state) => state.filterKeys[0],
     (state) => state.showTimeScale,
   ], resourceApplyFilter
+)
+
+export const tableTabNameSelector = createSelector(
+  [
+    (state) => state[CONST.typeList.attack].tabs,
+    (state) => state[CONST.typeList.mission].tabs,
+    (state) => state[CONST.typeList.createShip].tabs,
+    (state) => state[CONST.typeList.createItem].tabs,
+    (state) => state[CONST.typeList.retirement].tabs,
+    (state) => state[CONST.typeList.resource].tabs,
+  ], (attack, mission, createShip, createItem, retirement, resource) => (
+    {
+      [CONST.typeList.attack]: attack,
+      [CONST.typeList.mission]: mission,
+      [CONST.typeList.createShip]: createShip,
+      [CONST.typeList.createItem]: createItem,
+      [CONST.typeList.retirement]: retirement,
+      [CONST.typeList.resource]: resource,
+    }
+  )
 )

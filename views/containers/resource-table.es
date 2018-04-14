@@ -6,7 +6,7 @@ import {
   setTimeScale,
 } from '../actions'
 import TableArea from '../components/akashic-resource-table-area'
-import { resourceFilter } from '../selectors'
+import { resourceFilter, pluginDataSelector } from '../selectors'
 
 function getPropsFromState(state, dataType) {
   const data = resourceFilter(state)
@@ -23,7 +23,8 @@ function getPropsFromState(state, dataType) {
   }
 }
 
-function mapStateToProps(state, ownProps) {
+function mapStateToProps(poi_state, ownProps) {
+  const state = pluginDataSelector(poi_state)
   return (state[ownProps.contentType] != null)
     ? getPropsFromState(state[ownProps.contentType], ownProps.contentType)
     : {}

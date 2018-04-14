@@ -13,6 +13,8 @@ export const windowMode = true
 
 export { reactClass } from './views'
 
+export { reducer } from './views/reducers'
+
 import { apiResolver } from './views/api-resolver'
 
 export function pluginDidLoad() {

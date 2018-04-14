@@ -17,6 +17,12 @@
   table-layout: auto;
 }
 
+#akashic-records-main-wrapper .table thead tr th,
+#akashic-records-main-wrapper .table tbody tr td {
+  cursor: text;
+  user-select: text;
+}
+
 #akashic-records-main-wrapper .show-grid {
   padding: 10px;
 }

@@ -53,14 +53,14 @@ export function tabs(state, action) {
   if (state == null) {
     state = getTabs(action.dataType)
   }
-  if (action.type === 'SET_LANGUAGE') {
+  if (action.type === '@@poi-plugin-akashic-records/SET_LANGUAGE') {
     state = getTabs(action.dataType)
   }
   return state
 }
 
 export function language(state = window.language, action) {
-  if (action.type === 'SET_LANGUAGE') {
+  if (action.type === '@@poi-plugin-akashic-records/SET_LANGUAGE') {
     return action.language
   }
   return state
@@ -71,7 +71,7 @@ export function tabVisibility(state, action) {
     state = JSON.parse(config.get(`plugin.Akashic.${action.dataType}.checkbox`,
       JSON.stringify(defaultTabVisibility)))
   }
-  if (action.type === 'SET_TAB_VISIBILITY') {
+  if (action.type === '@@poi-plugin-akashic-records/SET_TAB_VISIBILITY') {
     return [
       ...state.slice(0, action.index),
       action.val,

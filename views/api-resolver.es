@@ -4,7 +4,7 @@ import { initializeLogs, addLog } from './actions'
 
 import dataCoManager from '../lib/data-co-manager'
 
-import { store } from './create-store'
+import { store } from 'views/create-store'
 
 const judgeIfDemage = (nowHp, beforeHp) => {
   return nowHp.some((hp, i) => hp < beforeHp[i])
@@ -60,8 +60,9 @@ class APIResolver {
     }
   }
 
-  updateUser() {
-    if (window._nickNameId && this.nickNameId !== window._nickNameId) {
+  updateUser(forceUpdateLogs = false) {
+    if ((window._nickNameId && this.nickNameId !== window._nickNameId) ||
+        forceUpdateLogs) {
       this.nickNameId = window._nickNameId
       config.set('plugin.Akashic.nickNameId', this.nickNameId)
       this.updateLogs()
@@ -72,7 +73,7 @@ class APIResolver {
     window.addEventListener('game.request', this.handleRequest)
     window.addEventListener('game.response', this.handleResponse)
     window.addEventListener('battle.result', this.handleBattleResultResponse)
-    this.updateUser()
+    this.updateUser(true)
   }
 
   stop() {

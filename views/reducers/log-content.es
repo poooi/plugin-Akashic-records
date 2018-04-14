@@ -47,18 +47,18 @@ function boundActivePageNum(state, dataType) {
 
 export default function (type) {
   return (state, action) => {
-    if (action.type === 'SET_LANGUAGE')
+    if (action.type === '@@poi-plugin-akashic-records/SET_LANGUAGE')
       return logContent(state, action)
     else if (action.dataType === type) {
       const ret = logContent(state, action)
-      if (['INITIALIZE_LOGS', 'SET_FILTER_KEY',
-           'SET_SHOW_AMOUNT', 'SET_ACTIVE_PAGE',
-           'SET_TIME_SCALE'].includes(action.type))
+      if (['@@poi-plugin-akashic-records/INITIALIZE_LOGS', '@@poi-plugin-akashic-records/SET_FILTER_KEY',
+           '@@poi-plugin-akashic-records/SET_SHOW_AMOUNT', '@@poi-plugin-akashic-records/SET_ACTIVE_PAGE',
+           '@@poi-plugin-akashic-records/SET_TIME_SCALE'].includes(action.type))
         return boundActivePageNum(ret, type)
       return ret
     } else if (state == null) {
       return logContent(state, {
-        type: 'NONE',
+        type: '@@poi-plugin-akashic-records/NONE',
         dataType: type,
       })
     } else

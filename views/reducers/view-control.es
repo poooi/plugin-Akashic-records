@@ -12,7 +12,7 @@ function getTabs() {
 }
 
 export function configList(state = getTabs(), action) {
-  if (action.type === 'SET_LANGUAGE') return getTabs()
+  if (action.type === '@@poi-plugin-akashic-records/SET_LANGUAGE') return getTabs()
   return state
 }
 
@@ -22,7 +22,7 @@ export function configListChecked(state, action) {
       JSON.stringify([true, false, false, true])
     ))
   }
-  if (action.type === 'SET_CONFIG_LIST') {
+  if (action.type === '@@poi-plugin-akashic-records/SET_CONFIG_LIST') {
     let newState = state
     if (state[action.index]) {
       newState = [
@@ -61,9 +61,9 @@ export function checkboxVisible(state, action) {
     state = config.get(`plugin.Akashic.${action.dataType}.checkboxPanelShow`, true)
   }
   switch (action.type) {
-  case 'SHOW_CHECKBOX_PANEL':
+  case '@@poi-plugin-akashic-records/SHOW_CHECKBOX_PANEL':
     return true
-  case 'HIDDEN_CHECKBOX_PANEL':
+  case '@@poi-plugin-akashic-records/HIDDEN_CHECKBOX_PANEL':
     return false
   default:
     return state
@@ -75,9 +75,9 @@ export function statisticsVisible(state, action) {
     state = config.get(`plugin.Akashic.${action.dataType}.statisticsPanelShow`, true)
   }
   switch (action.type) {
-  case 'SHOW_STATISTICS_PANEL':
+  case '@@poi-plugin-akashic-records/SHOW_STATISTICS_PANEL':
     return true
-  case 'HIDDEN_STATICTICS_PANEL':
+  case '@@poi-plugin-akashic-records/HIDDEN_STATICTICS_PANEL':
     return false
   default:
     return state
@@ -88,7 +88,7 @@ export function showTimeScale(state, action) {
   if (state == null) {
     state = config.get(`plugin.Akashic.${action.dataType}.table.showTimeScale`, 0)
   }
-  if (action.type === 'SET_TIME_SCALE') {
+  if (action.type === '@@poi-plugin-akashic-records/SET_TIME_SCALE') {
     return action.val
   } else {
     return state
