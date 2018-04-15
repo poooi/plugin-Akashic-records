@@ -38,7 +38,7 @@ class APIResolver {
     this.enableRecord = false
     this.isStart = true
     this._ships = []
-    this.timeString = ""
+    this.timeString = 'INIT'
     this.mapLv = []
     this.battleStart = false
 
@@ -46,18 +46,15 @@ class APIResolver {
     this.largeFlag = false
     this.material = []
     this.kdockId = 0
-
-    this.updateLogs()
   }
 
-  updateLogs() {
-    if (this.nickNameId && this.nickNameId != 0) {
-      const data = dataCoManager.initializeData(this.nickNameId)
+  initializeLogs() {
+    dataCoManager.initializeData(this.nickNameId).then((data) => {
       for (const type of Object.keys(data)) {
         this.store.dispatch(initializeLogs(data[type], type))
       }
       this.timeString = data.resource.length > 0 ? timeToBString(data.resource[0][0]) : ''
-    }
+    })
   }
 
   updateUser(forceUpdateLogs = false) {
@@ -65,7 +62,8 @@ class APIResolver {
         forceUpdateLogs) {
       this.nickNameId = window._nickNameId
       config.set('plugin.Akashic.nickNameId', this.nickNameId)
-      this.updateLogs()
+      dataCoManager.setNickNameId(this.nickNameId)
+      this.initializeLogs()
     }
   }
 
@@ -298,7 +296,7 @@ class APIResolver {
       this.enableRecord = true
       const nowDate = new Date()
       this.deckCombinedFlag = body.api_combined_flag
-      if (this.timeString !== timeToBString(nowDate.getTime())) {
+      if (this.timeString !== 'INIT' && this.timeString !== timeToBString(nowDate.getTime())) {
         this.timeString = timeToBString(nowDate.getTime())
         const dataItem = [
           (new Date()).getTime(),

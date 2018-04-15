@@ -20,7 +20,7 @@ const { __ } = window.i18n['poi-plugin-akashic-records']
 class AkashicRecordsCheckboxPanel extends React.Component {
   constructor(props) {
     super(props)
-    this.lastClick = 1
+    this.lastClick = -1
   }
 
   componentDidUpdate() {

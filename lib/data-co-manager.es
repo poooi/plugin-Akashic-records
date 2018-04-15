@@ -15,12 +15,16 @@ class DataCoManager {
     this.nickNameId = 0
   }
 
-  _getDataAccordingToNameId(id, type) {
+  setNickNameId(id) {
+    this.nickNameId = id
+  }
+
+  async _getDataAccordingToNameId(id, type) {
     const testNum = /^[1-9]+[0-9]*$/
     let datalogs = glob.sync(path.join(DATA_PATH, 'akashic-records', this.nickNameId.toString(), type, '*'))
-    datalogs = datalogs.map((filePath) => {
+    datalogs = datalogs.map(async (filePath) => {
       try {
-        const fileContent = fs.readFileSync(filePath, 'utf8')
+        const fileContent = await fs.readFile(filePath, 'utf8')
         let logs = fileContent.split("\n")
         logs = logs.map((logItem) => {
           logItem = logItem.split(',')
@@ -37,6 +41,7 @@ class DataCoManager {
         return []
       }
     })
+    datalogs = await Promise.all(datalogs)
     datalogs = datalogs.reduce((ret, cur) => ret.concat(cur), [])
     datalogs.reverse()
     datalogs.sort((a, b) => {
@@ -49,12 +54,11 @@ class DataCoManager {
     return datalogs
   }
 
-  initializeData(id) {
-    this.nickNameId = id
+  async initializeData() {
     const data = {}
     for (const k of Object.keys(CONST.typeList)) {
       const type = CONST.typeList[k]
-      data[type] = this._getDataAccordingToNameId(this.nickNameId, type)
+      data[type] = await this._getDataAccordingToNameId(this.nickNameId, type)
     }
     return data
   }
