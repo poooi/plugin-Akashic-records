@@ -32,7 +32,6 @@
   },
   "homepage": "https://github.com/yudachi/plugin-Akashic-records",
   "dependencies": {
-    "echarts": "^4.1.0",
     "iconv-lite": "^0.4.11",
     "jschardet": "^1.3.0"
   },

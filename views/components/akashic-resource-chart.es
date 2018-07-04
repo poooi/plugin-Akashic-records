@@ -1,5 +1,4 @@
 import React from 'react'
-import echarts from 'echarts'
 import {
   Grid,
   Row,
@@ -12,6 +11,7 @@ import dark from '../../assets/themes/dark'
 import { WindowEnv } from 'views/components/etc/window-env'
 import images from '../../assets/img'
 
+const echarts = require('../../assets/echarts')
 const { config, i18n } = window
 const { __ } = i18n['poi-plugin-akashic-records']
 
