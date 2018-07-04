@@ -363,14 +363,13 @@ class AkashicResourceChart extends React.Component {
         if (!this.showAsDay) {
           for (let i = nextProps.data.length - this.wholeDataLength - 1; i >= 0; --i) {
             this.showData.push(nextProps.data[i])
-            const dataitem = nextProps.data[i].slice(1).map((item, idx) => ([
-              idx,
-              [nextProps.data[i][0], item, this.showData.length - 1],
-              false,
-              true,
-              '',
-            ]))
-            this.resourceChart.addData(dataitem)
+            nextProps.data[i].slice(1).forEach((item, idx) => {
+              this.resourceChart.appendData({
+                seriesIndex: idx,
+                data: [nextProps.data[i][0], item, this.showData.length - 1],
+              })
+            })
+            this.resourceChart.setOption(this.getEChartsOption())
           }
         } else {
           for (let i = nextProps.data.length - this.wholeDataLength - 1; i >= 0; --i) {
@@ -378,14 +377,13 @@ class AkashicResourceChart extends React.Component {
             if (dateString !== tmp) {
               dateString = tmp
               this.showData.push(nextProps.data[i])
-              const dataitem = nextProps.data[i].slice(1).map((item, idx) => ([
-                idx,
-                [nextProps.data[i][0], item, this.showData.length - 1],
-                false,
-                true,
-                '',
-              ]))
-              this.resourceChart.addData(dataitem)
+              nextProps.data[i].slice(1).forEach((item, idx) => {
+                this.resourceChart.appendData({
+                  seriesIndex: idx,
+                  data: [nextProps.data[i][0], item, this.showData.length - 1],
+                })
+              })
+              this.resourceChart.setOption(this.getEChartsOption())
             }
           }
         }
