@@ -1,4 +1,3 @@
-import path from 'path-extra'
 import React from 'react'
 import {
   Grid,
@@ -6,21 +5,15 @@ import {
   Col,
 } from 'react-bootstrap'
 import { findDOMNode } from 'react-dom'
-const { config, ROOT } = window
-import { WindowEnv } from 'views/components/etc/window-env'
-
-const { __ } = window.i18n['poi-plugin-akashic-records']
-
-const {error} = require(path.join(ROOT, 'lib/utils'))
-
-// #import i18n from '../node_modules/i18n'
-// # {__} = i18n
-
-require('../../assets/echarts-all')
-const { echarts } = window
-
+// eslint-disable-next-line
 import dark from '../../assets/themes/dark'
-import macarons from '../../assets/themes/macarons'
+// eslint-disable-next-line
+import { WindowEnv } from 'views/components/etc/window-env'
+import images from '../../assets/img'
+
+const echarts = require('../../assets/echarts')
+const { config, i18n } = window
+const { __ } = i18n['poi-plugin-akashic-records']
 
 function toDateLabel(datetime) {
   const date = new Date(datetime)
@@ -44,12 +37,12 @@ class AkashicResourceChart extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      rowChooseChecked: [true, true, true, true, true, true, true, true, true, true, true, true,
-                        true, true],
+      rowChooseChecked: [
+        true, true, true, true, true, true, true, true, true, true, true, true, true, true,
+      ],
     }
     this.showAsDay = config.get("plugin.Akashic.resource.chart.showAsDay", true)
-    this.showAllSymbol = config.get("plugin.Akashic.resource.chart.showAllSymbol", false)
-    this.sleepMode = config.get("plugin.Akashic.resource.chart.sleepMode", true)
+    this.showSymbol = config.get("plugin.Akashic.resource.chart.showSymbol", false)
     this.resourceChart = 0
     this.wholeDataLength = 0
     this.dataLength = 0
@@ -64,7 +57,7 @@ class AkashicResourceChart extends React.Component {
         }
         return true
       } catch(err) {
-        console.log(err)
+        console.error(err)
         return true
       }
     }
@@ -89,49 +82,20 @@ class AkashicResourceChart extends React.Component {
   }
 
   getEChartsOption() {
+    const toIcon = source => `image://${source}`
     return {
       tooltip: {
-        trigger: "item",
+        trigger: "axis",
         show: true,
+        padding: 10,
+        confine: true,
         formatter(params) {
-          const dateTime = params.value[0]
-          const dateString = toDateLabel(params.value[0])
-          const series = this.getSeries()
-          let index = -1
-          const logdata = [dateTime]
-          for (const item of series) {
-            const data = item.data
-            if (index === -1) {
-              if (data[params.value[2]] != null && data[params.value[2]][0] === logdata[0]) {
-                index = params.value[2]
-              } else {
-                if (!data.some((item, i) => {
-                  if (item[0] === logdata[0]) {
-                    index = i
-                    return true
-                  }
-                  return false
-                })) {
-                  error("can't find matched data! in ECharts's tooltip formatter()")
-                }
-              }
-            }
-            logdata.push(data[index][1])
-            if (logdata[0] !== data[index][0]) {
-              error("data error! in ECharts's tooltip formatter()")
-            }
-          }
-          return `${dateString}<br/>${__("Fuel")}: ${logdata[1]}<br/>\
-  ${__("Ammo")}: ${logdata[2]}<br/>\
-  ${__("Steel")}: ${logdata[3]}<br/>\
-  ${__("Bauxite")}: ${logdata[4]}<br/>\
-  ${__("Fast Build Item")}: ${logdata[5]}<br/>\
-  ${__("Instant Repair Item")}: ${logdata[6]}<br/>\
-  ${__("Development Material")}: ${logdata[7]}<br/>\
-  ${__("Improvement Materials")}: ${logdata[8]}`
+          const dateString = toDateLabel(params[0].value[0])
+          const resArray = params.map(item => `${item.seriesName}: ${item.value[1]}`)
+          resArray.unshift(`${dateString}`)
+          return resArray.join('<br/>')
         },
       },
-
       legend: {
         data: [
           __('Fuel'),
@@ -143,9 +107,9 @@ class AkashicResourceChart extends React.Component {
           __('Development Material'),
           __('Improvement Materials'),
         ],
-        textStyle: this.sleepMode ? {
-          color: '#fff',
-        } : {},
+        textStyle: {
+          color: '#ddd',
+        },
       },
       toolbox: {
         show: true,
@@ -159,16 +123,17 @@ class AkashicResourceChart extends React.Component {
             title: __("Restore"),
           },
           saveAsImage: {
-            show: false,
+            show: true,
+            backgroundColor: '#343434',
           },
-          showScale: ((showAsDay) => {
+          myShowScale: ((showAsDay) => {
             const opt = showAsDay
               ? {
                 title: __("Show by %s", __("Day")),
-                icon: path.join(__dirname, '../../assets/echarts-day.png'),
+                icon: toIcon(images.day),
               } : {
                 title:  __("Show by %s", __("Hour")),
-                icon: path.join(__dirname, '../../assets/echarts-hour.png'),
+                icon: toIcon(images.hour),
               }
             return {
               show: true,
@@ -179,7 +144,7 @@ class AkashicResourceChart extends React.Component {
                 this.dataLength = this.showData.length
                 this.showData.reverse()
                 if (this.showData.length !== 0) {
-                  if (this.resourceChart.getSeries() == null) {
+                  if (this.resourceChart.getOption().series == null) {
                     this.resourceChart.hideLoading()
                   }
                   this.resourceChart.setOption(this.getEChartsOption(), true)
@@ -188,86 +153,57 @@ class AkashicResourceChart extends React.Component {
               },
             }
           })(this.showAsDay),
-          showType: ((showAllSymbol) => {
-            const suffix = this.sleepMode ? '-sleepmode' : ''
-            const opt = showAllSymbol
+          myShowType: ((showSymbol) => {
+            const opt = showSymbol
               ? {
                 title: __("Show node"),
-                icon: path.join(__dirname, `../../assets/echarts-with-node${suffix}.png`),
+                icon: toIcon(images.withNodeInSleepMode),
               } : {
                 title: __("Hide node"),
-                icon: path.join(__dirname, `../../assets/echarts-no-node${suffix}.png`),
+                icon: toIcon(images.withNoNodeInSleepMode),
               }
             const showType = {
               show: true,
               ...opt,
+              color: '#eee',
               onclick: () => {
-                this.showAllSymbol = !this.showAllSymbol
+                this.showSymbol = !this.showSymbol
                 this.resourceChart.setOption(this.getEChartsOption(), true)
-                config.set("plugin.Akashic.resource.chart.showAllSymbol", this.showAllSymbol)
+                config.set("plugin.Akashic.resource.chart.showSymbol", this.showSymbol)
               },
             }
-            if (this.sleepMode)
-              showType.color = '#eee'
             return showType
-          })(this.showAllSymbol),
-          themeMode: ((sleepMode) => {
-            const opt = sleepMode ? {
-              title: __("Sleep mode"),
-              icon: path.join(__dirname, '../../assets/echarts-moon.png'),
-            } : {
-              title: __("Light mode"),
-              icon: path.join(__dirname, '../../assets/echarts-sun.png'),
-            }
-            return {
-              show: true,
-              ...opt,
-              onclick: () => {
-                this.sleepMode = !this.sleepMode
-                this.resourceChart.setTheme(this.sleepMode ? dark : macarons)
-                this.resourceChart.setOption(this.getEChartsOption(), true)
-                config.set("plugin.Akashic.resource.chart.sleepMode", this.sleepMode)
-              },
-            }
-          })(this.sleepMode),
+          })(this.showSymbol),
         },
       },
-      grid: { y2: 80 },
       dataZoom: {
         show: true,
         realtime: true,
+        dataBackground: {
+          areaStyle: {
+            color: 'rgba(98, 154, 250, 1)',
+          },
+        },
+        textStyle: {
+          color: "#ddd",
+        },
       },
-      xAxis: ((sleepMode) => {
-        const opt = sleepMode ? {
-          labelColor: '#ddd',
-          splitColor: '#505050',
-        } : {
-          labelColor: '#333',
-          splitColor: '#eee',
-        }
-        return [{
-          type: 'time',
-          splitNumber: 10,
-          axisLabel: {
-            textStyle: {
-              color: opt.labelColor,
-            },
+      xAxis: [{
+        type: 'time',
+        splitNumber: 10,
+        axisLabel: {
+          textStyle: {
+            color: '#ddd',
           },
-          splitLine: {
-            lineStyle: {
-              color: opt.splitColor,
-            },
+        },
+        splitLine: {
+          lineStyle: {
+            color: '#505050',
+            type: 'dashed',
           },
-        }]
-      })(this.sleepMode),
-      yAxis: ((sleepMode) => {
-        const opt = sleepMode ? {
-          labelColor: '#ddd',
-          splitColor: '#505050',
-        } : {
-          labelColor: '#333',
-          splitColor: '#eee',
-        }
+        },
+      }],
+      yAxis: (() => {
         const item = {
           type: 'value',
           axisLine: {
@@ -278,103 +214,120 @@ class AkashicResourceChart extends React.Component {
           },
           axisLabel: {
             textStyle: {
-              color: opt.labelColor,
+              color: '#ddd',
             },
+          },
+          axisTick: {
+            show: false,
           },
           splitLine: {
             lineStyle: {
-              color: opt.splitColor,
+              color: '#505050',
+              type: 'dashed',
             },
           },
         }
-        return [item, JSON.parse(JSON.stringify(item))]
-      })(this.sleepMode),
+        return [item, { ...item }]
+      })(),
+      grid: { y2: 80 },
       series: [
         {
           name: __('Fuel'),
-          type:"line",
+          smooth: true,
+          type: "line",
           yAxisIndex: 0,
           itemStyle: {
             normal: { color: '#1b9d19' },
           },
-          showAllSymbol: this.showAllSymbol,
+          symbol: 'rect',
+          showSymbol: this.showSymbol,
           data: this.showData.map((logitem, index) =>
             [logitem[0], logitem[1], index]),
         },
         {
-          name:__('Ammo'),
-          type:"line",
+          name: __('Ammo'),
+          smooth: true,
+          type: "line",
           yAxisIndex: 0,
+          symbol: 'roundRect',
           itemStyle: {
             normal: { color: '#663910' },
           },
-          showAllSymbol: this.showAllSymbol,
+          showSymbol: this.showSymbol,
           data: this.showData.map((logitem, index) =>
             [logitem[0], logitem[2], index]),
         },
         {
-          name:__('Steel'),
-          type:"line",
+          name: __('Steel'),
+          smooth: true,
+          type: "line",
+          symbol: 'triangle',
           yAxisIndex: 0,
           itemStyle: {
             normal: { color: '#919191' },
           },
-          showAllSymbol: this.showAllSymbol,
+          showSymbol: this.showSymbol,
           data: this.showData.map((logitem, index) =>
             [logitem[0], logitem[3], index]),
         },
         {
-          name:__('Bauxite'),
-          type:"line",
+          name: __('Bauxite'),
+          smooth: true,
+          type: "line",
+          symbol: 'diamond',
           yAxisIndex: 0,
           itemStyle: {
             normal: { color: '#b37c50' },
           },
-          showAllSymbol: this.showAllSymbol,
+          showSymbol: this.showSymbol,
           data: this.showData.map((logitem, index) =>
             [logitem[0], logitem[4], index]),
         },
         {
-          name:__('Fast Build Item'),
-          type:"line",
+          name: __('Fast Build Item'),
+          type: "line",
+          symbol: 'arrow',
           yAxisIndex: 1,
           itemStyle: {
             normal: { color: '#fb8a00' },
           },
-          showAllSymbol: this.showAllSymbol,
+          showSymbol: this.showSymbol,
           data: this.showData.map((logitem, index) =>
             [logitem[0], logitem[5], index]),
         },
         {
-          name:__('Instant Repair Item'),
-          type:"line",
+          name: __('Instant Repair Item'),
+          type: "line",
+          symbol: 'pin',
           yAxisIndex: 1,
           itemStyle: {
             normal: { color: '#32eca1' },
           },
-          showAllSymbol: this.showAllSymbol,
+          showSymbol: this.showSymbol,
           data: this.showData.map((logitem, index) =>
             [logitem[0], logitem[6], index]),
         },
         {
-          name:__('Development Material'),
-          type:"line",
+          name: __('Development Material'),
+          type: "line",
+          symbol: 'circle',
           yAxisIndex: 1,
           itemStyle: {
             normal: { color: '#419ba9' },
           },
-          showAllSymbol: this.showAllSymbol,
+          showSymbol: this.showSymbol,
           data: this.showData.map((logitem, index) =>
             [logitem[0], logitem[7], index]),
         },
         {
-          name:__('Improvement Materials'),
-          type:"line",
+          name: __('Improvement Materials'),
+          type: "line",
+          symbol: 'emptyCircle',
           yAxisIndex: 1,
           itemStyle: {
             normal: { color: '#aaaaaa' },
           },
-          showAllSymbol: this.showAllSymbol,
+          showSymbol: this.showSymbol,
           data: this.showData.map((logitem, index) =>
             [logitem[0], logitem[8], index]),
         },
@@ -384,13 +337,12 @@ class AkashicResourceChart extends React.Component {
 
   renderChart() {
     const node = findDOMNode(this.chart)
-    const theme = this.sleepMode ? dark : macarons
+    const theme = dark
     this.resourceChart = this.resourceChart || echarts.init(node, theme)
     const option = this.getEChartsOption()
     this.resourceChart.setOption(option)
   }
-  // # componentDidMount: () =>
-  //   #
+
   componentDidUpdate() {
     if (this.resourceChart === 0 && this.props.mapShowFlag) {
       this.showData = this.dataFilter(this.props.data)
@@ -407,7 +359,7 @@ class AkashicResourceChart extends React.Component {
       if (this.wholeDataLength > 0) {
         dateString = toDateString(nextProps.data[nextProps.data.length - this.wholeDataLength][0])
       }
-      if (this.resourceChart.getSeries() != null) {
+      if (this.resourceChart.getOption().series != null) {
         if (!this.showAsDay) {
           for (let i = nextProps.data.length - this.wholeDataLength - 1; i >= 0; --i) {
             this.showData.push(nextProps.data[i])
@@ -464,8 +416,9 @@ class AkashicResourceChart extends React.Component {
   }
 }
 
-export default props => (
+const Chart = props => (
   <WindowEnv.Consumer>
     {({ window }) => <AkashicResourceChart window={window} {...props} />}
   </WindowEnv.Consumer>
 )
+export default Chart
