@@ -81,7 +81,7 @@ class AkashicResourceChart extends React.Component {
     })
   }
 
-  getEChartsOption() {
+  get getEChartsOption() {
     const toIcon = source => `image://${source}`
     return {
       tooltip: {
@@ -147,7 +147,7 @@ class AkashicResourceChart extends React.Component {
                   if (this.resourceChart.getOption().series == null) {
                     this.resourceChart.hideLoading()
                   }
-                  this.resourceChart.setOption(this.getEChartsOption(), true)
+                  this.resourceChart.setOption(this.getEChartsOption, true)
                 }
                 config.set("plugin.Akashic.resource.chart.showAsDay", this.showAsDay)
               },
@@ -168,7 +168,7 @@ class AkashicResourceChart extends React.Component {
               color: '#eee',
               onclick: () => {
                 this.showSymbol = !this.showSymbol
-                this.resourceChart.setOption(this.getEChartsOption(), true)
+                this.resourceChart.setOption(this.getEChartsOption, true)
                 config.set("plugin.Akashic.resource.chart.showSymbol", this.showSymbol)
               },
             }
@@ -339,7 +339,7 @@ class AkashicResourceChart extends React.Component {
     const node = findDOMNode(this.chart)
     const theme = dark
     this.resourceChart = this.resourceChart || echarts.init(node, theme)
-    const option = this.getEChartsOption()
+    const option = this.getEChartsOption
     this.resourceChart.setOption(option)
   }
 
@@ -363,14 +363,7 @@ class AkashicResourceChart extends React.Component {
         if (!this.showAsDay) {
           for (let i = nextProps.data.length - this.wholeDataLength - 1; i >= 0; --i) {
             this.showData.push(nextProps.data[i])
-            const dataitem = nextProps.data[i].slice(1).map((item, idx) => ([
-              idx,
-              [nextProps.data[i][0], item, this.showData.length - 1],
-              false,
-              true,
-              '',
-            ]))
-            this.resourceChart.addData(dataitem)
+            this.resourceChart.setOption(this.getEChartsOption)
           }
         } else {
           for (let i = nextProps.data.length - this.wholeDataLength - 1; i >= 0; --i) {
@@ -378,14 +371,7 @@ class AkashicResourceChart extends React.Component {
             if (dateString !== tmp) {
               dateString = tmp
               this.showData.push(nextProps.data[i])
-              const dataitem = nextProps.data[i].slice(1).map((item, idx) => ([
-                idx,
-                [nextProps.data[i][0], item, this.showData.length - 1],
-                false,
-                true,
-                '',
-              ]))
-              this.resourceChart.addData(dataitem)
+              this.resourceChart.setOption(this.getEChartsOption)
             }
           }
         }
@@ -395,7 +381,7 @@ class AkashicResourceChart extends React.Component {
         this.showData.reverse()
         if (this.showData.length !== 0) {
           this.resourceChart.hideLoading()
-          this.resourceChart.setOption(this.getEChartsOption(), true)
+          this.resourceChart.setOption(this.getEChartsOption, true)
         }
       }
       this.dataLength = this.showData.length
