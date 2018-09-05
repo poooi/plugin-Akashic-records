@@ -1,11 +1,12 @@
-import React from 'react'
+import React, { Component } from 'react'
 import { LogCP } from './containers/checkbox-panel'
 import StatisticsPanel from './containers/statistics-panel'
 import VisibleTable from './containers/visible-table'
 
 
-const AkashicLog = React.createClass({
-  shouldComponentUpdate: () => false,
+class AkashicLog extends Component {
+  shouldComponentUpdate = () => false
+
   render() {
     return (
       <div>
@@ -14,7 +15,7 @@ const AkashicLog = React.createClass({
         <VisibleTable contentType={this.props.contentType} />
       </div>
     )
-  },
-})
+  }
+}
 
 export default AkashicLog
