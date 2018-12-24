@@ -233,7 +233,6 @@ class AkashicResourceChart extends React.Component {
       series: [
         {
           name: __('Fuel'),
-          smooth: true,
           type: "line",
           yAxisIndex: 0,
           itemStyle: {
@@ -246,7 +245,6 @@ class AkashicResourceChart extends React.Component {
         },
         {
           name: __('Ammo'),
-          smooth: true,
           type: "line",
           yAxisIndex: 0,
           symbol: 'roundRect',
@@ -259,7 +257,6 @@ class AkashicResourceChart extends React.Component {
         },
         {
           name: __('Steel'),
-          smooth: true,
           type: "line",
           symbol: 'triangle',
           yAxisIndex: 0,
@@ -272,7 +269,6 @@ class AkashicResourceChart extends React.Component {
         },
         {
           name: __('Bauxite'),
-          smooth: true,
           type: "line",
           symbol: 'diamond',
           yAxisIndex: 0,
