@@ -17,43 +17,10 @@ export function configList(state = getTabs(), action) {
 }
 
 export function configListChecked(state, action) {
-  if (state == null) {
-    state = JSON.parse(config.get(`plugin.Akashic.${action.dataType}.configChecked`,
-      JSON.stringify([true, false, false, true])
-    ))
-  }
-  if (action.type === '@@poi-plugin-akashic-records/SET_CONFIG_LIST') {
-    let newState = state
-    if (state[action.index]) {
-      newState = [
-        ...state.slice(0, action.index),
-        false,
-        ...state.slice(action.index + 1),
-      ]
-    } else {
-      if (action.index < 2) {
-        newState = [
-          ...state.slice(0, action.index),
-          true,
-          ...state.slice(action.index + 1, 2),
-          false,
-          state.slice[3],
-        ]
-      } else if (action.index === 2) {
-        newState = [false, false, true, state[3]]
-      } else {
-        newState = [...state.slice(0, 3), true]
-      }
-    }
-    if (newState !== state) {
-      config.set(`plugin.Akashic.${action.dataType}.configChecked`,
-        JSON.stringify(state)
-      )
-    }
-    return newState
-  } else {
-    return state
-  }
+  state = JSON.parse(config.get(`plugin.Akashic.${action.dataType}.configChecked`,
+    JSON.stringify([false, true, false, false])
+  ))
+  return state
 }
 
 export function checkboxVisible(state, action) {

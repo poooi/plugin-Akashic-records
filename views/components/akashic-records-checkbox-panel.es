@@ -121,33 +121,6 @@ class AkashicRecordsCheckboxPanel extends React.Component {
                     onChange={this.handleShowPageSelect}/>
                 </div>
               </Col>
-              <Col xs={5}>
-              {
-                Array(3).fill().map((_, index) => {
-                  const checkedVal = this.props.configList[index]
-                  return (
-                    <Col key={index} xs={4}>
-                      <Checkbox
-                        value={index}
-                        onChange={this.handleClickConfigCheckbox.bind(this, index)}
-                        checked={this.props.configListChecked[index]} style={{ verticalAlign: 'middle' }}
-                      >
-                        {checkedVal}
-                      </Checkbox>
-                    </Col>
-                  )
-                })
-              }
-              </Col>
-              <Col xs={3}>
-                <Checkbox
-                value={3}
-                onChange={this.handleClickConfigCheckbox.bind(this, 3)}
-                checked={this.props.configListChecked[3]}
-                style={{ verticalAlign: 'middle' }}>
-                  {this.props.configList[3]}
-                </Checkbox>
-              </Col>
             </Row>
           </div>
         </Collapse>
