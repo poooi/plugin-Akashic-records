@@ -50,8 +50,8 @@ class AkashicResourceChart extends React.Component {
 
     props.window.onresize = () => {
       try {
-        const { window } = props
-        window.document.getElementById('ECharts').style.height = `${window.innerHeight - 150}px`
+        // const { window } = props
+        // window.document.getElementById('ECharts').style.height = `${window.innerHeight - 150}px`
         if (this.resourceChart !== 0) {
           this.resourceChart.resize()
         }
@@ -390,7 +390,7 @@ class AkashicResourceChart extends React.Component {
       <Grid>
         <Row>
           <Col xs={12}>
-             <div id="ECharts" style={{ height: "500px" }} ref={(ref) => this.chart = ref}></div>
+             <div id="ECharts" style={{ height: "calc(100vh - 150px)", width: "100vw" }} ref={(ref) => this.chart = ref}></div>
           </Col>
         </Row>
       </Grid>
