@@ -163,25 +163,22 @@ class AkashicRecordsTableArea extends React.Component {
                                   <li>{__("Support the Javascript's ")}<a onClick={openExternal.bind(this, "http://www.w3school.com.cn/jsref/jsref_obj_regexp.asp")}>{"RegExp"}</a></li>
                                 </Popover>
                                 }>
-                                <FontAwesome name='question-circle'/>
+                                <FontAwesome name='question-circle' style={{ marginLeft: "3px"}}/>
                               </OverlayTrigger>
                             </th>
                           ) : (
                             this.props.tabVisibility[index] ? (
                               <th key={index} className="table-search">
-                                <FormGroup controlId={index}>
-                                  <ControlLabel>{showLabel ? this.props.tableTab[index] : ''}</ControlLabel>
-                                  <FormControl
-                                    type='text'
-                                    placeholder={this.props.tableTab[index]}
-                                    ref={(() => {
-                                      const tmp = index
-                                      return (ref) => this.input[`input${tmp}`] = ref
-                                    })()}
-                                    groupClassName='filter-area'
-                                    value={`${this.props.filterKeys[index-1]}`}
-                                    onChange={this.handleKeyWordChange.bind(this, index)} />
-                                </FormGroup>
+                                <FormControl
+                                  type='text'
+                                  placeholder={this.props.tableTab[index]}
+                                  ref={(() => {
+                                    const tmp = index
+                                    return (ref) => this.input[`input${tmp}`] = ref
+                                  })()}
+                                  groupClassName='filter-area'
+                                  value={`${this.props.filterKeys[index-1]}`}
+                                  onChange={this.handleKeyWordChange.bind(this, index)} />
                               </th>
                             ) : null
                           )
