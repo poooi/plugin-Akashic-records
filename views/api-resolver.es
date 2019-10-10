@@ -84,7 +84,7 @@ class APIResolver {
     const {body} = e.detail
     const urlpath = e.detail.path
     switch (urlpath){
-      // 解体
+    // 解体
     case '/kcsapi/api_req_kousyou/destroyship': {
       const _ships = window._ships
       const $shiptypes = window.$shipTypes
@@ -198,8 +198,8 @@ class APIResolver {
           const itemStr = 'api_get_item' + (idx + 1)
           const useItemId =
             (body[itemStr].api_useitem_id <= 0) ?
-            useItemFlag[idx] :
-            body[itemStr].api_useitem_id
+              useItemFlag[idx] :
+              body[itemStr].api_useitem_id
           dataItem.push(
             $useitems[useItemId].api_name,
             body[itemStr].api_useitem_count

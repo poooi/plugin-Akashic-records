@@ -10,7 +10,6 @@ module.exports = {
     'plugin:import/errors',
     'plugin:import/warnings',
   ],
-  'installedESLint': true,
   'parserOptions': {
     'ecmaVersion': 7,
     'ecmaFeatures': {
@@ -59,5 +58,8 @@ module.exports = {
       'lodash',
       'redux',
     ],
+    react: {
+      version: '16.10.0',
+    },
   },
 }

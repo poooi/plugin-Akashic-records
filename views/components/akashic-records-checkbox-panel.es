@@ -30,7 +30,7 @@ class AkashicRecordsCheckboxPanel extends React.Component {
   handlePanelShow = () => {
     const show = !this.props.show
     config.set(`plugin.Akashic.${this.props.contentType}.checkboxPanelShow`,
-               show)
+      show)
     this.props.setPanelVisibilitiy(show)
   }
 
@@ -78,21 +78,21 @@ class AkashicRecordsCheckboxPanel extends React.Component {
         <Collapse className='akashic-records-checkbox-panel' in={this.props.show}>
           <div>
             <Row>
-            {
-              this.props.tableTab.map((checkedVal, index) =>
-                (index) ? (
-                  <Col key={index} xs={2}>
-                    <Checkbox
-                      value={index}
-                      onChange={this.handleClickCheckbox.bind(this, index)}
-                      checked={this.props.tabVisibility[index]}
-                      style={{ verticalAlign: 'middle' }}>
-                      {checkedVal}
-                    </Checkbox>
-                  </Col>
-                ) : null
-              )
-            }
+              {
+                this.props.tableTab.map((checkedVal, index) =>
+                  (index) ? (
+                    <Col key={index} xs={2}>
+                      <Checkbox
+                        value={index}
+                        onChange={this.handleClickCheckbox.bind(this, index)}
+                        checked={this.props.tabVisibility[index]}
+                        style={{ verticalAlign: 'middle' }}>
+                        {checkedVal}
+                      </Checkbox>
+                    </Col>
+                  ) : null
+                )
+              }
             </Row>
             <hr/>
             <Row>

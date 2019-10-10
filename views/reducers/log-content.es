@@ -36,7 +36,7 @@ const logContent = combineReducers({
 function boundActivePageNum(state, dataType) {
   const logLength =
     dataType === 'resource' ? resourceFilter(state).length
-                            : filterSelectors[dataType](state).length
+      : filterSelectors[dataType](state).length
   let { activePage } = state
   activePage = Math.min(activePage, Math.ceil(logLength/state.showAmount))
   activePage = Math.max(activePage, 1)
@@ -52,8 +52,8 @@ export default function (type) {
     else if (action.dataType === type) {
       const ret = logContent(state, action)
       if (['@@poi-plugin-akashic-records/INITIALIZE_LOGS', '@@poi-plugin-akashic-records/SET_FILTER_KEY',
-           '@@poi-plugin-akashic-records/SET_SHOW_AMOUNT', '@@poi-plugin-akashic-records/SET_ACTIVE_PAGE',
-           '@@poi-plugin-akashic-records/SET_TIME_SCALE'].includes(action.type))
+        '@@poi-plugin-akashic-records/SET_SHOW_AMOUNT', '@@poi-plugin-akashic-records/SET_ACTIVE_PAGE',
+        '@@poi-plugin-akashic-records/SET_TIME_SCALE'].includes(action.type))
         return boundActivePageNum(ret, type)
       return ret
     } else if (state == null) {

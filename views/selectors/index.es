@@ -73,7 +73,7 @@ const filterWNindex = (logs, keyword) => {
           searchText = `${searchText}`.toLowerCase().trim()
         }
         return regFlag ? keyword.test(searchText)
-                        : searchText.indexOf(keyword.toLowerCase().trim()) >= 0
+          : searchText.indexOf(keyword.toLowerCase().trim()) >= 0
       })
     })
   }
@@ -118,8 +118,8 @@ const logSelectorFactory = () => {
   const getLogs = (state) => state.data
   const getFilterKeys = (state) =>
     (state.configListChecked[1] || state.configListChecked[2] || !state.configListChecked[3])
-    ? state.filterKeys
-    : emptyArr
+      ? state.filterKeys
+      : emptyArr
   return createSelector([getLogs, getFilterKeys], filterWithIndex)
 }
 

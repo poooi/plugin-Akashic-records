@@ -41,7 +41,7 @@ class AkashicRecordsStatisticsPanel extends React.Component {
   handlePanelShow = () => {
     const show = !this.props.show
     config.set(`plugin.Akashic.${this.props.contentType}.statisticsPanelShow`,
-               show)
+      show)
     this.props.setPanelVisibilitiy(show)
   }
   handleAddSearch = () => {
@@ -80,42 +80,42 @@ class AkashicRecordsStatisticsPanel extends React.Component {
     return (
       <Grid>
         <Row>
-            <Col xs={12}>
-              <div onClick={this.handlePanelShow}>
-                <Divider text={__("Statistics")} icon={true} hr={true} show={this.props.show}/>
-              </div>
-            </Col>
-          </Row>
-          <Collapse className='akashic-records-statistics' in={this.props.show}>
-            <div>
-              <Row>
-                <Col xs={12}>
-                  <Table bordered responsive>
-                    <thead>
-                      <tr>
-                        <th style={{ verticalAlign: 'middle' }}>
-                          <OverlayTrigger trigger='click' rootClose={true} placement='right' overlay={
-                            <Popover title={__("Tips")} id={"regExp-Hint"}>
-                              <li>
-                                {__("Support the Javascript's ")}
-                                <a onClick={openExternal.bind(this, "http://www.w3school.com.cn/jsref/jsref_obj_regexp.asp")}>
-                                  {"RegExp"}
-                                </a>
-                              </li>
-                            </Popover>
-                            }>
-                            <FontAwesome name='question-circle'/>
-                          </OverlayTrigger>
-                        </th>
-                        <th>No.</th>
-                        <th>{__("Base on")}</th>
-                        <th>{__("Keywords")}</th>
-                        <th>{__("Result")}</th>
-                        <th>{__("Sample Size")}</th>
-                        <th>{__("Percentage")}</th>
-                      </tr>
-                    </thead>
-                    <tbody>
+          <Col xs={12}>
+            <div onClick={this.handlePanelShow}>
+              <Divider text={__("Statistics")} icon={true} hr={true} show={this.props.show}/>
+            </div>
+          </Col>
+        </Row>
+        <Collapse className='akashic-records-statistics' in={this.props.show}>
+          <div>
+            <Row>
+              <Col xs={12}>
+                <Table bordered responsive>
+                  <thead>
+                    <tr>
+                      <th style={{ verticalAlign: 'middle' }}>
+                        <OverlayTrigger trigger='click' rootClose={true} placement='right' overlay={
+                          <Popover title={__("Tips")} id={"regExp-Hint"}>
+                            <li>
+                              {__("Support the Javascript's ")}
+                              <a onClick={openExternal.bind(this, "http://www.w3school.com.cn/jsref/jsref_obj_regexp.asp")}>
+                                {"RegExp"}
+                              </a>
+                            </li>
+                          </Popover>
+                        }>
+                          <FontAwesome name='question-circle'/>
+                        </OverlayTrigger>
+                      </th>
+                      <th>No.</th>
+                      <th>{__("Base on")}</th>
+                      <th>{__("Keywords")}</th>
+                      <th>{__("Result")}</th>
+                      <th>{__("Sample Size")}</th>
+                      <th>{__("Percentage")}</th>
+                    </tr>
+                  </thead>
+                  <tbody>
                     {
                       Array(this.props.searchItems.length).fill().map((_, index) => (
                         <tr key={index}>
@@ -161,16 +161,16 @@ class AkashicRecordsStatisticsPanel extends React.Component {
                             </FormControl>
                           </td>
                           <td>
-                             <FormControl
-                                type='text'
-                                placeholder={__("Keywords")}
-                                ref={(() => {
-                                  const tmp = index
-                                  return (ref) => this.input[`search${tmp}`] = ref
-                                })()}
-                                value={this.props.searchItems[index].content}
-                                groupClassName='search-area'
-                                onChange={this.handleSeaRuleKeySet.bind(this, index)} />
+                            <FormControl
+                              type='text'
+                              placeholder={__("Keywords")}
+                              ref={(() => {
+                                const tmp = index
+                                return (ref) => this.input[`search${tmp}`] = ref
+                              })()}
+                              value={this.props.searchItems[index].content}
+                              groupClassName='search-area'
+                              onChange={this.handleSeaRuleKeySet.bind(this, index)} />
                           </td>
                           <td>{this.props.searchItems[index].res}</td>
                           <td>{this.props.searchItems[index].total}</td>
@@ -178,19 +178,19 @@ class AkashicRecordsStatisticsPanel extends React.Component {
                         </tr>
                       ))
                     }
-                    </tbody>
-                    <thead>
-                      <tr>
-                        <th></th>
-                        <th>No.</th>
-                        <th>{__("Numerator")}</th>
-                        <th>{__("Denominator")}</th>
-                        <th>{__("Numerator Number")}</th>
-                        <th>{__("Denominator Number")}</th>
-                        <th>{__("Percentage")}</th>
-                      </tr>
-                    </thead>
-                    <tbody>
+                  </tbody>
+                  <thead>
+                    <tr>
+                      <th></th>
+                      <th>No.</th>
+                      <th>{__("Numerator")}</th>
+                      <th>{__("Denominator")}</th>
+                      <th>{__("Numerator Number")}</th>
+                      <th>{__("Denominator Number")}</th>
+                      <th>{__("Percentage")}</th>
+                    </tr>
+                  </thead>
+                  <tbody>
                     {
                       Array(this.props.statisticsItems.length).fill().map((_, index) => (
                         <tr key={index}>
@@ -299,12 +299,12 @@ class AkashicRecordsStatisticsPanel extends React.Component {
                         </tr>
                       ), this)
                     }
-                    </tbody>
-                  </Table>
-                </Col>
-              </Row>
-            </div>
-          </Collapse>
+                  </tbody>
+                </Table>
+              </Col>
+            </Row>
+          </div>
+        </Collapse>
       </Grid>
     )
   }

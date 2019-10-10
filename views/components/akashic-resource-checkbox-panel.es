@@ -22,22 +22,22 @@ const AkashicResourceCheckboxArea = (props) => {
     <div className='akashic-records-settings'>
       <Grid className='akashic-records-filter'>
         <Row>
-        {
-          props.tableTab.map((checkedVal, index) => index < 2
-            ? null
-            : (
-              <Col key={index} xs={2}>
-                <Checkbox
-                  value={index}
-                  onChange={handleClickCheckbox.bind(this, index)}
-                  checked={props.tabVisibility[index]}
-                  style={{ verticalAlign: 'middle' }}>
-                  {checkedVal}
-                </Checkbox>
-              </Col>
+          {
+            props.tableTab.map((checkedVal, index) => index < 2
+              ? null
+              : (
+                <Col key={index} xs={2}>
+                  <Checkbox
+                    value={index}
+                    onChange={handleClickCheckbox.bind(this, index)}
+                    checked={props.tabVisibility[index]}
+                    style={{ verticalAlign: 'middle' }}>
+                    {checkedVal}
+                  </Checkbox>
+                </Col>
+              )
             )
-          )
-        }
+          }
         </Row>
       </Grid>
     </div>
