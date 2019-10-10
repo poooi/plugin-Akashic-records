@@ -93,7 +93,7 @@ const AkashicRecordsTableTbodyItem = (props) => (
     {
       props.data.map((item, index) => {
         if (index === 0 && props.rowChooseChecked[1]) {
-          return (<td key={index}>{dateToString(new Date(item))}</td>)
+          return (<td key={index}>{dateToString(new Date(+item))}</td>)
         } else if (props.contentType === 'attack' && index === 1) {
           return (props.rowChooseChecked[2]) ? (<td key={index}>{parseMapInfo(item)}</td>) : null
         } else if (props.contentType === 'attack' && index === 7) {
