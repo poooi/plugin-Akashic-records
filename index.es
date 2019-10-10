@@ -81,11 +81,11 @@ class FolderPickerConfig extends Component {
         <Row>
           <Col xs={9}>
             <div className="folder-picker"
-                 onClick={this.folderPickerOnClick}
-                 onDrop={this.folderPickerOnDrop}
-                 onDragEnter={this.onDrag}
-                 onDragOver={this.onDrag}
-                 onDragLeave={this.onDrag}>
+              onClick={this.folderPickerOnClick}
+              onDrop={this.folderPickerOnDrop}
+              onDragEnter={this.onDrag}
+              onDragOver={this.onDrag}
+              onDragLeave={this.onDrag}>
               {this.state.myval}
             </div>
           </Col>
@@ -100,7 +100,7 @@ class FolderPickerConfig extends Component {
 
 export const settingsClass = () => (
   <FolderPickerConfig
-      label={__('Data Folder')}
-      configName="plugin.Akashic.dataPath"
-      defaultVal={config.get("plugin.Akashic.dataPath", APPDATA_PATH)}/>
+    label={__('Data Folder')}
+    configName="plugin.Akashic.dataPath"
+    defaultVal={config.get("plugin.Akashic.dataPath", APPDATA_PATH)}/>
 )

@@ -41,31 +41,31 @@ class ModalTrigger extends React.Component {
     const self = this
     return footer.map((button, index) => (
       <Button key={index}
-              onClick={(e) => {
-                self.handleToggle()
-                button.func()
-              }}
-              bsStyle={button.style}>
+        onClick={(e) => {
+          self.handleToggle()
+          button.func()
+        }}
+        bsStyle={button.style}>
         {button.name}
       </Button>))
   }
   render() {
     return (
-    <Modal autoFocus={true}
-           animation={true}
-           show={this.state.isModalOpen}
-           onHide={this.handleToggle}>
-      <Modal.Header closeButton>
-        <Modal.Title>{this.state.title}</Modal.Title>
-      </Modal.Header>
-      <Modal.Body>
-        {this.state.content}
-      </Modal.Body>
-      <Modal.Footer>
-        <Button onClick={this.handleToggle}>{__('Close')}</Button>
-        {this.renderFooter(this.state.footer)}
-      </Modal.Footer>
-    </Modal>)
+      <Modal autoFocus={true}
+        animation={true}
+        show={this.state.isModalOpen}
+        onHide={this.handleToggle}>
+        <Modal.Header closeButton>
+          <Modal.Title>{this.state.title}</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {this.state.content}
+        </Modal.Body>
+        <Modal.Footer>
+          <Button onClick={this.handleToggle}>{__('Close')}</Button>
+          {this.renderFooter(this.state.footer)}
+        </Modal.Footer>
+      </Modal>)
   }
 }
 

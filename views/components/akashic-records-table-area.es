@@ -84,16 +84,16 @@ const parseMapInfo = (mapStr) => {
 const AkashicRecordsTableTbodyItem = (props) => (
   <tr>
     <td>
-    {
-      (props.contentType === 'attack') ?
-        (<FontAwesome name='info-circle' style={{ marginRight: 3 }} onClick={() => showBattleDetail(props.data[0])}/>) : null
-    }
-    {props.index}
+      {
+        (props.contentType === 'attack') ?
+          (<FontAwesome name='info-circle' style={{ marginRight: 3 }} onClick={() => showBattleDetail(props.data[0])}/>) : null
+      }
+      {props.index}
     </td>
     {
       props.data.map((item, index) => {
         if (index === 0 && props.rowChooseChecked[1]) {
-          return (<td key={index}>{dateToString(new Date(item))}</td>)
+          return (<td key={index}>{dateToString(new Date(+item))}</td>)
         } else if (props.contentType === 'attack' && index === 1) {
           return (props.rowChooseChecked[2]) ? (<td key={index}>{parseMapInfo(item)}</td>) : null
         } else if (props.contentType === 'attack' && index === 7) {
@@ -141,53 +141,53 @@ class AkashicRecordsTableArea extends React.Component {
             <Col xs={12}>
               <Table striped bordered condensed hover>
                 <thead>
-                {
-                  (showLabel && !showFilter) ? (
-                    <tr>
-                    {
-                      this.props.tableTab.map((tab, index) => (
-                        this.props.tabVisibility[index] ? <th key={index}>{tab}</th> : null
-                      ))
-                    }
-                    </tr>
-                  ) : (
-                    (showLabel || showFilter) ? (
+                  {
+                    (showLabel && !showFilter) ? (
                       <tr>
-                      {
-                        this.props.tableTab.map((tab, index) =>
-                          (index === 0) ? (
-                            <th key={index}>
-                              <OverlayTrigger trigger='click' rootClose={true} placement='right' overlay={
-                                <Popover id="table-tips" title={__("Tips")}>
-                                  <li>{__("Disable filtering while hiding column")}</li>
-                                  <li>{__("Support the Javascript's ")}<a onClick={openExternal.bind(this, "http://www.w3school.com.cn/jsref/jsref_obj_regexp.asp")}>{"RegExp"}</a></li>
-                                </Popover>
-                                }>
-                                <FontAwesome name='question-circle' style={{ marginLeft: "3px"}}/>
-                              </OverlayTrigger>
-                            </th>
-                          ) : (
-                            this.props.tabVisibility[index] ? (
-                              <th key={index} className="table-search">
-                                <FormControl
-                                  type='text'
-                                  placeholder={this.props.tableTab[index]}
-                                  ref={(() => {
-                                    const tmp = index
-                                    return (ref) => this.input[`input${tmp}`] = ref
-                                  })()}
-                                  groupClassName='filter-area'
-                                  value={`${this.props.filterKeys[index-1]}`}
-                                  onChange={this.handleKeyWordChange.bind(this, index)} />
-                              </th>
-                            ) : null
-                          )
-                        )
-                      }
+                        {
+                          this.props.tableTab.map((tab, index) => (
+                            this.props.tabVisibility[index] ? <th key={index}>{tab}</th> : null
+                          ))
+                        }
                       </tr>
-                    ) : null
-                  )
-                }
+                    ) : (
+                      (showLabel || showFilter) ? (
+                        <tr>
+                          {
+                            this.props.tableTab.map((tab, index) =>
+                              (index === 0) ? (
+                                <th key={index}>
+                                  <OverlayTrigger trigger='click' rootClose={true} placement='right' overlay={
+                                    <Popover id="table-tips" title={__("Tips")}>
+                                      <li>{__("Disable filtering while hiding column")}</li>
+                                      <li>{__("Support the Javascript's ")}<a onClick={openExternal.bind(this, "http://www.w3school.com.cn/jsref/jsref_obj_regexp.asp")}>{"RegExp"}</a></li>
+                                    </Popover>
+                                  }>
+                                    <FontAwesome name='question-circle' style={{ marginLeft: "3px"}}/>
+                                  </OverlayTrigger>
+                                </th>
+                              ) : (
+                                this.props.tabVisibility[index] ? (
+                                  <th key={index} className="table-search">
+                                    <FormControl
+                                      type='text'
+                                      placeholder={this.props.tableTab[index]}
+                                      ref={(() => {
+                                        const tmp = index
+                                        return (ref) => this.input[`input${tmp}`] = ref
+                                      })()}
+                                      groupClassName='filter-area'
+                                      value={`${this.props.filterKeys[index-1]}`}
+                                      onChange={this.handleKeyWordChange.bind(this, index)} />
+                                  </th>
+                                ) : null
+                              )
+                            )
+                          }
+                        </tr>
+                      ) : null
+                    )
+                  }
                 </thead>
                 <tbody>
                   {

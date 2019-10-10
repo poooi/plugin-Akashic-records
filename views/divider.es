@@ -7,8 +7,8 @@ const Divider = (props) => (
       {`${props.text}  `}
       {
         props.icon ? props.show ? <FontAwesome name='chevron-circle-down' />
-                                          : <FontAwesome name='chevron-circle-right' />
-                        : null
+          : <FontAwesome name='chevron-circle-right' />
+          : null
       }
     </h5>
     {props.hr ? <hr /> : null}

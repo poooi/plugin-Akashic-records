@@ -1,6 +1,7 @@
 const { config } = window
 import CONST from '../lib/constant'
 import { initializeLogs, addLog } from './actions'
+import _ from 'lodash'
 
 import dataCoManager from '../lib/data-co-manager'
 
@@ -84,7 +85,7 @@ class APIResolver {
     const {body} = e.detail
     const urlpath = e.detail.path
     switch (urlpath){
-      // 解体
+    // 解体
     case '/kcsapi/api_req_kousyou/destroyship': {
       const _ships = window._ships
       const $shiptypes = window.$shipTypes
@@ -198,8 +199,8 @@ class APIResolver {
           const itemStr = 'api_get_item' + (idx + 1)
           const useItemId =
             (body[itemStr].api_useitem_id <= 0) ?
-            useItemFlag[idx] :
-            body[itemStr].api_useitem_id
+              useItemFlag[idx] :
+              body[itemStr].api_useitem_id
           dataItem.push(
             $useitems[useItemId].api_name,
             body[itemStr].api_useitem_count
@@ -215,39 +216,43 @@ class APIResolver {
 
     // 开发
     case '/kcsapi/api_req_kousyou/createitem': {
-      if (!this.enableRecord)
+      if (!this.enableRecord) {
         break
+      }
       const {$slotitems, $slotitemTypes} = window
-      const dataItem = [(new Date()).getTime()]
-      if (body.api_create_flag === 0) {
-        const itemId = parseInt(body.api_fdata.split(",")[1])
+      const timestamp = (new Date()).getTime()
+      _.each(body.api_get_items, (item, index) => {
+        const dataItem = [timestamp + index / 10] // apply a dcecimal to avoid key duplicating
+        if (item.api_slotitem_id > -1) {
+          const $item = $slotitems[item.api_slotitem_id]
+          dataItem.push(
+            "成功",
+            $item.api_name,
+            $slotitemTypes[_.get($item, 'api_type.2')].api_name
+          )
+        }
+        else {
+          dataItem.push(
+            "失敗",
+            'NA',
+            'NA'
+          )
+        }
         dataItem.push(
-          "失敗",
-          $slotitems[itemId].api_name,
-          $slotitemTypes[$slotitems[itemId].api_type[2]].api_name
+          postBody.api_item1,
+          postBody.api_item2,
+          postBody.api_item3,
+          postBody.api_item4
         )
-      }
-      else {
+        this._ships = window._ships
+        const _decks = window._decks
         dataItem.push(
-          "成功",
-          $slotitems[body.api_slot_item.api_slotitem_id].api_name,
-          $slotitemTypes[body.api_type3].api_name
+          `${this._ships[_decks[0].api_ship[0]].api_name}(Lv.${this._ships[_decks[0].api_ship[0]].api_lv})`,
+          window._teitokuLv
         )
-      }
-      dataItem.push(
-        postBody.api_item1,
-        postBody.api_item2,
-        postBody.api_item3,
-        postBody.api_item4
-      )
-      this._ships = window._ships
-      const _decks = window._decks
-      dataItem.push(
-        `${this._ships[_decks[0].api_ship[0]].api_name}(Lv.${this._ships[_decks[0].api_ship[0]].api_lv})`,
-        window._teitokuLv
-      )
-      dataCoManager.saveLog(CONST.typeList.createItem, dataItem)
-      this.store.dispatch(addLog(dataItem, CONST.typeList.createItem))
+        dataCoManager.saveLog(CONST.typeList.createItem, dataItem)
+        this.store.dispatch(addLog(dataItem, CONST.typeList.createItem))
+      })
       break
     }
 

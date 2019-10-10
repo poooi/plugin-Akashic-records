@@ -90,7 +90,7 @@ function mapDispatchToProps(dispatch, ownProps) {
   return {
     setPanelVisibilitiy: (show) =>
       dispatch((show) ? showStatisticsPanel(ownProps.contentType)
-                      : hiddenStatisticsPanel(ownProps.contentType)),
+        : hiddenStatisticsPanel(ownProps.contentType)),
     onSeaRuleAdd: () =>
       dispatch(addSearchRule(ownProps.contentType)),
     onSeaRuleDelete: (index) =>

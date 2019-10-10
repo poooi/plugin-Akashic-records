@@ -97,15 +97,15 @@ class AkashicResourceTableArea extends React.Component {
             <Col xs={3}>
               <ButtonGroup justified>
                 <DropdownButton eventKey={4}  id="dropdown-page-selector" title={__("Page %s", `${this.props.activePage}`)}>
-                {
-                  this.props.logs.length > 0 ? Array(this.props.paginationItems).fill().map((_, index) => (
-                    <MenuItem key={index}
-                              eventKey={index}
-                              onSelect={this.handleShowPageSelect}>
-                      {__("Page %s", `${index + 1}`)}
-                    </MenuItem>
-                  )) : null
-                }
+                  {
+                    this.props.logs.length > 0 ? Array(this.props.paginationItems).fill().map((_, index) => (
+                      <MenuItem key={index}
+                        eventKey={index}
+                        onSelect={this.handleShowPageSelect}>
+                        {__("Page %s", `${index + 1}`)}
+                      </MenuItem>
+                    )) : null
+                  }
                 </DropdownButton>
               </ButtonGroup>
             </Col>
@@ -126,37 +126,37 @@ class AkashicResourceTableArea extends React.Component {
                   <tr>
                     {
                       this.props.tableTab.map((tab, index) => (
-                          this.props.tabVisibility[index]
-                            ? <th key={index}>{tab}</th>
-                            : null
+                        this.props.tabVisibility[index]
+                          ? <th key={index}>{tab}</th>
+                          : null
                       ))
                     }
                   </tr>
                 </thead>
                 <tbody>
-                {
-                  Array(Math.min(this.props.activePage * this.props.showAmount, this.props.logs.length) - (this.props.activePage - 1) * this.props.showAmount).fill().map((_, i) => {
-                    const index = (this.props.activePage - 1) * this.props.showAmount + i
-                    const item = this.props.logs[index]
-                    const opt = (index + 1 < this.props.logs.length) ? {
-                      lastFlag: false,
-                      nextItem: this.props.logs[index + 1],
-                    } : {
-                      lastFlag: true,
-                      nextItem: [],
-                    }
-                    return (
-                      <AkashicResourceTableTbodyItem
-                        key = {item[0]}
-                        index = {index+1}
-                        data={item}
-                        nextdata={opt.nextItem}
-                        lastFlag={opt.lastFlag}
-                        rowChooseChecked={this.props.tabVisibility}
-                      />
-                    )
-                  })
-                }
+                  {
+                    Array(Math.min(this.props.activePage * this.props.showAmount, this.props.logs.length) - (this.props.activePage - 1) * this.props.showAmount).fill().map((_, i) => {
+                      const index = (this.props.activePage - 1) * this.props.showAmount + i
+                      const item = this.props.logs[index]
+                      const opt = (index + 1 < this.props.logs.length) ? {
+                        lastFlag: false,
+                        nextItem: this.props.logs[index + 1],
+                      } : {
+                        lastFlag: true,
+                        nextItem: [],
+                      }
+                      return (
+                        <AkashicResourceTableTbodyItem
+                          key = {item[0]}
+                          index = {index+1}
+                          data={item}
+                          nextdata={opt.nextItem}
+                          lastFlag={opt.lastFlag}
+                          rowChooseChecked={this.props.tabVisibility}
+                        />
+                      )
+                    })
+                  }
                 </tbody>
               </Table>
             </Col>

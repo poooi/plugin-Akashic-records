@@ -9,16 +9,8 @@ module.exports = {
     'plugin:react/recommended',
     'plugin:import/errors',
     'plugin:import/warnings',
+    'poi-plugin',
   ],
-  'installedESLint': true,
-  'parserOptions': {
-    'ecmaVersion': 7,
-    'ecmaFeatures': {
-      'experimentalObjectRestSpread': true,
-      'jsx': true,
-    },
-    'sourceType': 'module',
-  },
   'plugins': [
     'import',
     'react',
@@ -38,26 +30,8 @@ module.exports = {
     'no-irregular-whitespace': ['error', {'skipStrings': true, 'skipTemplates': true}],
   },
   'settings': {
-    'import/resolver': {
-      'node': {
-        'extensions': ['', '.js', '.jsx', '.es', '.coffee', '.cjsx'],
-        'paths': [__dirname]
-      },
+    react: {
+      version: '16.10.0',
     },
-    'import/core-modules': [
-      'electron',
-      'electron',
-      'react',
-      'react-dom',
-      'react-redux',
-      'reselect',
-      'react-bootstrap',
-      'react-fontawesome',
-      'path-extra',
-      'fs-extra',
-      'cson',
-      'lodash',
-      'redux',
-    ],
   },
 }

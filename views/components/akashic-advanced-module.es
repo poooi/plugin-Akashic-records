@@ -788,7 +788,7 @@ class AdvancedModule extends React.Component {
                     <li style={{ whiteSpace: "nowrap" }}>{__("or email")} jenningswu@gmail.com </li>
                   </ul>
                 </Popover>
-                }>
+              }>
                 <Button id='question-btn' bsStyle='default' bsSize='large'>
                   <FontAwesome name='question-circle' className="fa-fw" />
                 </Button>
@@ -815,10 +815,10 @@ class AdvancedModule extends React.Component {
               </FormControl>
             </Col>
             <Col xs={4}>
-               <Button bsStyle='primary' style={{width: '100%'}} onClick={this.saveLogHandle}>{__("Export")}</Button>
+              <Button bsStyle='primary' style={{width: '100%'}} onClick={this.saveLogHandle}>{__("Export")}</Button>
             </Col>
             <Col xs={4}>
-               <Button bsStyle='primary' style={{width: '100%'}} onClick={this.importLogHandle}>{__("Import")}</Button>
+              <Button bsStyle='primary' style={{width: '100%'}} onClick={this.importLogHandle}>{__("Import")}</Button>
             </Col>
           </Row>
           <Row style={{marginTop:"10px"}}>

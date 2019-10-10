@@ -1,6 +1,6 @@
 
 const defaultFilterKeys = ['', '', '', '', '', '',
-                           '', '', '', '', '', '']
+  '', '', '', '', '', '']
 
 export default function (state = defaultFilterKeys, action) {
   switch (action.type) {
