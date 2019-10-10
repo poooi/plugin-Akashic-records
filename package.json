@@ -38,6 +38,7 @@
   "devDependencies": {
     "babel-eslint": "^10.0.3",
     "eslint": "^6.5.1",
+    "eslint-config-poi-plugin": "^2.0.0",
     "eslint-plugin-import": "^2.18.2",
     "eslint-plugin-react": "^7.16.0",
     "poi-util-transpile": "^10.3.4"
