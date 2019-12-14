@@ -58,7 +58,7 @@ class FolderPickerConfig extends Component {
   folderPickerOnClick = () => {
     this.synchronize(() => {
       fs.ensureDirSync(this.state.myval)
-      const filenames = dialog.showOpenDialog({
+      const filenames = (dialog.showOpenDialogSync ? dialog.showOpenDialogSync : dialog.showOpenDialog)({
         title: this.props.label,
         defaultPath: this.state.myval,
         properties: ['openDirectory', 'createDirectory'],
@@ -102,5 +102,5 @@ export const settingsClass = () => (
   <FolderPickerConfig
     label={__('Data Folder')}
     configName="plugin.Akashic.dataPath"
-    defaultVal={config.get("plugin.Akashic.dataPath", APPDATA_PATH)}/>
+    defaultVal={config.get("plugin.Akashic.dataPath", APPDATA_PATH)} />
 )
