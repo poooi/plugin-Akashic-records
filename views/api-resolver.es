@@ -29,6 +29,14 @@ const timeToBString = (time) => {
   return `${date.getFullYear()}${date.getMonth()}${date.getDate()}${date.getHours()}`
 }
 
+const seikuText = ['制空均衡','制空権確保','航空優勢','航空劣勢','制空権喪失']
+const lostKindText = [
+  '空襲により備蓄資源に損害を受けました！',
+  '空襲により備蓄資源に損害を受け、基地航空隊にも地上撃破の損害が発生しました！',
+  '空襲により基地航空隊に地上撃破の損害が発生しました！',
+  '空襲による基地の損害はありません。',
+]
+
 
 class APIResolver {
   constructor(store) {
@@ -148,22 +156,37 @@ class APIResolver {
       break
 
     case '/kcsapi/api_req_map/start':
-      this._ships = window._ships
-      this.isStart = true
-      this.battleStart = false
-      break
-
-    case '/kcsapi/api_req_map/next':
+    case '/kcsapi/api_req_map/next': {
+      if (urlpath === '/kcsapi/api_req_map/start') {
+        this.isStart = true
+      }
       this._ships = window._ships
       this.nowDate = new Date().getTime()
       this.battleStart = false
+      const { api_destruction_battle } = body
+      if (api_destruction_battle != null) {
+        const { api_air_base_attack } = api_destruction_battle
+        const parsed_api_air_base_attack =
+          typeof api_air_base_attack === 'string'
+            ? JSON.parse(api_air_base_attack)
+            : api_air_base_attack
+
+        const dataItem = [this.nowDate,'','基地防空戦']
+        dataItem.push(seikuText[parsed_api_air_base_attack.api_stage1.api_disp_seiku] || '奇怪的结果？')
+        dataItem.push(lostKindText[api_destruction_battle.api_lost_kind - 1] || '奇怪的结果？')
+        dataItem.push('','','','','','','')
+        dataCoManager.saveLog(CONST.typeList.attack, dataItem)
+        this.store.dispatch(addLog(dataItem, CONST.typeList.attack))
+      }
       break
+    }
 
     case '/kcsapi/api_req_sortie/battle':
     case '/kcsapi/api_req_battle_midnight/sp_midnight':
     case '/kcsapi/api_req_sortie/airbattle':
     case '/kcsapi/api_req_battle_midnight/battle':
     case '/kcsapi/api_req_combined_battle/airbattle':
+    case '/kcsapi/api_req_combined_battle/ld_airbattle':
     case '/kcsapi/api_req_combined_battle/battle':
     case '/kcsapi/api_req_combined_battle/midnight_battle':
     case '/kcsapi/api_req_combined_battle/sp_midnight':
