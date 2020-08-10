@@ -60,7 +60,7 @@ class APIResolver {
 
   updateUser(forceUpdateLogs = false) {
     if ((window._nickNameId && this.nickNameId !== window._nickNameId) ||
-        forceUpdateLogs) {
+      forceUpdateLogs) {
       this.nickNameId = window._nickNameId
       config.set('plugin.Akashic.nickNameId', this.nickNameId)
       dataCoManager.setNickNameId(this.nickNameId)
@@ -82,9 +82,9 @@ class APIResolver {
   }
 
   handleRequest = (e) => {
-    const {body} = e.detail
+    const { body } = e.detail
     const urlpath = e.detail.path
-    switch (urlpath){
+    switch (urlpath) {
     // 解体
     case '/kcsapi/api_req_kousyou/destroyship': {
       const _ships = window._ships
@@ -104,7 +104,7 @@ class APIResolver {
     }
 
     // 改修
-    case '/kcsapi/api_req_kaisou/powerup':{
+    case '/kcsapi/api_req_kaisou/powerup': {
       const { api_id_items } = e.detail.body
       const _ships = window._ships
       const $shiptypes = window.$shipTypes
@@ -133,7 +133,7 @@ class APIResolver {
       this.updateUser()
       break
 
-    // Map selected rank
+      // Map selected rank
     case '/kcsapi/api_get_member/mapinfo':
       for (const map of body.api_map_info) {
         this.mapLv[map.api_id] = 0
@@ -142,7 +142,7 @@ class APIResolver {
       }
       break
 
-    // Eventmap select report
+      // Eventmap select report
     case '/kcsapi/api_req_map/select_eventmap_rank':
       this.mapLv[parseInt(postBody.api_maparea_id) * 10 + parseInt(postBody.api_map_no)] = parseInt(postBody.api_rank)
       break
@@ -175,11 +175,11 @@ class APIResolver {
       }
       break
 
-    // 远征
+      // 远征
     case '/kcsapi/api_req_mission/result': {
       if (!this.enableRecord)
         break
-      const {$useitems} = window
+      const { $useitems } = window
       const nowDate = new Date()
       const dataItem = [
         nowDate.getTime(),
@@ -198,9 +198,9 @@ class APIResolver {
         if (useItemFlag[idx] > 0) {
           const itemStr = 'api_get_item' + (idx + 1)
           const useItemId =
-            (body[itemStr].api_useitem_id <= 0) ?
-              useItemFlag[idx] :
-              body[itemStr].api_useitem_id
+              (body[itemStr].api_useitem_id <= 0) ?
+                useItemFlag[idx] :
+                body[itemStr].api_useitem_id
           dataItem.push(
             $useitems[useItemId].api_name,
             body[itemStr].api_useitem_count
@@ -219,7 +219,7 @@ class APIResolver {
       if (!this.enableRecord) {
         break
       }
-      const {$slotitems, $slotitemTypes} = window
+      const { $slotitems, $slotitemTypes } = window
       const timestamp = (new Date()).getTime()
       _.each(body.api_get_items, (item, index) => {
         const dataItem = [timestamp + index / 10] // apply a dcecimal to avoid key duplicating
@@ -275,7 +275,7 @@ class APIResolver {
         const _decks = window._decks
         const $ships = window.$ships
         const $shiptypes = window.$shipTypes
-        const apiData = body[this.kdockId-1]
+        const apiData = body[this.kdockId - 1]
         const dataItem = [
           (new Date()).getTime(),
           this.largeFlag ? '大型建造' : '普通建造',
@@ -392,7 +392,7 @@ class APIResolver {
     case 'E':
       dataItem.push('敗北E')
       break
-    default :
+    default:
       dataItem.push(`奇怪的战果？${rank}`)
       break
     }
