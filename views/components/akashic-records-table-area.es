@@ -1,8 +1,6 @@
 import React from 'react'
 import {
   Col,
-  FormGroup,
-  ControlLabel,
   FormControl,
   Grid,
   Row,
@@ -96,8 +94,8 @@ const AkashicRecordsTableTbodyItem = (props) => (
           return (<td key={index}>{dateToString(new Date(+item))}</td>)
         } else if (props.contentType === 'attack' && index === 1) {
           return (props.rowChooseChecked[2]) ? (<td key={index}>{parseMapInfo(item)}</td>) : null
-        } else if (props.contentType === 'attack' && index === 7) {
-          return (props.rowChooseChecked[8]) ? (<td key={index} className="enable-auto-newline">{item}</td>) : null
+        } else if (props.contentType === 'attack' && (index === 4 || index === 5 || index === 7)) {
+          return (props.rowChooseChecked[8]) ? (<td key={index} className="overflow" title={item}>{item}</td>) : null
         } else {
           return (props.rowChooseChecked[index+1]) ? (<td key={index}>{item}</td>) : null
         }
