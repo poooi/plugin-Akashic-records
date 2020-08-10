@@ -634,7 +634,7 @@ class AdvancedModule extends React.Component {
         }
       }
 
-      const filename = dialog.showSaveDialog({
+      const filename = (dialog.showSaveDialogSync ? dialog.showSaveDialogSync : dialog.showSaveDialog)({
         title: `保存${this.state.typeChoosed}记录`,
         defaultPath: `${nickNameId}-${logType}.csv`,
       })
