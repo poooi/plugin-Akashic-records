@@ -81,9 +81,9 @@ const parseMapInfo = (mapStr) => {
 
 const AkashicRecordsTableTbodyItem = (props) => (
   <tr>
-    <td>
+    <td style={{textAlign: "right"}}>
       {
-        (props.contentType === 'attack') ?
+        (props.contentType === 'attack' && props.data[2] !== '基地防空戦') ?
           (<FontAwesome name='info-circle' style={{ marginRight: 3 }} onClick={() => showBattleDetail(props.data[0])}/>) : null
       }
       {props.index}
