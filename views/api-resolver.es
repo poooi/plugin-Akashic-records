@@ -21,7 +21,7 @@ const judgeDanger = (nowHp, deckShipId, _ships) => {
     }
   })
   if (process.env.DEBUG) console.log("战斗结束后剩余HP：#{JSON.stringify nowHp}")
-  return dangerInfo === '' ? '无' : dangerInfo
+  return dangerInfo
 }
 
 const timeToBString = (time) => {
@@ -171,10 +171,17 @@ class APIResolver {
             ? JSON.parse(api_air_base_attack)
             : api_air_base_attack
 
-        const dataItem = [this.nowDate,'','基地防空戦']
-        dataItem.push(seikuText[parsed_api_air_base_attack.api_stage1.api_disp_seiku] || '奇怪的结果？')
-        dataItem.push(lostKindText[api_destruction_battle.api_lost_kind - 1] || '奇怪的结果？')
-        dataItem.push('','','','','','','')
+        const map = parseInt(window.getStore('sortie.sortieMapId'), 10) || 0
+        const quest = window.getStore('const.$maps')[map]?.api_name || ''
+        const mapText = map <= 410
+          ? `${quest}(${Math.floor(map / 10)}-${map % 10})`
+          : `${quest}(${Math.floor(map / 10)}-${map % 10} %rank) | ${this.mapLv[map] || 0}`
+
+        const seiku = seikuText[parsed_api_air_base_attack.api_stage1.api_disp_seiku] || '奇怪的结果'
+        const lostKind = lostKindText[api_destruction_battle.api_lost_kind - 1] || '奇怪的结果'
+        const enemy = ''
+
+        const dataItem = [this.nowDate,mapText,'基地防空戦', seiku, lostKind, enemy,'','','','','','']
         dataCoManager.saveLog(CONST.typeList.attack, dataItem)
         this.store.dispatch(addLog(dataItem, CONST.typeList.attack))
       }

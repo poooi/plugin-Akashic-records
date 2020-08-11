@@ -155,8 +155,8 @@ class AkashicRecordsTableArea extends React.Component {
                             this.props.tableTab.map((tab, index) =>
                               (index === 0) ? (
                                 <th key={index}>
-                                  <OverlayTrigger trigger='click' rootClose={true} placement='right' overlay={
-                                    <Popover id="table-tips" title={__("Tips")}>
+                                  <OverlayTrigger trigger='hover' rootClose={true} placement='right' overlay={
+                                    <Popover id="table-tips" title={__("Tips")} style={{backgroundColor: '#6e6e6e', borderWidth: 0}}>
                                       <li>{__("Disable filtering while hiding column")}</li>
                                       <li>{__("Support the Javascript's ")}<a onClick={openExternal.bind(this, "http://www.w3school.com.cn/jsref/jsref_obj_regexp.asp")}>{"RegExp"}</a></li>
                                     </Popover>
