@@ -1,8 +1,6 @@
 import React from 'react'
 import {
   Col,
-  FormGroup,
-  ControlLabel,
   FormControl,
   Grid,
   Row,
@@ -83,9 +81,9 @@ const parseMapInfo = (mapStr) => {
 
 const AkashicRecordsTableTbodyItem = (props) => (
   <tr>
-    <td>
+    <td style={{textAlign: "right"}}>
       {
-        (props.contentType === 'attack') ?
+        (props.contentType === 'attack' && props.data[2] !== '基地防空戦') ?
           (<FontAwesome name='info-circle' style={{ marginRight: 3 }} onClick={() => showBattleDetail(props.data[0])}/>) : null
       }
       {props.index}
@@ -96,8 +94,8 @@ const AkashicRecordsTableTbodyItem = (props) => (
           return (<td key={index}>{dateToString(new Date(+item))}</td>)
         } else if (props.contentType === 'attack' && index === 1) {
           return (props.rowChooseChecked[2]) ? (<td key={index}>{parseMapInfo(item)}</td>) : null
-        } else if (props.contentType === 'attack' && index === 7) {
-          return (props.rowChooseChecked[8]) ? (<td key={index} className="enable-auto-newline">{item}</td>) : null
+        } else if (props.contentType === 'attack' && (index === 4 || index === 5 || index === 7)) {
+          return (props.rowChooseChecked[8]) ? (<td key={index} className="overflow" title={item}>{item}</td>) : null
         } else {
           return (props.rowChooseChecked[index+1]) ? (<td key={index}>{item}</td>) : null
         }
@@ -157,8 +155,8 @@ class AkashicRecordsTableArea extends React.Component {
                             this.props.tableTab.map((tab, index) =>
                               (index === 0) ? (
                                 <th key={index}>
-                                  <OverlayTrigger trigger='click' rootClose={true} placement='right' overlay={
-                                    <Popover id="table-tips" title={__("Tips")}>
+                                  <OverlayTrigger trigger='hover' rootClose={true} placement='right' overlay={
+                                    <Popover id="table-tips" title={__("Tips")} style={{backgroundColor: '#6e6e6e', borderWidth: 0}}>
                                       <li>{__("Disable filtering while hiding column")}</li>
                                       <li>{__("Support the Javascript's ")}<a onClick={openExternal.bind(this, "http://www.w3school.com.cn/jsref/jsref_obj_regexp.asp")}>{"RegExp"}</a></li>
                                     </Popover>

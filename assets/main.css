@@ -138,8 +138,10 @@
   white-space: nowrap !important;
 }
 
-#akashic-records-main-wrapper table td.enable-auto-newline {
-  white-space: normal !important;
+#akashic-records-main-wrapper table td.overflow {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  max-width: 100px;
 }
 
 #akashic-records-main-wrapper .divider hr{
