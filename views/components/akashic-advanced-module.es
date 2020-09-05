@@ -23,9 +23,6 @@ const translate = (locale, str) => i18next.getFixedT(locale, 'poi-plugin-akashic
 
 const { __ } = window.i18n['poi-plugin-akashic-records']
 
-jschardet.Constants.MINIMUM_THRESHOLD = 0.10
-
-
 function dateCmp(a, b) {
   if (isNaN(a[0]))
     a[0] = (new Date(a[0])).getTime()
@@ -90,471 +87,471 @@ function resolveFile(fileContent, tableTabEn = oriTableTab) {
   let data = null
 
   switch (logs[0]) {
-    case tableTab['en-US'][CONST.typeList.attack]:
-    case tableTab['ja-JP'][CONST.typeList.attack]:
-    case tableTab['zh-CN'][CONST.typeList.attack]:
-    case tableTab['zh-TW'][CONST.typeList.attack]: {
-      logType = CONST.typeList.attack
-      data = logs.slice(1).map((logItem) => {
-        logItem = logItem.split(',')
-        if (logItem.length !== 12) {
-          return []
-        }
-        logItem[0] = (new Date(logItem[0])).getTime()
-        return logItem
-      })
-      data = data.filter((log) => log.length === 12)
-      break
-    }
-    case tableTab['en-US'][CONST.typeList.mission]:
-    case tableTab['ja-JP'][CONST.typeList.mission]:
-    case tableTab['zh-CN'][CONST.typeList.mission]:
-    case tableTab['zh-TW'][CONST.typeList.mission]: {
-      logType = CONST.typeList.mission
-      data = logs.slice(1).map((logItem) => {
-        logItem = logItem.split(',')
-        if (logItem.length !== 11)
-          return []
-        logItem[0] = (new Date(logItem[0])).getTime()
-        return logItem
-      })
-      data = data.filter((log) => log.length === 11)
-      break
-    }
-    case tableTab['en-US'][CONST.typeList.createShip]:
-    case tableTab['ja-JP'][CONST.typeList.createShip]:
-    case tableTab['zh-CN'][CONST.typeList.createShip]:
-    case tableTab['zh-TW'][CONST.typeList.createShip]: {
-      logType = CONST.typeList.createShip
-      data = logs.slice(1).map((logItem) => {
-        logItem = logItem.split(',')
-        if (logItem.length !== 12)
-          return []
-        logItem[0] = (new Date(logItem[0])).getTime()
-        return logItem
-      })
-      data = data.filter((log) => log.length === 12)
-      break
-    }
-    case tableTab['en-US'][CONST.typeList.createItem]:
-    case tableTab['ja-JP'][CONST.typeList.createItem]:
-    case tableTab['zh-CN'][CONST.typeList.createItem]:
-    case tableTab['zh-TW'][CONST.typeList.createItem]: {
-      logType = CONST.typeList.createItem
-      data = logs.slice(1).map((logItem) => {
-        logItem = logItem.split(',')
-        if (logItem.length !== 10)
-          return []
-        logItem[0] = (new Date(logItem[0])).getTime()
-        return logItem
-      })
-      data = data.filter((log) => log.length === 10)
-      break
-    }
-    case tableTab['en-US'][CONST.typeList.retirement]:
-    case tableTab['ja-JP'][CONST.typeList.retirement]:
-    case tableTab['zh-CN'][CONST.typeList.retirement]:
-    case tableTab['zh-TW'][CONST.typeList.retirement]: {
-      logType = CONST.typeList.retirement
-      data = logs.slice(1).map((logItem) => {
-        logItem = logItem.split(',')
-        if (logItem.length !== 4)
-          return []
-        logItem[0] = (new Date(logItem[0])).getTime()
-        return logItem
-      })
-      data = data.filter((log) => log.length === 4)
-      break
-    }
-    case tableTab['en-US'][CONST.typeList.resource]:
-    case tableTab['ja-JP'][CONST.typeList.resource]:
-    case tableTab['zh-CN'][CONST.typeList.resource]:
-    case tableTab['zh-TW'][CONST.typeList.resource]: {
-      logType = CONST.typeList.resource
-      data = logs.slice(1).map((logItem) => {
-        logItem = logItem.split(',')
-        if (logItem.length !== 9)
-          return []
-        logItem[0] = (new Date(logItem[0])).getTime()
-        return logItem
-      })
-      data = data.filter((log) => log.length === 9)
-      break
-    }
+  case tableTab['en-US'][CONST.typeList.attack]:
+  case tableTab['ja-JP'][CONST.typeList.attack]:
+  case tableTab['zh-CN'][CONST.typeList.attack]:
+  case tableTab['zh-TW'][CONST.typeList.attack]: {
+    logType = CONST.typeList.attack
+    data = logs.slice(1).map((logItem) => {
+      logItem = logItem.split(',')
+      if (logItem.length !== 12) {
+        return []
+      }
+      logItem[0] = (new Date(logItem[0])).getTime()
+      return logItem
+    })
+    data = data.filter((log) => log.length === 12)
+    break
+  }
+  case tableTab['en-US'][CONST.typeList.mission]:
+  case tableTab['ja-JP'][CONST.typeList.mission]:
+  case tableTab['zh-CN'][CONST.typeList.mission]:
+  case tableTab['zh-TW'][CONST.typeList.mission]: {
+    logType = CONST.typeList.mission
+    data = logs.slice(1).map((logItem) => {
+      logItem = logItem.split(',')
+      if (logItem.length !== 11)
+        return []
+      logItem[0] = (new Date(logItem[0])).getTime()
+      return logItem
+    })
+    data = data.filter((log) => log.length === 11)
+    break
+  }
+  case tableTab['en-US'][CONST.typeList.createShip]:
+  case tableTab['ja-JP'][CONST.typeList.createShip]:
+  case tableTab['zh-CN'][CONST.typeList.createShip]:
+  case tableTab['zh-TW'][CONST.typeList.createShip]: {
+    logType = CONST.typeList.createShip
+    data = logs.slice(1).map((logItem) => {
+      logItem = logItem.split(',')
+      if (logItem.length !== 12)
+        return []
+      logItem[0] = (new Date(logItem[0])).getTime()
+      return logItem
+    })
+    data = data.filter((log) => log.length === 12)
+    break
+  }
+  case tableTab['en-US'][CONST.typeList.createItem]:
+  case tableTab['ja-JP'][CONST.typeList.createItem]:
+  case tableTab['zh-CN'][CONST.typeList.createItem]:
+  case tableTab['zh-TW'][CONST.typeList.createItem]: {
+    logType = CONST.typeList.createItem
+    data = logs.slice(1).map((logItem) => {
+      logItem = logItem.split(',')
+      if (logItem.length !== 10)
+        return []
+      logItem[0] = (new Date(logItem[0])).getTime()
+      return logItem
+    })
+    data = data.filter((log) => log.length === 10)
+    break
+  }
+  case tableTab['en-US'][CONST.typeList.retirement]:
+  case tableTab['ja-JP'][CONST.typeList.retirement]:
+  case tableTab['zh-CN'][CONST.typeList.retirement]:
+  case tableTab['zh-TW'][CONST.typeList.retirement]: {
+    logType = CONST.typeList.retirement
+    data = logs.slice(1).map((logItem) => {
+      logItem = logItem.split(',')
+      if (logItem.length !== 4)
+        return []
+      logItem[0] = (new Date(logItem[0])).getTime()
+      return logItem
+    })
+    data = data.filter((log) => log.length === 4)
+    break
+  }
+  case tableTab['en-US'][CONST.typeList.resource]:
+  case tableTab['ja-JP'][CONST.typeList.resource]:
+  case tableTab['zh-CN'][CONST.typeList.resource]:
+  case tableTab['zh-TW'][CONST.typeList.resource]: {
+    logType = CONST.typeList.resource
+    data = logs.slice(1).map((logItem) => {
+      logItem = logItem.split(',')
+      if (logItem.length !== 9)
+        return []
+      logItem[0] = (new Date(logItem[0])).getTime()
+      return logItem
+    })
+    data = data.filter((log) => log.length === 9)
+    break
+  }
 
-    // 航海日志扩张版
-    case "No.,日付,海域,マス,出撃,ランク,敵艦隊,ドロップ艦種,ドロップ艦娘,大破艦,旗艦,旗艦(第二艦隊),MVP,MVP(第二艦隊)": {
-      logType = CONST.typeList.attack
-      data = logs.slice(1).map((logItem) => {
-        logItem = logItem.split(',')
-        if (logItem.length !== 14)
-          return []
-        const retData = [(new Date(logItem[1].replace(/-/g, "/"))).getTime()]
-        const tmpArray = logItem[3].match(/:\d+(-\d+)?/g)
-        retData.push`${logItem[2]}(${tmpArray[0].substring(1)})`
-        retData.push(`${tmpArray[1].substring(1)}(${logItem[4] === 'ボス' ? 'Boss点' : '道中'})`)
-        retData.push(logItem[4] === '出撃' ? '出撃' : '進撃')
-        retData.push(logItem[5], logItem[6], logItem[8])
-        retData.push(logItem[9] === '' ? '无' : '有')
-        retData.push(logItem[10], logItem[11], logItem[12], logItem[13])
-        return retData
-      })
-      data = data.filter((log) => log.length === 12)
-      break
-    }
-    case "No.,日付,海域,マス,出撃,ランク,敵艦隊,ドロップ艦種,ドロップ艦娘,ドロップアイテム,大破艦,旗艦,旗艦(第二艦隊),MVP,MVP(第二艦隊)": {
-      logType = CONST.typeList.attack
-      data = logs.slice(1).map((logItem) => {
-        logItem = logItem.split(',')
-        if (logItem.length !== 15)
-          return []
-        const retData = [(new Date(logItem[1].replace(/-/g, "/"))).getTime()]
-        const tmpArray = logItem[3].match(/:\d+(-\d+)?/g)
-        retData.push(`${logItem[2]}(${tmpArray[0].substring(1)})`)
-        retData.push(`${tmpArray[1].substring(1)}(${logItem[4] === 'ボス' ? 'Boss点' : '道中'})`)
-        retData.push(logItem[4] === '出撃' ? '出撃' : '進撃')
-        retData.push(logItem[5], logItem[6])
-        retData.push(`${logItem[8]}${(logItem[8] != '' && logItem[9] != '') ? ' & ' : ''}${logItem[9]}`)
-        retData.push(logItem[10] === '' ? '无' : '有')
-        retData.push(logItem[11], logItem[12], logItem[13], logItem[14])
-        return retData
-      })
-      data = data.filter((log) => log.length === 12)
-      break
-    }
-    case "日付,海域,マス,出撃,ランク,敵艦隊,ドロップ艦種,ドロップ艦娘,大破艦,旗艦,旗艦(第二艦隊),MVP,MVP(第二艦隊)": {
-      logType = CONST.typeList.attack
-      data = logs.slice(1).map((logItem) => {
-        logItem = logItem.split(',')
-        if (logItem.length !== 13)
-          return []
-        const retData = [(new Date(logItem[0].replace(/-/g, "/"))).getTime()]
+  // 航海日志扩张版
+  case "No.,日付,海域,マス,出撃,ランク,敵艦隊,ドロップ艦種,ドロップ艦娘,大破艦,旗艦,旗艦(第二艦隊),MVP,MVP(第二艦隊)": {
+    logType = CONST.typeList.attack
+    data = logs.slice(1).map((logItem) => {
+      logItem = logItem.split(',')
+      if (logItem.length !== 14)
+        return []
+      const retData = [(new Date(logItem[1].replace(/-/g, "/"))).getTime()]
+      const tmpArray = logItem[3].match(/:\d+(-\d+)?/g)
+      retData.push`${logItem[2]}(${tmpArray[0].substring(1)})`
+      retData.push(`${tmpArray[1].substring(1)}(${logItem[4] === 'ボス' ? 'Boss点' : '道中'})`)
+      retData.push(logItem[4] === '出撃' ? '出撃' : '進撃')
+      retData.push(logItem[5], logItem[6], logItem[8])
+      retData.push(logItem[9] === '' ? '无' : '有')
+      retData.push(logItem[10], logItem[11], logItem[12], logItem[13])
+      return retData
+    })
+    data = data.filter((log) => log.length === 12)
+    break
+  }
+  case "No.,日付,海域,マス,出撃,ランク,敵艦隊,ドロップ艦種,ドロップ艦娘,ドロップアイテム,大破艦,旗艦,旗艦(第二艦隊),MVP,MVP(第二艦隊)": {
+    logType = CONST.typeList.attack
+    data = logs.slice(1).map((logItem) => {
+      logItem = logItem.split(',')
+      if (logItem.length !== 15)
+        return []
+      const retData = [(new Date(logItem[1].replace(/-/g, "/"))).getTime()]
+      const tmpArray = logItem[3].match(/:\d+(-\d+)?/g)
+      retData.push(`${logItem[2]}(${tmpArray[0].substring(1)})`)
+      retData.push(`${tmpArray[1].substring(1)}(${logItem[4] === 'ボス' ? 'Boss点' : '道中'})`)
+      retData.push(logItem[4] === '出撃' ? '出撃' : '進撃')
+      retData.push(logItem[5], logItem[6])
+      retData.push(`${logItem[8]}${(logItem[8] != '' && logItem[9] != '') ? ' & ' : ''}${logItem[9]}`)
+      retData.push(logItem[10] === '' ? '无' : '有')
+      retData.push(logItem[11], logItem[12], logItem[13], logItem[14])
+      return retData
+    })
+    data = data.filter((log) => log.length === 12)
+    break
+  }
+  case "日付,海域,マス,出撃,ランク,敵艦隊,ドロップ艦種,ドロップ艦娘,大破艦,旗艦,旗艦(第二艦隊),MVP,MVP(第二艦隊)": {
+    logType = CONST.typeList.attack
+    data = logs.slice(1).map((logItem) => {
+      logItem = logItem.split(',')
+      if (logItem.length !== 13)
+        return []
+      const retData = [(new Date(logItem[0].replace(/-/g, "/"))).getTime()]
+      const tmpArray = logItem[2].match(/:\d+(-\d+)?/g)
+      retData.push(`${logItem[1]}(${tmpArray[0].substring(1)})`)
+      retData.push(`${tmpArray[1].substring(1)}(${logItem[3] === 'ボス' ? 'Boss点' : '道中'})`)
+      retData.push(logItem[3] === '出撃' ? '出撃' : '進撃')
+      retData.push(logItem[4], logItem[5], logItem[7])
+      retData.push(logItem[8] === '' ? '无' : '有')
+      retData.push(logItem[9], logItem[10], logItem[11], logItem[12])
+      return retData
+    })
+    data = data.filter((log) => log.length === 12)
+    break
+  }
+  case "日付,海域,マス,ランク,敵艦隊,ドロップ艦種,ドロップ艦娘,味方艦1,味方艦1HP,味方艦2,味方艦2HP,味方艦3,味方艦3HP,味方艦4,味方艦4HP,味方艦5,味方艦5HP,味方艦6,味方艦6HP,敵艦1,敵艦1HP,敵艦2,敵艦2HP,敵艦3,敵艦3HP,敵艦4,敵艦4HP,敵艦5,敵艦5HP,敵艦6,敵艦6HP": {
+    logType = CONST.typeList.attack
+    data = logs.slice(1).map((logItem) => {
+      logItem = logItem.split(',')
+      if (logItem.length !== 31)
+        return []
+      const retData = [(new Date(logItem[0].replace(/-/g, "/"))).getTime()]
+      if (!isNaN(logItem[2])) {
+        retData.push(logItem[1], logItem[2])
+        retData.push('')
+        retData.push(logItem[3], logItem[4], logItem[6])
+        retData.push('')
+        retData.push(logItem[7], '', '', '')
+      } else {
         const tmpArray = logItem[2].match(/:\d+(-\d+)?/g)
         retData.push(`${logItem[1]}(${tmpArray[0].substring(1)})`)
-        retData.push(`${tmpArray[1].substring(1)}(${logItem[3] === 'ボス' ? 'Boss点' : '道中'})`)
-        retData.push(logItem[3] === '出撃' ? '出撃' : '進撃')
-        retData.push(logItem[4], logItem[5], logItem[7])
-        retData.push(logItem[8] === '' ? '无' : '有')
-        retData.push(logItem[9], logItem[10], logItem[11], logItem[12])
-        return retData
-      })
-      data = data.filter((log) => log.length === 12)
-      break
-    }
-    case "日付,海域,マス,ランク,敵艦隊,ドロップ艦種,ドロップ艦娘,味方艦1,味方艦1HP,味方艦2,味方艦2HP,味方艦3,味方艦3HP,味方艦4,味方艦4HP,味方艦5,味方艦5HP,味方艦6,味方艦6HP,敵艦1,敵艦1HP,敵艦2,敵艦2HP,敵艦3,敵艦3HP,敵艦4,敵艦4HP,敵艦5,敵艦5HP,敵艦6,敵艦6HP": {
-      logType = CONST.typeList.attack
-      data = logs.slice(1).map((logItem) => {
-        logItem = logItem.split(',')
-        if (logItem.length !== 31)
-          return []
-        const retData = [(new Date(logItem[0].replace(/-/g, "/"))).getTime()]
-        if (!isNaN(logItem[2])) {
-          retData.push(logItem[1], logItem[2])
-          retData.push('')
-          retData.push(logItem[3], logItem[4], logItem[6])
-          retData.push('')
-          retData.push(logItem[7], '', '', '')
-        } else {
-          const tmpArray = logItem[2].match(/:\d+(-\d+)?/g)
-          retData.push(`${logItem[1]}(${tmpArray[0].substring(1)})`)
-          retData.push(`${tmpArray[1].substring(1)}(${logItem[2].indexOf('ボス') > -1 ? 'Boss点' : '道中'})`)
-          retData.push('')
-          retData.push(logItem[3], logItem[4], logItem[6])
-          retData.push('')
-          retData.push(logItem[7], '', '', '')
-        }
-        return retData
-      })
-      data = data.filter((log) => log.length === 12)
-      break
-    }
-    case "日付,結果,遠征,燃料,弾薬,鋼材,ボーキ": {
-      logType = CONST.typeList.mission
-      data = logs.slice(1).map((logItem) => {
-        logItem = logItem.split(',')
-        if (logItem.length !== 7)
-          return []
+        retData.push(`${tmpArray[1].substring(1)}(${logItem[2].indexOf('ボス') > -1 ? 'Boss点' : '道中'})`)
+        retData.push('')
+        retData.push(logItem[3], logItem[4], logItem[6])
+        retData.push('')
+        retData.push(logItem[7], '', '', '')
+      }
+      return retData
+    })
+    data = data.filter((log) => log.length === 12)
+    break
+  }
+  case "日付,結果,遠征,燃料,弾薬,鋼材,ボーキ": {
+    logType = CONST.typeList.mission
+    data = logs.slice(1).map((logItem) => {
+      logItem = logItem.split(',')
+      if (logItem.length !== 7)
+        return []
+      return [
+        (new Date(logItem[0].replace(/-/g, "/"))).getTime(),
+        logItem[2],
+        logItem[1],
+        logItem[3],
+        logItem[4],
+        logItem[5],
+        logItem[6],
+        '', '', '', '',
+      ]
+    })
+    data = data.filter((log) => log.length === 11)
+    break
+  }
+  case "No.,日付,結果,遠征,燃料,弾薬,鋼材,ボーキ,アイテム1,個数,アイテム2,個数": {
+    logType = CONST.typeList.mission
+    data = logs.slice(1).map((logItem) => {
+      logItem = logItem.split(',')
+      if (logItem.length !== 12)
+        return []
+      return [
+        (new Date(logItem[1].replace(/-/g, "/"))).getTime(),
+        logItem[3],
+        logItem[2],
+        logItem[4],
+        logItem[5],
+        logItem[6],
+        logItem[7],
+        logItem[8],
+        logItem[9],
+        logItem[10],
+        logItem[11],
+      ]
+    })
+    data = data.filter((log) => log.length === 11)
+    break
+  }
+  case "日付,結果,遠征,燃料,弾薬,鋼材,ボーキ,アイテム1,個数,アイテム2,個数": {
+    logType = CONST.typeList.mission
+    data = logs.slice(1).map((logItem) => {
+      logItem = logItem.split(',')
+      if (logItem.length !== 11)
+        return []
+      return [
+        (new Date(logItem[1].replace(/-/g, "/"))).getTime(),
+        logItem[2],
+        logItem[1],
+        logItem[3],
+        logItem[4],
+        logItem[5],
+        logItem[6],
+        logItem[7],
+        logItem[8],
+        logItem[9],
+        logItem[10],
+      ]
+    })
+    data = data.filter((log) => log.length === 11)
+    break
+  }
+  case "No.,日付,種類,名前,艦種,燃料,弾薬,鋼材,ボーキ,開発資材,空きドック,秘書艦,司令部Lv": {
+    logType = CONST.typeList.createShip
+    data = logs.slice(1).map((logItem) => {
+      logItem = logItem.split(',')
+      if (logItem.length !== 13)
+        return []
+      return [
+        (new Date(logItem[1].replace(/-/g, "/"))).getTime(),
+        logItem[2] === '通常艦建造' ? '普通建造' : '大型建造',
+        ...logItem.slice(3, 13),
+      ]
+    })
+    data = data.filter((log) => log.length === 12)
+    break
+  }
+  case "日付,種類,名前,艦種,燃料,弾薬,鋼材,ボーキ,開発資材,空きドック,秘書艦,司令部Lv": {
+    logType = CONST.typeList.createShip
+    data = logs.slice(1).map((logItem) => {
+      logItem = logItem.split(',')
+      if (logItem.length !== 12)
+        return []
+      return [
+        (new Date(logItem[0].replace(/-/g, "/"))).getTime(),
+        logItem[1] === '通常艦建造' ? '普通建造' : '大型建造',
+        ...logItem.slice(2, 12),
+      ]
+    })
+    data = data.filter((log) => log.length === 12)
+    break
+  }
+  case "No.,日付,開発装備,種別,燃料,弾薬,鋼材,ボーキ,秘書艦,司令部Lv": {
+    logType = CONST.typeList.createItem
+    data = logs.slice(1).map((logItem) => {
+      logItem = logItem.split(',')
+      if (logItem.length !== 10)
+        return []
+      const retData = [(new Date(logItem[1].replace(/-/g, "/"))).getTime()]
+      if (logItem[2] === "失敗") {
+        retData.push('失败', '', '')
+      } else {
+        retData.push('成功', logItem[2], logItem[3])
+      }
+      retData.push(...logItem.slice(4, 10))
+      return retData
+    })
+    data = data.filter((log) => log.length === 10)
+    break
+  }
+  case "日付,開発装備,種別,燃料,弾薬,鋼材,ボーキ,秘書艦,司令部Lv": {
+    logType = CONST.typeList.createItem
+    data = logs.slice(1).map((logItem) => {
+      logItem = logItem.split(',')
+      if (logItem.length !== 9)
+        return []
+      const retData = [(new Date(logItem[0].replace(/-/g, "/"))).getTime()]
+      if (logItem[1] === "失敗") {
+        retData.push('失败', '', '')
+      } else {
+        retData.push('成功', logItem[1], logItem[2])
+      }
+      retData.push(...logItem.slice(3, 9))
+      return retData
+    })
+    data = data.filter((log) => log.length === 10)
+    break
+  }
+  case "日付,直前のイベント,燃料,弾薬,鋼材,ボーキ,高速修復材,高速建造材,開発資材,改修資材": {
+    logType = CONST.typeList.resource
+    data = logs.slice(1).map((logItem) => {
+      logItem = logItem.split(',')
+      if ((logItem.length !== 10) && (logItem.length !== 12))
+        return []
+      return [
+        (new Date(logItem[0].replace(/-/g, "/"))).getTime(),
+        ...logItem.slice(2, 6),
+        logItem[7],
+        logItem[6],
+        logItem[8],
+        logItem[9],
+      ]
+    })
+    data = data.filter((log) => log.length === 9)
+    break
+  }
+  case "日付,燃料,弾薬,鋼材,ボーキ,高速修復材,高速建造材,開発資材,改修資材": {
+    logType = CONST.typeList.resource
+    data = logs.slice(1).map((logItem) => {
+      logItem = logItem.split(',')
+      if ((logItem.length !== 9) && (logItem.length !== 11))
+        return []
+      return [
+        (new Date(logItem[0].replace(/-/g, "/"))).getTime(),
+        ...logItem.slice(1, 5),
+        logItem[6],
+        logItem[5],
+        logItem[7],
+        logItem[8],
+      ]
+    })
+    data = data.filter((log) => log.length === 9)
+    break
+  }
+  case "日付,燃料,弾薬,鋼材,ボーキ,高速修復材,高速建造材,開発資材": {
+    logType = CONST.typeList.resource
+    data = logs.slice(1).map((logItem) => {
+      logItem = logItem.split(',')
+      if (logItem.length !== 8)
+        return []
+      return [
+        (new Date(logItem[0].replace(/-/g, "/"))).getTime(),
+        ...logItem.slice(1, 5),
+        logItem[6],
+        logItem[5],
+        logItem[7],
+        '0',
+      ]
+    })
+    data = data.filter((log) => log.length === 9)
+    break
+  }
+  case "日付,種別,個別ID,名前,原因": {
+    logType = CONST.typeList.retirement
+    data = logs.slice(1).map((logItem) => {
+      logItem = logItem.split(',')
+      if (logItem.length !== 5)
+        return []
+      if (logItem[1] === "艦娘")
         return [
           (new Date(logItem[0].replace(/-/g, "/"))).getTime(),
-          logItem[2],
-          logItem[1],
+          logItem[4].length > 4 ? logItem[4].substring(3).trim() : logItem[4].trim(),
+          '',
           logItem[3],
-          logItem[4],
-          logItem[5],
-          logItem[6],
-          '', '', '', '',
         ]
-      })
-      data = data.filter((log) => log.length === 11)
-      break
-    }
-    case "No.,日付,結果,遠征,燃料,弾薬,鋼材,ボーキ,アイテム1,個数,アイテム2,個数": {
-      logType = CONST.typeList.mission
-      data = logs.slice(1).map((logItem) => {
-        logItem = logItem.split(',')
-        if (logItem.length !== 12)
-          return []
-        return [
-          (new Date(logItem[1].replace(/-/g, "/"))).getTime(),
-          logItem[3],
-          logItem[2],
-          logItem[4],
-          logItem[5],
-          logItem[6],
-          logItem[7],
-          logItem[8],
-          logItem[9],
-          logItem[10],
-          logItem[11],
-        ]
-      })
-      data = data.filter((log) => log.length === 11)
-      break
-    }
-    case "日付,結果,遠征,燃料,弾薬,鋼材,ボーキ,アイテム1,個数,アイテム2,個数": {
-      logType = CONST.typeList.mission
-      data = logs.slice(1).map((logItem) => {
-        logItem = logItem.split(',')
-        if (logItem.length !== 11)
-          return []
-        return [
-          (new Date(logItem[1].replace(/-/g, "/"))).getTime(),
-          logItem[2],
-          logItem[1],
-          logItem[3],
-          logItem[4],
-          logItem[5],
-          logItem[6],
-          logItem[7],
-          logItem[8],
-          logItem[9],
-          logItem[10],
-        ]
-      })
-      data = data.filter((log) => log.length === 11)
-      break
-    }
-    case "No.,日付,種類,名前,艦種,燃料,弾薬,鋼材,ボーキ,開発資材,空きドック,秘書艦,司令部Lv": {
-      logType = CONST.typeList.createShip
-      data = logs.slice(1).map((logItem) => {
-        logItem = logItem.split(',')
-        if (logItem.length !== 13)
-          return []
-        return [
-          (new Date(logItem[1].replace(/-/g, "/"))).getTime(),
-          logItem[2] === '通常艦建造' ? '普通建造' : '大型建造',
-          ...logItem.slice(3, 13),
-        ]
-      })
-      data = data.filter((log) => log.length === 12)
-      break
-    }
-    case "日付,種類,名前,艦種,燃料,弾薬,鋼材,ボーキ,開発資材,空きドック,秘書艦,司令部Lv": {
-      logType = CONST.typeList.createShip
-      data = logs.slice(1).map((logItem) => {
-        logItem = logItem.split(',')
-        if (logItem.length !== 12)
-          return []
-        return [
-          (new Date(logItem[0].replace(/-/g, "/"))).getTime(),
-          logItem[1] === '通常艦建造' ? '普通建造' : '大型建造',
-          ...logItem.slice(2, 12),
-        ]
-      })
-      data = data.filter((log) => log.length === 12)
-      break
-    }
-    case "No.,日付,開発装備,種別,燃料,弾薬,鋼材,ボーキ,秘書艦,司令部Lv": {
-      logType = CONST.typeList.createItem
-      data = logs.slice(1).map((logItem) => {
-        logItem = logItem.split(',')
-        if (logItem.length !== 10)
-          return []
-        const retData = [(new Date(logItem[1].replace(/-/g, "/"))).getTime()]
-        if (logItem[2] === "失敗") {
-          retData.push('失败', '', '')
-        } else {
-          retData.push('成功', logItem[2], logItem[3])
-        }
-        retData.push(...logItem.slice(4, 10))
-        return retData
-      })
-      data = data.filter((log) => log.length === 10)
-      break
-    }
-    case "日付,開発装備,種別,燃料,弾薬,鋼材,ボーキ,秘書艦,司令部Lv": {
-      logType = CONST.typeList.createItem
-      data = logs.slice(1).map((logItem) => {
-        logItem = logItem.split(',')
-        if (logItem.length !== 9)
-          return []
-        const retData = [(new Date(logItem[0].replace(/-/g, "/"))).getTime()]
-        if (logItem[1] === "失敗") {
-          retData.push('失败', '', '')
-        } else {
-          retData.push('成功', logItem[1], logItem[2])
-        }
-        retData.push(...logItem.slice(3, 9))
-        return retData
-      })
-      data = data.filter((log) => log.length === 10)
-      break
-    }
-    case "日付,直前のイベント,燃料,弾薬,鋼材,ボーキ,高速修復材,高速建造材,開発資材,改修資材": {
-      logType = CONST.typeList.resource
-      data = logs.slice(1).map((logItem) => {
-        logItem = logItem.split(',')
-        if ((logItem.length !== 10) && (logItem.length !== 12))
-          return []
-        return [
-          (new Date(logItem[0].replace(/-/g, "/"))).getTime(),
-          ...logItem.slice(2, 6),
-          logItem[7],
-          logItem[6],
-          logItem[8],
-          logItem[9],
-        ]
-      })
-      data = data.filter((log) => log.length === 9)
-      break
-    }
-    case "日付,燃料,弾薬,鋼材,ボーキ,高速修復材,高速建造材,開発資材,改修資材": {
-      logType = CONST.typeList.resource
-      data = logs.slice(1).map((logItem) => {
-        logItem = logItem.split(',')
-        if ((logItem.length !== 9) && (logItem.length !== 11))
-          return []
-        return [
-          (new Date(logItem[0].replace(/-/g, "/"))).getTime(),
-          ...logItem.slice(1, 5),
-          logItem[6],
-          logItem[5],
-          logItem[7],
-          logItem[8],
-        ]
-      })
-      data = data.filter((log) => log.length === 9)
-      break
-    }
-    case "日付,燃料,弾薬,鋼材,ボーキ,高速修復材,高速建造材,開発資材": {
-      logType = CONST.typeList.resource
-      data = logs.slice(1).map((logItem) => {
-        logItem = logItem.split(',')
-        if (logItem.length !== 8)
-          return []
-        return [
-          (new Date(logItem[0].replace(/-/g, "/"))).getTime(),
-          ...logItem.slice(1, 5),
-          logItem[6],
-          logItem[5],
-          logItem[7],
-          '0',
-        ]
-      })
-      data = data.filter((log) => log.length === 9)
-      break
-    }
-    case "日付,種別,個別ID,名前,原因": {
-      logType = CONST.typeList.retirement
-      data = logs.slice(1).map((logItem) => {
-        logItem = logItem.split(',')
-        if (logItem.length !== 5)
-          return []
-        if (logItem[1] === "艦娘")
-          return [
-            (new Date(logItem[0].replace(/-/g, "/"))).getTime(),
-            logItem[4].length > 4 ? logItem[4].substring(3).trim() : logItem[4].trim(),
-            '',
-            logItem[3],
-          ]
-        else return []
-      })
-      data = data.filter((log) => log.length === 4)
-      break
-    }
+      else return []
+    })
+    data = data.filter((log) => log.length === 4)
+    break
+  }
 
-    // KCV yuyuvn版
-    case "Date,Result,Operation,Enemy Fleet,Rank": {
-      logType = CONST.typeList.attack
-      data = logs.slice(1).map((logItem) => {
-        logItem = logItem.split(',')
-        if (logItem.length !== 6)
-          return []
-        return [
-          (new Date(logItem[0].replace(/-/g, "/"))).getTime(),
-          logItem[2],
-          '',
-          '',
-          logItem[4],
-          logItem[3],
-          logItem[1],
-          '', '', '', '', '',
-        ]
-      })
-      data = data.filter((log) => log.length === 12)
-      break
-    }
-    case "Date,Result,Secretary,Secretary level,Fuel,Ammo,Steel,Bauxite": {
-      logType = CONST.typeList.createItem
-      data = logs.slice(1).map((logItem) => {
-        logItem = logItem.split(',')
-        if (logItem.length !== 9)
-          return []
-        const retData = [(new Date(logItem[0].replace(/-/g, "/"))).getTime()]
-        if (logItem[1] === 'Penguin') {
-          retData.push('失败', '', '')
-        } else {
-          retData.push('成功', logItem[1], '')
-        }
-        retData.push(...logItem.slice(4, 8), `${logItem[2]}(Lv.${logItem[3]})`, '')
-        return retData
-      })
-      data = data.filter((log) => log.length === 10)
-      break
-    }
-    case "Date,Result,Secretary,Secretary level,Fuel,Ammo,Steel,Bauxite,# of Build Materials": {
-      logType = CONST.typeList.createShip
-      data = logs.slice(1).map((logItem) => {
-        logItem = logItem.split(',')
-        if (logItem.length !== 10)
-          return []
-        return [
-          (new Date(logItem[0].replace(/-/g, "/"))).getTime(),
-          logItem[4] < 1000 ? '普通建造' : '大型建造',
-          logItem[1],
-          '',
-          ...logItem.slice(4, 9),
-          '',
-          `${logItem[2]}(Lv.${logItem[3]})`,
-          '',
-        ]
-      })
-      data = data.filter((log) => log.length === 12)
-      break
-    }
-    case "Date,Fuel,Ammunition,Steel,Bauxite,DevKits,Buckets,Flamethrowers": {
-      logType = CONST.typeList.resource
-      data = logs.slice(1).map((logItem) => {
-        logItem = logItem.split(',')
-        if (logItem.length !== 9)
-          return []
-        return [
-          (new Date(logItem[0].replace(/-/g, "/"))).getTime(),
-          ...logItem.slice(1, 5),
-          logItem[7],
-          logItem[6],
-          logItem[5],
-          '0',
-        ]
-      })
-      data = data.filter((log) => log.length === 9)
-      break
-    }
-    default: {
-      const e = new Error()
-      e.message = __("The encoding or file is not supported")
-      throw (e)
-    }
+  // KCV yuyuvn版
+  case "Date,Result,Operation,Enemy Fleet,Rank": {
+    logType = CONST.typeList.attack
+    data = logs.slice(1).map((logItem) => {
+      logItem = logItem.split(',')
+      if (logItem.length !== 6)
+        return []
+      return [
+        (new Date(logItem[0].replace(/-/g, "/"))).getTime(),
+        logItem[2],
+        '',
+        '',
+        logItem[4],
+        logItem[3],
+        logItem[1],
+        '', '', '', '', '',
+      ]
+    })
+    data = data.filter((log) => log.length === 12)
+    break
+  }
+  case "Date,Result,Secretary,Secretary level,Fuel,Ammo,Steel,Bauxite": {
+    logType = CONST.typeList.createItem
+    data = logs.slice(1).map((logItem) => {
+      logItem = logItem.split(',')
+      if (logItem.length !== 9)
+        return []
+      const retData = [(new Date(logItem[0].replace(/-/g, "/"))).getTime()]
+      if (logItem[1] === 'Penguin') {
+        retData.push('失败', '', '')
+      } else {
+        retData.push('成功', logItem[1], '')
+      }
+      retData.push(...logItem.slice(4, 8), `${logItem[2]}(Lv.${logItem[3]})`, '')
+      return retData
+    })
+    data = data.filter((log) => log.length === 10)
+    break
+  }
+  case "Date,Result,Secretary,Secretary level,Fuel,Ammo,Steel,Bauxite,# of Build Materials": {
+    logType = CONST.typeList.createShip
+    data = logs.slice(1).map((logItem) => {
+      logItem = logItem.split(',')
+      if (logItem.length !== 10)
+        return []
+      return [
+        (new Date(logItem[0].replace(/-/g, "/"))).getTime(),
+        logItem[4] < 1000 ? '普通建造' : '大型建造',
+        logItem[1],
+        '',
+        ...logItem.slice(4, 9),
+        '',
+        `${logItem[2]}(Lv.${logItem[3]})`,
+        '',
+      ]
+    })
+    data = data.filter((log) => log.length === 12)
+    break
+  }
+  case "Date,Fuel,Ammunition,Steel,Bauxite,DevKits,Buckets,Flamethrowers": {
+    logType = CONST.typeList.resource
+    data = logs.slice(1).map((logItem) => {
+      logItem = logItem.split(',')
+      if (logItem.length !== 9)
+        return []
+      return [
+        (new Date(logItem[0].replace(/-/g, "/"))).getTime(),
+        ...logItem.slice(1, 5),
+        logItem[7],
+        logItem[6],
+        logItem[5],
+        '0',
+      ]
+    })
+    data = data.filter((log) => log.length === 9)
+    break
+  }
+  default: {
+    const e = new Error()
+    e.message = __("The encoding or file is not supported")
+    throw (e)
+  }
   }
   return {
     logType: logType,
@@ -596,33 +593,33 @@ class AdvancedModule extends React.Component {
     let data = null
     if (nickNameId && nickNameId !== 0) {
       switch (this.state.typeChoosed) {
-        case '出击':
-          logType = CONST.typeList.attack
-          data = this.props.attackData
-          break
-        case '远征':
-          logType = CONST.typeList.mission
-          data = this.props.missionData
-          break
-        case '建造':
-          logType = CONST.typeList.createShip
-          data = this.props.createShipData
-          break
-        case '开发':
-          logType = CONST.typeList.createItem
-          data = this.props.createItemData
-          break
-        case '除籍':
-          logType = CONST.typeList.retirement
-          data = this.props.retirementData
-          break
-        case '资源':
-          logType = CONST.typeList.resource
-          data = this.props.resourceData
-          break
-        default:
-          this.showMessage('发生错误！请报告开发者')
-          return
+      case '出击':
+        logType = CONST.typeList.attack
+        data = this.props.attackData
+        break
+      case '远征':
+        logType = CONST.typeList.mission
+        data = this.props.missionData
+        break
+      case '建造':
+        logType = CONST.typeList.createShip
+        data = this.props.createShipData
+        break
+      case '开发':
+        logType = CONST.typeList.createItem
+        data = this.props.createItemData
+        break
+      case '除籍':
+        logType = CONST.typeList.retirement
+        data = this.props.retirementData
+        break
+      case '资源':
+        logType = CONST.typeList.resource
+        data = this.props.resourceData
+        break
+      default:
+        this.showMessage('发生错误！请报告开发者')
+        return
       }
 
       let codeType = 'utf8'
@@ -678,22 +675,22 @@ class AdvancedModule extends React.Component {
       try {
         fs.accessSync(filename[0], fs.R_OK)
         const fileContentBuffer = fs.readFileSync(filename[0])
-        const codeType = jschardet.detect(fileContentBuffer).encoding
+        const codeType = jschardet.detect(fileContentBuffer, {minimumThreshold: 0.1}).encoding
         let fileContent = null
         switch (codeType) {
-          case 'UTF-8':
-            fileContent = fileContentBuffer.toString()
-            break
-          case 'GB2312':
-          case 'GB18030':
-          case 'GBK':
-            fileContent = iconv.decode(fileContentBuffer, 'GBK')
-            break
-          case 'SHIFT_JIS':
-            fileContent = iconv.decode(fileContentBuffer, 'shiftjis')
-            break
-          default:
-            fileContent = iconv.decode(fileContentBuffer, 'shiftjis')
+        case 'UTF-8':
+          fileContent = fileContentBuffer.toString()
+          break
+        case 'GB2312':
+        case 'GB18030':
+        case 'GBK':
+          fileContent = iconv.decode(fileContentBuffer, 'GBK')
+          break
+        case 'SHIFT_JIS':
+          fileContent = iconv.decode(fileContentBuffer, 'shiftjis')
+          break
+        default:
+          fileContent = iconv.decode(fileContentBuffer, 'shiftjis')
         }
         if (fileContent == null) {
           const e = new Error()
@@ -704,32 +701,32 @@ class AdvancedModule extends React.Component {
         let hint = null
         let oldData = null
         switch (logType) {
-          case CONST.typeList.attack:
-            hint = '出击'
-            oldData = duplicateRemoval(this.props.attackData)
-            break
-          case CONST.typeList.mission:
-            hint = '远征'
-            oldData = duplicateRemoval(this.props.missionData)
-            break
-          case CONST.typeList.createShip:
-            hint = '建造'
-            oldData = duplicateRemoval(this.props.createShipData)
-            break
-          case CONST.typeList.createItem:
-            hint = '开发'
-            oldData = duplicateRemoval(this.props.createItemData)
-            break
-          case CONST.typeList.retirement:
-            hint = '除籍'
-            oldData = duplicateRemoval(this.props.retirementData)
-            break
-          case CONST.typeList.resource:
-            hint = '资源'
-            oldData = duplicateRemoval(this.props.resourceData)
-            break
-          default:
-            throw "Type Error!"
+        case CONST.typeList.attack:
+          hint = '出击'
+          oldData = duplicateRemoval(this.props.attackData)
+          break
+        case CONST.typeList.mission:
+          hint = '远征'
+          oldData = duplicateRemoval(this.props.missionData)
+          break
+        case CONST.typeList.createShip:
+          hint = '建造'
+          oldData = duplicateRemoval(this.props.createShipData)
+          break
+        case CONST.typeList.createItem:
+          hint = '开发'
+          oldData = duplicateRemoval(this.props.createItemData)
+          break
+        case CONST.typeList.retirement:
+          hint = '除籍'
+          oldData = duplicateRemoval(this.props.retirementData)
+          break
+        case CONST.typeList.resource:
+          hint = '资源'
+          oldData = duplicateRemoval(this.props.resourceData)
+          break
+        default:
+          throw "Type Error!"
         }
         // oldData = duplicateRemoval dataManager.getRawData logType
         const oldLength = oldData.length

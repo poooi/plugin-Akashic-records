@@ -32,15 +32,15 @@
   },
   "homepage": "https://github.com/yudachi/plugin-Akashic-records",
   "dependencies": {
-    "iconv-lite": "^0.4.24",
-    "jschardet": "^1.6.0"
+    "iconv-lite": "^0.6.2",
+    "jschardet": "^2.2.1"
   },
   "devDependencies": {
-    "babel-eslint": "^10.0.3",
-    "eslint": "^6.5.1",
+    "babel-eslint": "^10.1.0",
+    "eslint": "^7.7.0",
     "eslint-config-poi-plugin": "^2.0.0",
-    "eslint-plugin-import": "^2.18.2",
-    "eslint-plugin-react": "^7.16.0",
+    "eslint-plugin-import": "^2.22.0",
+    "eslint-plugin-react": "^7.20.6",
     "poi-util-transpile": "^10.3.4"
   },
   "poiPlugin": {
