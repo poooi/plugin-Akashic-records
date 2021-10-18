@@ -1,4 +1,4 @@
-function pad(str, max = 2) {
+function pad(str: string | number, max = 2) {
   let ret = `${str}`
   while (ret.length < max) {
     ret = `0${ret}`
@@ -6,7 +6,7 @@ function pad(str, max = 2) {
   return ret
 }
 
-export function dateToString(date) {
+export function dateToString(date: Date) {
   const month = pad(date.getMonth() + 1)
   const day = pad(date.getDate())
   const hour = pad(date.getHours())

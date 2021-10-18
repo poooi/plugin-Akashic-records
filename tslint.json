@@ -1,0 +1,55 @@
+
+{
+  "extends": [
+    "tslint:latest",
+    "tslint-react",
+    "tslint-config-prettier",
+    "tslint-plugin-prettier"
+  ],
+  "linterOptions": {
+    "exclude": ["shims/*"]
+  },
+  "rules": {
+    "prettier": true,
+    "no-implicit-dependencies": [
+      true,
+      "dev",
+      [
+        "@blueprintjs/core",
+        "bluebird",
+        "classnames",
+        "electron",
+        "fs-extra",
+        "fuse.js",
+        "i18next",
+        "lodash",
+        "polished",
+        "prop-types",
+        "react",
+        "react-i18next",
+        "react-fontawesome",
+        "react-redux",
+        "react-virtualized",
+        "react-virtualized-auto-sizer",
+        "react-window",
+        "redux",
+        "redux-observers",
+        "redux-thunk",
+        "reselect",
+        "styled-components",
+        "views",
+        "wanakana"
+      ]
+    ],
+    "no-submodule-imports": false,
+    "variable-name": [
+      true,
+      "ban-keywords",
+      "check-format",
+      "allow-snake-case",
+      "allow-leading-underscore",
+      "allow-pascal-case"
+    ],
+    "no-console": [true, "log"]
+  }
+}

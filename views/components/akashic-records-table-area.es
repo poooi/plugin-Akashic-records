@@ -11,6 +11,7 @@ import {
 import { findDOMNode } from 'react-dom'
 import FontAwesome from 'react-fontawesome'
 import { dateToString } from '../../lib/utils'
+import { getTabs } from '../reducers/tab'
 
 import Pagination from './pagination'
 
@@ -143,7 +144,7 @@ class AkashicRecordsTableArea extends React.Component {
                     (showLabel && !showFilter) ? (
                       <tr>
                         {
-                          this.props.tableTab.map((tab, index) => (
+                          getTabs(this.props.contentType).map((tab, index) => (
                             this.props.tabVisibility[index] ? <th key={index}>{tab}</th> : null
                           ))
                         }
@@ -152,7 +153,7 @@ class AkashicRecordsTableArea extends React.Component {
                       (showLabel || showFilter) ? (
                         <tr>
                           {
-                            this.props.tableTab.map((tab, index) =>
+                            getTabs(this.props.contentType).map((tab, index) =>
                               (index === 0) ? (
                                 <th key={index}>
                                   <OverlayTrigger trigger='hover' rootClose={true} placement='right' overlay={
@@ -169,7 +170,7 @@ class AkashicRecordsTableArea extends React.Component {
                                   <th key={index} className="table-search">
                                     <FormControl
                                       type='text'
-                                      placeholder={this.props.tableTab[index]}
+                                      placeholder={getTabs(this.props.contentType)[index]}
                                       ref={(() => {
                                         const tmp = index
                                         return (ref) => this.input[`input${tmp}`] = ref
@@ -199,7 +200,7 @@ class AkashicRecordsTableArea extends React.Component {
                           data={item}
                           rowChooseChecked={this.props.tabVisibility}
                           contentType={this.props.contentType}
-                          tableTab={this.props.tableTab}
+                          tableTab={getTabs(this.props.contentType)}
                         />
                       )
                     })

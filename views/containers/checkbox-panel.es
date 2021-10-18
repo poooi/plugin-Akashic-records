@@ -7,7 +7,7 @@ import {
   setActivePage,
   setConfigList,
 } from '../actions'
-import logComponent from '../components/akashic-records-checkbox-panel'
+import logComponent from '../components/checkbox-panel'
 import resourceComponent from '../components/akashic-resource-checkbox-panel'
 
 import { pluginDataSelector } from '../selectors'
@@ -47,8 +47,6 @@ function mapDispatchToProps(dispatch, ownProps) {
       dispatch(setConfigList(index, ownProps.contentType)),
   }
 }
-
-export const LogCP = connect(mapStateToProps, mapDispatchToProps)(logComponent)
 
 export const ResourceCP =
   connect(mapStateToProps, mapDispatchToProps)(resourceComponent)

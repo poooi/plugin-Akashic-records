@@ -10,6 +10,7 @@ import {
   MenuItem,
 } from 'react-bootstrap'
 import { findDOMNode } from 'react-dom'
+import { getTabs } from '../reducers/tab'
 
 const { config } = window
 
@@ -125,7 +126,7 @@ class AkashicResourceTableArea extends React.Component {
                 <thead>
                   <tr>
                     {
-                      this.props.tableTab.map((tab, index) => (
+                      getTabs(this.props.contentType).map((tab, index) => (
                         this.props.tabVisibility[index]
                           ? <th key={index}>{tab}</th>
                           : null

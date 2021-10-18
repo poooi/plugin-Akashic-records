@@ -1,4 +1,19 @@
-const searchRule = (state, action) => {
+import { Reducer } from 'redux'
+
+export interface SearchRulesAction {
+  type: string
+  index?: number
+  val?: string | number
+}
+
+export interface SearchRule {
+  baseOn: number
+  content: string;
+}
+
+export type SearchRulesState = SearchRule[]
+
+const searchRule: Reducer<SearchRule, SearchRulesAction> = (state, action) => {
   switch (action.type) {
   case '@@poi-plugin-akashic-records/ADD_SEARCH_RULE':
     return {
@@ -7,20 +22,22 @@ const searchRule = (state, action) => {
     }
   case '@@poi-plugin-akashic-records/SET_SEARCH_RULE_BASE':
     return {
+      content: '',
       ...state,
-      baseOn: action.val,
+      baseOn: action.val as number,
     }
   case '@@poi-plugin-akashic-records/SET_SEARCH_RULE_KEY':
     return {
+      baseOn: 1,
       ...state,
-      content: action.val,
+      content: action.val as string,
     }
   default:
-    return state
+    return state || { baseOn: 1, content: '' }
   }
 }
 
-export default (state, action) => {
+const reducer: Reducer<SearchRulesState, SearchRulesAction> = (state, action) => {
   if (state == null) {
     state = [searchRule(undefined, {type: '@@poi-plugin-akashic-records/ADD_SEARCH_RULE'})]
   }
@@ -31,21 +48,21 @@ export default (state, action) => {
   case '@@poi-plugin-akashic-records/SET_SEARCH_RULE_KEY':
     return [
       ...state.slice(0, action.index),
-      searchRule(state[action.index], action),
-      ...state.slice(action.index + 1),
+      searchRule(state[action.index || 0], action),
+      ...state.slice((action.index || 0) + 1),
     ]
   case '@@poi-plugin-akashic-records/DELETE_SEARCH_RULE': {
     const ret = [
       ...state.slice(0, action.index),
-      ...state.slice(action.index + 1),
+      ...state.slice((action.index || 0) + 1),
     ]
     return ret.map((item) => {
-      if (item.baseOn > action.index + 2) {
+      if (item.baseOn > (action.index || 0) + 2) {
         return {
           ...item,
           baseOn: item.baseOn - 1,
         }
-      } else if (item.baseOn === action.index + 2) {
+      } else if (item.baseOn === (action.index || 0) + 2) {
         return {
           ...item,
           baseOn: 1,
@@ -59,3 +76,5 @@ export default (state, action) => {
     return state
   }
 }
+
+export default reducer

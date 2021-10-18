@@ -9,7 +9,7 @@ const { __ } = window.i18n['poi-plugin-akashic-records']
 
 import AkashicLog from './akashic-records-log'
 import AkashicResourceLog from './akashic-resource-log'
-import AkashicAdvancedModule from './containers/advanced-module'
+import AkashicAdvancedModule from './components/advanced-module'
 
 import ErrorBoundary from './error-boundary'
 

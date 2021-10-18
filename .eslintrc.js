@@ -1,3 +1,7 @@
+const jsExtensions = ['.js', '.es']
+const tsExtensions = ['.ts', '.tsx', '*.d.ts']
+const allExtensions = jsExtensions.concat(tsExtensions)
+
 module.exports = {
   'env': {
     'browser': true,
@@ -33,5 +37,20 @@ module.exports = {
     react: {
       version: '16.10.0',
     },
+    'import/extensions': allExtensions,
+    'import/parsers': {
+      '@typescript-eslint/parser': tsExtensions,
+    },
+    'import/resolver': {
+      node: {
+        extensions: allExtensions,
+      },
+    },
   },
+  'overrides': [
+    {
+      files: tsExtensions,
+      parser: '@typescript-eslint/parser',
+    },
+  ],
 }

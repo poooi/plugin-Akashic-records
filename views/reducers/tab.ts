@@ -1,6 +1,24 @@
+import { Reducer } from 'redux'
+
 const { config } = window
 
-const { __ } = window.i18n['poi-plugin-akashic-records']
+export type DataType = 'attack' | 'mission' | 'createitem' | 'createship' | 'retirement' | 'resource'
+
+export type TabsState = string[]
+
+export interface TabsAction {
+  type: string
+  dataType: DataType
+}
+
+export type TabVisibilityState = boolean[]
+
+export interface TabVisibilityAction {
+  type: string
+  index: number
+  dataType: DataType
+  val: boolean
+}
 
 const tableTab = {
   attack: [
@@ -41,35 +59,14 @@ const defaultTabVisibility = [
   true, true, true, true, true, true, true,
 ]
 
-function getTabs(type) {
-  if (tableTab[type] == null) {
-    return []
-  } else {
-    return tableTab[type].map((tab) => __(tab))
-  }
+export function getTabs(type: DataType) {
+  return tableTab[type]
 }
 
-export function tabs(state, action) {
-  if (state == null) {
-    state = getTabs(action.dataType)
-  }
-  if (action.type === '@@poi-plugin-akashic-records/SET_LANGUAGE') {
-    state = getTabs(action.dataType)
-  }
-  return state
-}
-
-export function language(state = window.language, action) {
-  if (action.type === '@@poi-plugin-akashic-records/SET_LANGUAGE') {
-    return action.language
-  }
-  return state
-}
-
-export function tabVisibility(state, action) {
-  if (state == null) {
+export const tabVisibility: Reducer<TabVisibilityState, TabVisibilityAction> = (state = [], action) => {
+  if (!state.length) {
     state = JSON.parse(config.get(`plugin.Akashic.${action.dataType}.checkbox`,
-      JSON.stringify(defaultTabVisibility)))
+      JSON.stringify(defaultTabVisibility))) as boolean[]
   }
   if (action.type === '@@poi-plugin-akashic-records/SET_TAB_VISIBILITY') {
     return [

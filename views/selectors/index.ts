@@ -1,9 +1,13 @@
-import { createSelector } from 'reselect'
+import { createSelector, OutputParametricSelector, Selector } from 'reselect'
 import { dateToString } from '../../lib/utils'
+import { LogContentState } from '../reducers/log-content'
 
 import CONST from '../../lib/constant'
 
 import { extensionSelectorFactory } from 'views/utils/selectors'
+import { SearchRule } from 'views/reducers/search-rules'
+import { DataState } from 'views/reducers/data'
+import { DataType } from 'views/reducers/tab'
 
 const empty = {}
 
@@ -12,24 +16,28 @@ export const pluginDataSelector = createSelector(
   (state) => state || empty
 )
 
-const dateToDateString = (datetime) => {
+export const logContentSelectorFactory = (contentType: DataType): Selector<any, LogContentState> => {
+  return createSelector(pluginDataSelector, (pluginData) => pluginData[contentType])
+}
+
+const dateToDateString = (datetime: number | string): string => {
   const date = new Date(datetime)
   return `${date.getFullYear()}/${date.getMonth()}/${date.getDate()}`
 }
 
-const filterRegWindex = (data, index, reg) =>
+const filterRegWindex = (data: DataState, index: number, reg: RegExp) =>
   data.filter((row) =>
     reg.test(index === 0 ? dateToString(new Date(row[0])) : `${row[index]}`)
   )
 
-const filterStringWIndex = (data, index, keyword) =>
+const filterStringWIndex = (data: DataState, index: number, keyword: string) =>
   data.filter((row)=>
     index === 0
       ? dateToString(new Date(row[0])).toLowerCase().trim().indexOf(keyword) >= 0
       : `${row[index]}`.toLowerCase().trim().indexOf(keyword) >= 0
   )
 
-const filterWithIndex = (logs, filterKeys) => {
+const filterWithIndex = (logs: DataState, filterKeys: string[]) => {
   let retData = logs
   filterKeys.forEach((key, idx) => {
     if (key === '') return
@@ -47,12 +55,12 @@ const filterWithIndex = (logs, filterKeys) => {
   return retData
 }
 
-const filterWNindex = (logs, keyword) => {
+const filterWNindex = (logs: DataState, keyword: string): DataState => {
   if (keyword === '') {
     return logs
   } else {
     let regFlag = false
-    let reg = null
+    let reg: RegExp
     const res = keyword.match(/^\/(.+)\/([gim]*)$/)
     if (res != null) {
       try {
@@ -60,8 +68,6 @@ const filterWNindex = (logs, keyword) => {
         regFlag = true
       } catch (e) {
         regFlag = false
-      } finally {
-        if (regFlag) keyword = reg
       }
     }
     return logs.filter((log) => {
@@ -72,14 +78,14 @@ const filterWNindex = (logs, keyword) => {
         } else if (!regFlag){
           searchText = `${searchText}`.toLowerCase().trim()
         }
-        return regFlag ? keyword.test(searchText)
-          : searchText.indexOf(keyword.toLowerCase().trim()) >= 0
+        return regFlag ? reg.test(searchText as string)
+          : (searchText as string).indexOf(keyword.toLowerCase().trim()) >= 0
       })
     })
   }
 }
 
-const filterAsScale = (data, showScale) => {
+const filterAsScale = (data: DataState, showScale: number) => {
   if (showScale === 0) {
     return data
   } else {
@@ -96,7 +102,7 @@ const filterAsScale = (data, showScale) => {
   }
 }
 
-const resourceApplyFilter = (logs, tabVisibility, keyWord, showScale) => {
+const resourceApplyFilter = (logs: DataState, tabVisibility: boolean[], keyWord: string, showScale: number) => {
   let retLogs = logs
   if (keyWord != null) {
     retLogs = retLogs.filter((row) => {
@@ -113,33 +119,44 @@ const resourceApplyFilter = (logs, tabVisibility, keyWord, showScale) => {
   return filterAsScale(retLogs, showScale)
 }
 
-const emptyArr = []
+const emptyArr: string[] = []
 const logSelectorFactory = () => {
-  const getLogs = (state) => state.data
-  const getFilterKeys = (state) =>
+  const getLogs = (state: LogContentState) => state.data
+  const getFilterKeys = (state: LogContentState) =>
     (state.configListChecked[1] || state.configListChecked[2] || !state.configListChecked[3])
       ? state.filterKeys
       : emptyArr
   return createSelector([getLogs, getFilterKeys], filterWithIndex)
 }
 
-const logSearchSelectorBaseFactory = (old, num) => {
-  const getLogs = (logsRes, searchRule) => logsRes[searchRule.baseOn]
-  const getSearchKey = (logsRes, searchRule) => searchRule.content
+type LogSearchSelector = OutputParametricSelector<DataState[], SearchRule, DataState, (log: DataState, rule: string) => DataState>
+
+const logSearchSelectorBaseFactory = (
+  old: LogSearchSelector[],
+  num: number
+) => {
+  const getLogs = (logsRes: DataState[], searchRule: SearchRule): DataState => logsRes[searchRule.baseOn]
+  const getSearchKey = (logsRes: DataState[], searchRule: SearchRule): string => searchRule.content
   return [...Array(num).keys()].map((index) =>
     old[index] || createSelector([getLogs, getSearchKey], filterWNindex)
   )
 }
 
+export interface LogSearchSelectorFactoryParam {
+  logs: DataState,
+  filteredLogs: DataState
+  searchRules: SearchRule[]
+}
+
 const logSearchSelectorFactory = () => {
   return (function() {
-    let selector = null
-    let lastLogs = null
+    let selector: LogSearchSelector[]
+    let lastLogs: DataState
     return createSelector(
       [
-        params => params.logs,
-        params => params.filteredLogs,
-        params => params.searchRules,
+        (params: LogSearchSelectorFactoryParam) => params.logs,
+        (params: LogSearchSelectorFactoryParam) => params.filteredLogs,
+        (params: LogSearchSelectorFactoryParam) => params.searchRules,
       ],
       (logs, filteredLogs, searchRules) => {
         if (selector == null || lastLogs !== logs)
@@ -147,7 +164,7 @@ const logSearchSelectorFactory = () => {
         lastLogs = logs
         if (selector.length !== searchRules.length)
           selector = logSearchSelectorBaseFactory(selector, searchRules.length)
-        const logsRes = [logs, filteredLogs]
+        const logsRes: DataState[] = [logs, filteredLogs]
         searchRules.forEach((searchRule, i) =>
           logsRes[CONST.search.indexBase+i+1] = selector[i](logsRes, searchRule)
         )
@@ -177,29 +194,13 @@ export const searchSelectors = {
 
 export const resourceFilter = createSelector(
   [
-    (state) => state.data,
-    (state) => state.tabVisibility,
-    (state) => state.filterKeys[0],
-    (state) => state.showTimeScale,
+    (state: LogContentState) => state.data,
+    (state: LogContentState) => state.tabVisibility,
+    (state: LogContentState) => state.filterKeys[0],
+    (state: LogContentState) => state.showTimeScale,
   ], resourceApplyFilter
 )
 
-export const tableTabNameSelector = createSelector(
-  [
-    (state) => state[CONST.typeList.attack].tabs,
-    (state) => state[CONST.typeList.mission].tabs,
-    (state) => state[CONST.typeList.createShip].tabs,
-    (state) => state[CONST.typeList.createItem].tabs,
-    (state) => state[CONST.typeList.retirement].tabs,
-    (state) => state[CONST.typeList.resource].tabs,
-  ], (attack, mission, createShip, createItem, retirement, resource) => (
-    {
-      [CONST.typeList.attack]: attack,
-      [CONST.typeList.mission]: mission,
-      [CONST.typeList.createShip]: createShip,
-      [CONST.typeList.createItem]: createItem,
-      [CONST.typeList.retirement]: retirement,
-      [CONST.typeList.resource]: resource,
-    }
-  )
-)
+interface TotalState {
+  [key: string]: LogContentState
+}

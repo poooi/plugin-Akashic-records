@@ -5,6 +5,7 @@ import {
   Grid,
   Row,
 } from 'react-bootstrap'
+import { getTabs } from '../reducers/tab'
 
 const { config } = window
 const AkashicResourceCheckboxArea = (props) => {
@@ -23,7 +24,7 @@ const AkashicResourceCheckboxArea = (props) => {
       <Grid className='akashic-records-filter'>
         <Row>
           {
-            props.tableTab.map((checkedVal, index) => index < 2
+            getTabs(props.contentType).map((checkedVal, index) => index < 2
               ? null
               : (
                 <Col key={index} xs={2}>

@@ -1,39 +1,9 @@
-import { combineReducers } from 'redux'
-
-import data from './data'
-import { tabs, language, tabVisibility } from './tab'
-import { activePage, showAmount } from './page'
-import {
-  configList,
-  configListChecked,
-  checkboxVisible,
-  statisticsVisible,
-  showTimeScale,
-} from './view-control'
-import searchRules from './search-rules'
-import statisticsRules from './statistics-rules'
-import filterKeys from './filter-keys'
-
+import { Reducer } from 'redux'
+import { LogContentAction, LogContentState, logContent } from './log-content'
+import { DataType } from './tab'
 import { filterSelectors, resourceFilter } from '../selectors'
 
-const logContent = combineReducers({
-  data,
-  tabs,
-  language,
-  tabVisibility,
-  activePage,
-  showAmount,
-  configList,
-  configListChecked,
-  checkboxVisible,
-  statisticsVisible,
-  searchRules,
-  statisticsRules,
-  filterKeys,
-  showTimeScale,
-})
-
-function boundActivePageNum(state, dataType) {
+function boundActivePageNum(state: LogContentState, dataType: DataType) {
   const logLength =
     dataType === 'resource' ? resourceFilter(state).length
       : filterSelectors[dataType](state).length
@@ -45,11 +15,9 @@ function boundActivePageNum(state, dataType) {
   return state
 }
 
-export default function (type) {
-  return (state, action) => {
-    if (action.type === '@@poi-plugin-akashic-records/SET_LANGUAGE')
-      return logContent(state, action)
-    else if (action.dataType === type) {
+export default function (type: DataType) {
+  const reducer: Reducer<LogContentState, LogContentAction> = (state, action) => {
+    if (action.dataType === type) {
       const ret = logContent(state, action)
       if (['@@poi-plugin-akashic-records/INITIALIZE_LOGS', '@@poi-plugin-akashic-records/SET_FILTER_KEY',
         '@@poi-plugin-akashic-records/SET_SHOW_AMOUNT', '@@poi-plugin-akashic-records/SET_ACTIVE_PAGE',
@@ -64,4 +32,5 @@ export default function (type) {
     } else
       return state
   }
+  return reducer
 }

@@ -1,29 +1,33 @@
+import { DataType } from './tab'
+import { Reducer } from 'redux'
+
 const { config } = window
 
-const { __ } = window.i18n['poi-plugin-akashic-records']
-
-const initConfigList = [
+export const configList = [
   "Show Headings", "Show Filter-box",
   "Auto-selected", "Disable filtering while hiding filter-box",
 ]
 
-function getTabs() {
-  return initConfigList.map((tab) => __(tab))
+export type ConfigListState = boolean[]
+
+export interface ConfigListAction {
+  type: string
+  dataType: DataType
 }
 
-export function configList(state = getTabs(), action) {
-  if (action.type === '@@poi-plugin-akashic-records/SET_LANGUAGE') return getTabs()
-  return state
-}
-
-export function configListChecked(state, action) {
+export function configListChecked(state: ConfigListState, action: ConfigListAction): ConfigListState {
   state = JSON.parse(config.get(`plugin.Akashic.${action.dataType}.configChecked`,
     JSON.stringify([false, true, false, false])
   ))
   return state
 }
 
-export function checkboxVisible(state, action) {
+export interface CheckboxVisibleAction {
+  type: string
+  dataType: DataType
+}
+
+export const checkboxVisible: Reducer<boolean, CheckboxVisibleAction> = (state, action) => {
   if (state == null) {
     state = config.get(`plugin.Akashic.${action.dataType}.checkboxPanelShow`, true)
   }
@@ -37,7 +41,12 @@ export function checkboxVisible(state, action) {
   }
 }
 
-export function statisticsVisible(state, action) {
+export interface StatisticsVisibleAction {
+  type: string
+  dataType: DataType
+}
+
+export const statisticsVisible: Reducer<boolean, StatisticsVisibleAction> = (state, action) => {
   if (state == null) {
     state = config.get(`plugin.Akashic.${action.dataType}.statisticsPanelShow`, true)
   }
@@ -51,8 +60,14 @@ export function statisticsVisible(state, action) {
   }
 }
 
-export function showTimeScale(state, action) {
-  if (state == null) {
+export interface TimeScaleAction {
+  type: string
+  dataType: DataType
+  val: number
+}
+
+export const showTimeScale: Reducer<number, TimeScaleAction> = (state = Number.MIN_VALUE, action) => {
+  if (state == Number.MIN_VALUE) {
     state = config.get(`plugin.Akashic.${action.dataType}.table.showTimeScale`, 0)
   }
   if (action.type === '@@poi-plugin-akashic-records/SET_TIME_SCALE') {
