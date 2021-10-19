@@ -5,7 +5,6 @@ import { ActivePageAction, ShowAmountAction } from "views/reducers/page"
 import { CheckboxVisibleAction, StatisticsVisibleAction, TimeScaleAction } from "views/reducers/view-control"
 import { SearchRulesAction } from "views/reducers/search-rules"
 import { StatisticsRulesAction } from "views/reducers/statistics-rules"
-import { NonIdealState } from "@blueprintjs/core"
 import { FilterKeysAction } from "views/reducers/filter-keys"
 
 interface GlobalDataAction extends DataAction {
@@ -133,7 +132,7 @@ export function setSearchRuleBase(index: number, baseon: number, type: DataType)
   }
 }
 
-export function setSearchRuleKey(index: number, key: number, type: DataType): GlobalSearchRulesAction {
+export function setSearchRuleKey(index: number, key: string, type: DataType): GlobalSearchRulesAction {
   return {
     type: '@@poi-plugin-akashic-records/SET_SEARCH_RULE_KEY',
     dataType: type,

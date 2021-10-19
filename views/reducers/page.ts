@@ -3,20 +3,20 @@ import { Reducer } from 'redux'
 const { config } = window
 
 export interface ActivePageAction {
-  type: string
-  val?: number
+  type: string;
+  val?: number;
 }
 
 export interface ShowAmountAction {
-  type: string
-  dataType: string
-  val: number
+  type: string;
+  dataType: string;
+  val: number;
 }
 
-export const activePage: Reducer<number, ActivePageAction> = (state = 1, action) => {
+export const activePage: Reducer<number, ActivePageAction> = (state = 1, action): number => {
   switch (action.type) {
   case '@@poi-plugin-akashic-records/SET_ACTIVE_PAGE':
-    return action.val!
+    return action.val || state
   case '@@poi-plugin-akashic-records/RESET_ACTIVE_PAGE':
     return 1
   default:

@@ -19,7 +19,12 @@ module.exports = {
     'import',
     'react',
   ],
-  'parser': 'babel-eslint',
+  'parser': '@babel/eslint-parser',
+  'parserOptions': {
+    'babelOptions': {
+      'configFile': './node_modules/poi-util-transpile/babel.config.js'
+    }
+  }
   'rules': {
     'comma-dangle': ['error', 'always-multiline'],
     'indent': ['warn', 2],

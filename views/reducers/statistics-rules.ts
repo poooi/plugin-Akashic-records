@@ -1,16 +1,16 @@
 import { Reducer } from 'redux'
 
 export interface StatisticsRule {
-  numeratorType: number
-  denominatorType: number
-  numerator: number
-  denominator: number
+  numeratorType: number;
+  denominatorType: number;
+  numerator: number;
+  denominator: number;
 }
 
 export interface StatisticsRulesAction {
-  type: string
-  val?: number
-  index?: number
+  type: string;
+  val?: number;
+  index?: number;
 }
 
 export type StatisticsRulesState = StatisticsRule[]
@@ -30,13 +30,13 @@ const statisticsRule: Reducer<StatisticsRule, StatisticsRulesAction> = (state, a
     return {
       ...defaultStatisticsRule,
       ...state,
-      numeratorType: action.val || 1,
+      numeratorType: action.val || 0,
     }
   case '@@poi-plugin-akashic-records/SET_STATISTICS_RULE_DENOMINATOR_TYPE':
     return {
       ...defaultStatisticsRule,
       ...state,
-      denominatorType: action.val || 1,
+      denominatorType: action.val || 0,
     }
   case '@@poi-plugin-akashic-records/SET_STATISTICS_RULE_NUMERATOR':
     return {
@@ -48,7 +48,7 @@ const statisticsRule: Reducer<StatisticsRule, StatisticsRulesAction> = (state, a
     return {
       ...defaultStatisticsRule,
       ...state,
-      denominator: action.val || 1,
+      denominator: action.val || 0,
     }
   default:
     return state || defaultStatisticsRule

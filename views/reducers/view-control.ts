@@ -23,8 +23,8 @@ export function configListChecked(state: ConfigListState, action: ConfigListActi
 }
 
 export interface CheckboxVisibleAction {
-  type: string
-  dataType: DataType
+  type: string;
+  dataType: DataType;
 }
 
 export const checkboxVisible: Reducer<boolean, CheckboxVisibleAction> = (state, action) => {
@@ -42,8 +42,8 @@ export const checkboxVisible: Reducer<boolean, CheckboxVisibleAction> = (state, 
 }
 
 export interface StatisticsVisibleAction {
-  type: string
-  dataType: DataType
+  type: string;
+  dataType: DataType;
 }
 
 export const statisticsVisible: Reducer<boolean, StatisticsVisibleAction> = (state, action) => {
@@ -61,9 +61,9 @@ export const statisticsVisible: Reducer<boolean, StatisticsVisibleAction> = (sta
 }
 
 export interface TimeScaleAction {
-  type: string
-  dataType: DataType
-  val: number
+  type: string;
+  dataType: DataType;
+  val: number;
 }
 
 export const showTimeScale: Reducer<number, TimeScaleAction> = (state = Number.MIN_VALUE, action) => {

@@ -5,18 +5,20 @@ interface IConfig {
 
 declare namespace NodeJS {
   interface Global {
-    config: IConfig
+    config: IConfig;
   }
 }
 
 interface Window {
-  ROOT: string
-  APPDATA_PATH: string
-  config: IConfig
-  language: string
-  getStore: (path?: string) => any
-  isMain: boolean
-  _nickNameId: string
+  ROOT: string;
+  APPDATA_PATH: string;
+  config: IConfig;
+  language: string;
+  getStore: (path?: string) => any;
+  isMain: boolean;
+  _nickNameId: string;
+  ipc: any;
+  toggleModal: (t: string, c: string) => void
 }
 
 declare var window: Window

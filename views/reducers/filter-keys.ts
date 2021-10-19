@@ -1,9 +1,9 @@
 import { Reducer } from 'redux'
 
 export interface FilterKeysAction {
-  type: string
-  index: number
-  val: string | boolean
+  type: string;
+  index: number;
+  val: string | boolean;
 }
 
 export type FilterKeysState = string[]

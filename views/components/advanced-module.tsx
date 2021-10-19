@@ -10,18 +10,17 @@ import { saveLog, importLog } from '../utils/advanced-module'
 import { DataType } from 'views/reducers/tab'
 import { initializeLogs } from '../actions'
 
-const { config } = window
 const { dialog } = remote.require('electron')
 const { openExternal } = shell
+
+const Container = styled.div`
+  padding: 8px 16px;
+`
 
 const Title = styled.div`
   display: flex;
   font-size: 18px;
   padding: 0.5em 0;
-`
-
-const Container = styled.div`
-  padding: 15px;
 `
 
 const PopoverTitle = styled.div`

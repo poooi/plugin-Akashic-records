@@ -12,16 +12,14 @@ import {
   setTabVisibility,
   setShowAmount,
 } from '../actions'
+import { createSelector, Selector } from 'reselect'
+import { LogContentState } from 'views/reducers/log-content'
 
 const { config } = window
 
 export interface AkashicRecordsCheckboxPanelT {
   contentType: DataType;
 }
-
-const Container = styled.div`
-  padding: 15px;
-`
 
 const CheckboxContainer = styled.div`
   display: flex;
@@ -33,8 +31,22 @@ const CheckboxItem = styled.div`
   vertical-align: middle;
 `
 
+type SelectorResult =
+  Pick<LogContentState, 'tabVisibility' | 'showAmount' | 'checkboxVisible'>
+
+const checkboxStateSelector: Selector<LogContentState, SelectorResult> = (state) => {
+  return {
+    tabVisibility: state.tabVisibility,
+    checkboxVisible: state.checkboxVisible,
+    showAmount: state.showAmount,
+  }
+}
+
 const AkashicRecordsCheckboxPanel: React.FC<AkashicRecordsCheckboxPanelT> = ({ contentType }) => {
-  const selector = logContentSelectorFactory(contentType)
+  const selector = createSelector(
+    logContentSelectorFactory(contentType),
+    checkboxStateSelector
+  )
   const state = useSelector(selector)
   const show = state.checkboxVisible
   const tabVisibility = state.tabVisibility
@@ -43,18 +55,18 @@ const AkashicRecordsCheckboxPanel: React.FC<AkashicRecordsCheckboxPanelT> = ({ c
   const dispatch = useDispatch()
   const onCheckboxClick = useCallback(
     (index: number, val: boolean) => dispatch(setTabVisibility(index, val, contentType)),
-    [dispatch, contentType]
+    [contentType]
   )
   const onShowAmountSet = useCallback(
     (val: number) => dispatch(setShowAmount(val, contentType)),
-    [dispatch, contentType]
+    [contentType]
   )
   const setPanelVisibilitiy = useCallback(
     (show) =>
       dispatch((show)
         ? showCheckboxPanel(contentType)
         : hiddenCheckboxPanel(contentType)),
-    [dispatch, contentType]
+    [contentType]
   )
 
   const { t } = useTranslation('poi-plugin-akashic-records')
@@ -82,39 +94,42 @@ const AkashicRecordsCheckboxPanel: React.FC<AkashicRecordsCheckboxPanelT> = ({ c
     setPanelVisibilitiy(val)
   }, [show])
 
-  return <Container>
-    <div onClick={handlePanelShow}>
-      <Divider text={t("Filter")} icon={true} hr={true} show={show}/>
-    </div>
+  return (
     <div>
-      <Collapse isOpen={show}>
-        <div>
-          <CheckboxContainer>
-            {tableTab.map((checkboxVal, index) => index > 0 && (
-              <CheckboxItem>
-                <Checkbox
-                  checked={tabVisibility[index]}
-                  onChange={() => handleClickCheckbox(index)}
-                >
-                  {t(checkboxVal)}
-                </Checkbox>
-              </CheckboxItem>
-            ))}
-          </CheckboxContainer>
+      <div onClick={handlePanelShow}>
+        <Divider text={t("Filter")} icon={true} hr={true} show={show}/>
+      </div>
+      <div>
+        <Collapse isOpen={show}>
           <div>
-            <HTMLSelect
-              value={showAmount}
-              onChange={(event: React.FormEvent<HTMLSelectElement>) => handleShowAmountSelect(parseInt(event.currentTarget.value))}
-            >
-              <option value={10}>{t('Newer {{count}}', { count: 10 })}</option>
-              <option value={20}>{t('Newer {{count}}', { count: 20 })}</option>
-              <option value={50}>{t('Newer {{count}}', { count: 50 })}</option>
-            </HTMLSelect>
+            <CheckboxContainer>
+              {tableTab.map((checkboxVal, index) => index > 0 && (
+                <CheckboxItem>
+                  <Checkbox
+                    checked={tabVisibility[index]}
+                    onChange={() => handleClickCheckbox(index)}
+                  >
+                    {t(checkboxVal)}
+                  </Checkbox>
+                </CheckboxItem>
+              ))}
+            </CheckboxContainer>
+            <div>
+              <HTMLSelect
+                value={showAmount}
+                minimal
+                onChange={(event: React.FormEvent<HTMLSelectElement>) => handleShowAmountSelect(parseInt(event.currentTarget.value))}
+              >
+                <option value={10}>{t('Newer {{count}}', { count: 10 })}</option>
+                <option value={20}>{t('Newer {{count}}', { count: 20 })}</option>
+                <option value={50}>{t('Newer {{count}}', { count: 50 })}</option>
+              </HTMLSelect>
+            </div>
           </div>
-        </div>
-      </Collapse>
+        </Collapse>
+      </div>
     </div>
-  </Container>
+  )
 }
 
 export default AkashicRecordsCheckboxPanel

@@ -48,7 +48,7 @@ class DataCoManager {
         return parsed.filter((log) => log.length > 2)
       } catch (e) {
         if (process.env.DEBUG) {
-          console.warn(`Read and decode file:${filePath} error!${e.toString()}`)
+          console.warn(`Read and decode file:${filePath} error!${(e as string).toString()}`)
         }
         return []
       }

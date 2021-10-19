@@ -1,13 +1,13 @@
 import { Reducer } from 'redux'
 
 export interface SearchRulesAction {
-  type: string
-  index?: number
-  val?: string | number
+  type: string;
+  index?: number;
+  val?: string | number;
 }
 
 export interface SearchRule {
-  baseOn: number
+  baseOn: number;
   content: string;
 }
 

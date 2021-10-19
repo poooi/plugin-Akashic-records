@@ -30,6 +30,6 @@ export const logContent = combineReducers({
 export type LogContentState = ReturnType<typeof logContent>
 
 export interface LogContentAction {
-  type: string
-  dataType: DataType
+  type: string;
+  dataType: DataType;
 }

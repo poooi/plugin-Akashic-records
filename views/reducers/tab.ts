@@ -7,17 +7,17 @@ export type DataType = 'attack' | 'mission' | 'createitem' | 'createship' | 'ret
 export type TabsState = string[]
 
 export interface TabsAction {
-  type: string
-  dataType: DataType
+  type: string;
+  dataType: DataType;
 }
 
 export type TabVisibilityState = boolean[]
 
 export interface TabVisibilityAction {
-  type: string
-  index: number
-  dataType: DataType
-  val: boolean
+  type: string;
+  index: number;
+  dataType: DataType;
+  val: boolean;
 }
 
 const tableTab = {

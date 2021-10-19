@@ -37,7 +37,7 @@ const filterStringWIndex = (data: DataState, index: number, keyword: string) =>
       : `${row[index]}`.toLowerCase().trim().indexOf(keyword) >= 0
   )
 
-const filterWithIndex = (logs: DataState, filterKeys: string[]) => {
+const filterWithIndex = (logs: DataState, filterKeys: string[]): DataState => {
   let retData = logs
   filterKeys.forEach((key, idx) => {
     if (key === '') return
@@ -174,7 +174,7 @@ const logSearchSelectorFactory = () => {
   })()
 }
 
-export const filterSelectors = {
+export const filterSelectors: Record<DataType, Selector<LogContentState, DataState>> = {
   attack: logSelectorFactory(),
   mission: logSelectorFactory(),
   createship: logSelectorFactory(),
@@ -183,7 +183,7 @@ export const filterSelectors = {
   resource: logSelectorFactory(),
 }
 
-export const searchSelectors = {
+export const searchSelectors: Record<DataType, Selector<LogSearchSelectorFactoryParam, number[]>> = {
   attack: logSearchSelectorFactory(),
   mission: logSearchSelectorFactory(),
   createship: logSearchSelectorFactory(),
