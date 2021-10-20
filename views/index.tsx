@@ -1,7 +1,6 @@
 import { join } from 'path'
 import React, { ErrorInfo } from 'react'
 import { Tabs, Tab } from '@blueprintjs/core'
-import styled from 'styled-components'
 import { WithTranslation, withTranslation } from 'react-i18next'
 
 import CONST from '../lib/constant'
@@ -11,11 +10,6 @@ import AkashicResourceLog from './akashic-resource-log'
 import AkashicAdvancedModule from './components/advanced-module'
 
 import ErrorBoundary from './error-boundary'
-
-const Container = styled.div`
-  padding-left: 16px;
-  padding-right: 16px;
-`
 
 // getUseItem: (id)->
 //   switch id
@@ -52,6 +46,8 @@ export const reactClass = withTranslation('poi-plugin-akashic-records')(
       selectedKey: 0,
     }
 
+    tabRef = React.createRef<Tabs>()
+
     handleSelectTab = (selectedKey: number) => {
       this.setState({
         selectedKey: selectedKey,
@@ -63,13 +59,26 @@ export const reactClass = withTranslation('poi-plugin-akashic-records')(
       console.log(error, info)
     }
 
+    componentDidMount = () => {
+      this.tabRef.current?.
+        setTimeout(() => {
+        // @ts-expect-error access private method
+          if (this.tabRef.current?.moveSelectionIndicator) {
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+            this.tabRef.current?.moveSelectionIndicator(false)
+          }
+        }, 500)
+    }
+
     render() {
       const { t } = this.props
 
       return (
         <div id='akashic-records-main-wrapper'>
           <link rel="stylesheet" href={join(__dirname, '..', 'assets', 'main.css')} />
-          <Tabs id="" selectedTabId={this.state.selectedKey} animate={false} onChange={this.handleSelectTab}>
+          <Tabs id="" ref={this.tabRef} selectedTabId={this.state.selectedKey} onChange={this.handleSelectTab}>
             <Tab id={0} title={t("Sortie")} panel={
               <ErrorBoundary component={AkashicLog} contentType={CONST.typeList.attack}/>
             } />

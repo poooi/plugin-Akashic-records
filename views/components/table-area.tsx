@@ -7,15 +7,15 @@ import { createSelector } from 'reselect'
 import styled from 'styled-components'
 import { shell } from 'electron'
 
-import { DataRow } from "lib/data-co-manager"
+import { DataRow, DataTable } from "lib/data-co-manager"
 import { dateToString } from '../../lib/utils'
 import { DataType, getTabs, TabVisibilityState } from '../reducers/tab'
 import { Popover } from 'views/components/etc/overlay'
 import Pagination from './pagination'
-import { filterSelectors, logContentSelectorFactory } from 'views/selectors'
-import { LogContentState } from 'views/reducers/log-content'
-import { DataState } from 'views/reducers/data'
-import { setActivePage, setFilterKey } from 'views/actions'
+import { filterSelectors, logContentSelectorFactory } from '../selectors'
+import { LogContentState } from '../reducers/log-content'
+import { setActivePage, setFilterKey } from '../actions'
+import { IState } from 'views/utils/selectors'
 
 const { ipc } = window
 
@@ -131,7 +131,7 @@ export interface AkashicRecordsTableAreaT {
 
 type SelectorResult =
   Pick<LogContentState, 'tabVisibility' | 'activePage' | 'showAmount' | 'filterKeys' | 'configListChecked'> & {
-    logs: DataState;
+    logs: DataTable;
     paginationItems: number;
   }
 
@@ -152,7 +152,7 @@ const getSelector = memoize((dataType: DataType): Selector<LogContentState, Sele
 })
 
 const AkashicRecordsTableArea: React.FC<AkashicRecordsTableAreaT> = ({ contentType }) => {
-  const selector: Selector<any, SelectorResult> = createSelector(
+  const selector: Selector<IState, SelectorResult> = createSelector(
     logContentSelectorFactory(contentType),
     getSelector(contentType)
   )
@@ -167,105 +167,105 @@ const AkashicRecordsTableArea: React.FC<AkashicRecordsTableAreaT> = ({ contentTy
     dispatch(setActivePage(idx, contentType))
   }, [contentType])
 
-  let showLabel = Boolean(configListChecked[0])
-    let showFilter = Boolean(configListChecked[1])
-    if (configListChecked[2]) {
-      showFilter = true
-      showLabel = showLabel || filterKeys.some((filterKey, index) =>
-        tabVisibility[index + 1] && filterKey !== ''
-      )
-    }
-    const startLogs = (activePage - 1) * showAmount
-    const endLogs = Math.min(activePage * showAmount, logs.length)
-    return (
+  let showLabel = configListChecked[0]
+  let showFilter = configListChecked[1]
+  if (configListChecked[2]) {
+    showFilter = true
+    showLabel = showLabel || filterKeys.some((filterKey, index) =>
+      tabVisibility[index + 1] && filterKey !== ''
+    )
+  }
+  const startLogs = (activePage - 1) * showAmount
+  const endLogs = Math.min(activePage * showAmount, logs.length)
+  return (
+    <div>
       <div>
-        <div>
-          <HTMLTable striped bordered condensed>
-            <THeadCenter>
-              {
-                (showLabel && !showFilter) ? (
+        <HTMLTable striped bordered condensed>
+          <THeadCenter>
+            {
+              (showLabel && !showFilter) ? (
+                <tr>
+                  {
+                    getTabs(contentType).map((tab, index) => (
+                      tabVisibility[index] ? <th key={index}>{tab}</th> : null
+                    ))
+                  }
+                </tr>
+              ) : (
+                (showLabel || showFilter) ? (
                   <tr>
                     {
-                      getTabs(contentType).map((tab, index) => (
-                        tabVisibility[index] ? <th key={index}>{tab}</th> : null
-                      ))
+                      getTabs(contentType).map((tab, index) =>
+                        (index === 0) ? (
+                          <th key={index}>
+                            <Popover>
+                              <Icon icon='help' style={{ marginLeft: "3px"}}/>
+                              <TipContainer>
+                                <h3>
+                                  {t("Tips")}
+                                </h3>
+                                <ul>
+                                  <li>
+                                    {t("Disable filtering while hiding column")}
+                                  </li>
+                                  <li>
+                                    {t("Support the Javascript's ")}
+                                    <a onClick={() => openExternal("http://www.w3school.com.cn/jsref/jsref_obj_regexp.asp")}>
+                                      {"RegExp"}
+                                    </a>
+                                  </li>
+                                </ul>
+                              </TipContainer>
+                            </Popover>
+
+                          </th>
+                        ) : (
+                          tabVisibility[index] ? (
+                            <th key={index}>
+                              <InputGroup
+                                type="text"
+                                placeholder={t(getTabs(contentType)[index])}
+                                value={filterKeys[index - 1]}
+                                onChange={(e) => handleKeywordChange(index - 1, e.target.value)}
+                              />
+                            </th>
+                          ) : null
+                        )
+                      )
                     }
                   </tr>
-                ) : (
-                  (showLabel || showFilter) ? (
-                    <tr>
-                      {
-                        getTabs(contentType).map((tab, index) =>
-                          (index === 0) ? (
-                            <th key={index}>
-                              <Popover>
-                                <Icon icon='help' style={{ marginLeft: "3px"}}/>
-                                <TipContainer>
-                                  <h3>
-                                    {t("Tips")}
-                                  </h3>
-                                  <ul>
-                                    <li>
-                                      {t("Disable filtering while hiding column")}
-                                    </li>
-                                    <li>
-                                      {t("Support the Javascript's ")}
-                                      <a onClick={() => openExternal("http://www.w3school.com.cn/jsref/jsref_obj_regexp.asp")}>
-                                        {"RegExp"}
-                                      </a>
-                                    </li>
-                                  </ul>
-                                </TipContainer>
-                              </Popover>
-
-                            </th>
-                          ) : (
-                            tabVisibility[index] ? (
-                              <th key={index}>
-                                <InputGroup
-                                  type="text"
-                                  placeholder={t(getTabs(contentType)[index])}
-                                  value={filterKeys[index - 1]}
-                                  onChange={(e) => handleKeywordChange(index - 1, e.target.value)}
-                                />
-                              </th>
-                            ) : null
-                          )
-                        )
-                      }
-                    </tr>
-                  ) : null
+                ) : null
+              )
+            }
+          </THeadCenter>
+          <tbody>
+            {
+              range(endLogs - startLogs).map((_, i) => {
+                const index = startLogs + i
+                const item = logs[index]
+                return (
+                  <AkashicRecordsTableTbodyItem
+                    key={item[0]}
+                    index={index+1}
+                    data={item}
+                    tabVisibility={tabVisibility}
+                    contentType={contentType}
+                  />
                 )
-              }
-            </THeadCenter>
-            <tbody>
-              {
-                range(endLogs - startLogs).map((_, i) => {
-                  const index = startLogs + i
-                  const item = logs[index]
-                  return (
-                    <AkashicRecordsTableTbodyItem
-                      key={item[0]}
-                      index={index+1}
-                      data={item}
-                      tabVisibility={tabVisibility}
-                      contentType={contentType}
-                    />
-                  )
-                })
-              }
-            </tbody>
-          </HTMLTable>
-        </div>
-        <PaginationContainer>
-          <Pagination
-            max={paginationItems}
-            curr={activePage}
-            handlePaginationSelect={handlePaginationSelect}
-          />
-        </PaginationContainer>
+              })
+            }
+          </tbody>
+        </HTMLTable>
       </div>
-    )
+      <PaginationContainer>
+        <Pagination
+          max={paginationItems}
+          curr={activePage}
+          handlePaginationSelect={handlePaginationSelect}
+        />
+      </PaginationContainer>
+    </div>
+  )
 }
 
 export default AkashicRecordsTableArea

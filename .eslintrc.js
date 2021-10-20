@@ -1,31 +1,25 @@
-const jsExtensions = ['.js', '.es']
-const tsExtensions = ['.ts', '.tsx', '*.d.ts']
-const allExtensions = jsExtensions.concat(tsExtensions)
+const tsExtensions = ['.ts', '.tsx']
 
 module.exports = {
-  'env': {
-    'browser': true,
-    'es6': true,
-    'node': true,
+  env: {
+    browser: true,
+    es6: true,
+    node: true,
   },
-  'extends': [
+  extends: [
     'eslint:recommended',
     'plugin:react/recommended',
     'plugin:import/errors',
     'plugin:import/warnings',
     'poi-plugin',
+    'prettier',
   ],
-  'plugins': [
-    'import',
-    'react',
+  parser: "@typescript-eslint/parser",
+  parserOptions: { "project": ["./tsconfig.json"] },
+  plugins: [
+      "@typescript-eslint"
   ],
-  'parser': '@babel/eslint-parser',
-  'parserOptions': {
-    'babelOptions': {
-      'configFile': './node_modules/poi-util-transpile/babel.config.js'
-    }
-  }
-  'rules': {
+  rules: {
     'comma-dangle': ['error', 'always-multiline'],
     'indent': ['warn', 2],
     'linebreak-style': ['error', 'unix'],
@@ -38,24 +32,21 @@ module.exports = {
     'react/prop-types': [0],
     'no-irregular-whitespace': ['error', {'skipStrings': true, 'skipTemplates': true}],
   },
-  'settings': {
+  settings: {
     react: {
       version: '16.10.0',
     },
-    'import/extensions': allExtensions,
+    'import/extensions': tsExtensions,
     'import/parsers': {
       '@typescript-eslint/parser': tsExtensions,
     },
     'import/resolver': {
       node: {
-        extensions: allExtensions,
+        extensions: tsExtensions,
       },
+      typescript: {
+        project: './',
+      }
     },
   },
-  'overrides': [
-    {
-      files: tsExtensions,
-      parser: '@typescript-eslint/parser',
-    },
-  ],
 }

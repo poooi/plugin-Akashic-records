@@ -1,16 +1,14 @@
+import { DataRow, DataTable } from '../../lib/data-co-manager'
 import { Reducer } from 'redux'
 
-export type DataRow = [number, ...(number | string)[]]
-
-export type DataState = DataRow[]
 
 export interface DataAction {
   type: string;
   log?: DataRow;
-  logs?: DataState;
+  logs?: DataTable;
 }
 
-const reducer: Reducer<DataState, DataAction> = (state = [], action) => {
+const reducer: Reducer<DataTable, DataAction> = (state = [], action) => {
   switch (action.type) {
   case '@@poi-plugin-akashic-records/ADD_LOG':
     return action.log ? [action.log, ...state] : state

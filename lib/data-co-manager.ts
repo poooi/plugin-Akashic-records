@@ -36,12 +36,12 @@ class DataCoManager {
     ).map(async (filePath) => {
       try {
         const fileContent = await fs.readFile(filePath, 'utf8')
-        let logs = fileContent.split("\n")
+        const logs = fileContent.split("\n")
         const parsed = logs.map((logItem) => {
           const splitedLogItem = logItem.split(',')
           const parsedLogItem: DataRow = [
             this.getParsedTimestamp(splitedLogItem[0]),
-            ...splitedLogItem.slice(1).map(s => s.replaceAll('%2C', ','))
+            ...splitedLogItem.slice(1).map(s => s.replaceAll('%2C', ',')),
           ]
           return parsedLogItem
         })
@@ -92,8 +92,9 @@ class DataCoManager {
         (err) => {
           if (process.env.DEBUG) {
             if (err) {
-              console.error("Write attack-log file error!");
+              console.error("Write attack-log file error!")
             } else {
+              // eslint-disable-next-line no-console
               console.log("Write attack-log file successful!")
             }
           }
@@ -108,6 +109,7 @@ class DataCoManager {
             if (err) {
               console.error(`Write ${type}-log file error!`)
             } else {
+              // eslint-disable-next-line no-console
               console.log(`Write ${type}-log file successful!`)
             }
           }

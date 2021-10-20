@@ -2,17 +2,18 @@ import React, { useCallback } from 'react'
 import styled from 'styled-components'
 import { useDispatch, useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
-import { memoize, range } from 'lodash'
+import { range } from 'lodash'
 import { createSelector, Selector } from 'reselect'
 
 import { DataType, getTabs, TabVisibilityState } from '../reducers/tab'
 import { dateToString } from '../../lib/utils'
 import Pagination from './pagination'
-import { DataRow, DataState } from 'views/reducers/data'
 import { LogContentState } from 'views/reducers/log-content'
-import { filterSelectors, logContentSelectorFactory, resourceFilter } from 'views/selectors'
+import { logContentSelectorFactory, resourceFilter } from 'views/selectors'
 import { setActivePage, setFilterKey, setShowAmount, setTimeScale } from 'views/actions'
 import { HTMLSelect, HTMLTable, InputGroup } from '@blueprintjs/core'
+import { IState } from 'views/utils/selectors'
+import { DataRow, DataTable } from '../../lib/data-co-manager'
 
 const { config } = window
 
@@ -50,7 +51,7 @@ const AkashicResourceTableTbodyItem: React.FC<TbodyItemT> = ({ data, nextdata, t
             if (lastFlag) {
               return (  <td key={index}>{item}</td>)
             } else {
-              let diff = Number(item) - Number(nextdata[index])
+              const diff = Number(item) - Number(nextdata[index])
               return (
                 <td key={index}>
                   {`${item}(${diff > 0 ? '+' : ''}${diff})`}
@@ -67,7 +68,7 @@ const AkashicResourceTableTbodyItem: React.FC<TbodyItemT> = ({ data, nextdata, t
 
 type SelectorResult =
   Pick<LogContentState, 'tabVisibility' | 'activePage' | 'showAmount' | 'filterKeys' | 'showTimeScale'> & {
-    logs: DataState;
+    logs: DataTable;
     paginationItems: number;
   }
 
@@ -91,7 +92,7 @@ export interface AkashicResourceTableAreaT {
 }
 
 const AkashicResourceTableArea: React.FC<AkashicResourceTableAreaT> = ({ contentType }) => {
-  const selector: Selector<any, SelectorResult> = createSelector(
+  const selector: Selector<IState, SelectorResult> = createSelector(
     logContentSelectorFactory(contentType),
     resourceSelector
   )
@@ -153,16 +154,16 @@ const AkashicResourceTableArea: React.FC<AkashicResourceTableAreaT> = ({ content
                   getTabs(contentType).map((tab, index) => (
                     tabVisibility[index] ?
                       index === 1 ?
-                      <th>
-                        <InputGroup
-                          type="text"
-                          placeholder={t(getTabs(contentType)[index])}
-                          value={filterKeys[0]}
-                          onChange={(e) => handleKeywordChange(e.target.value)}
-                        />
-                      </th>  :
-                      <th key={index}>{tab}</th>
-                    : null
+                        <th>
+                          <InputGroup
+                            type="text"
+                            placeholder={t(getTabs(contentType)[index])}
+                            value={filterKeys[0]}
+                            onChange={(e) => handleKeywordChange(e.target.value)}
+                          />
+                        </th>  :
+                        <th key={index}>{tab}</th>
+                      : null
                   ))
                 }
               </tr>
@@ -196,12 +197,12 @@ const AkashicResourceTableArea: React.FC<AkashicResourceTableAreaT> = ({ content
         </div>
       </div>
       <PaginationContainer>
-          <Pagination
-            max={paginationItems}
-            curr={activePage}
-            handlePaginationSelect={handleActivePageSet}
-          />
-        </PaginationContainer>
+        <Pagination
+          max={paginationItems}
+          curr={activePage}
+          handlePaginationSelect={handleActivePageSet}
+        />
+      </PaginationContainer>
     </div>
   )
 }

@@ -7,11 +7,11 @@ import { remote, shell } from 'electron'
 import { useTranslation } from 'react-i18next'
 import { useDispatch } from 'react-redux'
 import { saveLog, importLog } from '../utils/advanced-module'
-import { DataType } from 'views/reducers/tab'
+import { DataType } from '../reducers/tab'
 import { initializeLogs } from '../actions'
+import { DataTable } from '../../lib/data-co-manager'
 
-const { dialog } = remote.require('electron')
-const { openExternal } = shell
+const { dialog } = remote
 
 const Container = styled.div`
   padding: 8px 16px;
@@ -40,16 +40,16 @@ const ImportExportBtn = styled.div`
   margin-right: 2em;
 `
 
-const AdvancedModule: React.FC<{}> = () => {
+const AdvancedModule: React.FC = () => {
   const { t } = useTranslation('poi-plugin-akashic-records')
   const [typeChoosed, setTypeChoosed] = useState<DataType>('attack')
 
   const dispatch = useDispatch()
 
-  const onLogsReset = useCallback((logs, type) => dispatch(initializeLogs(logs, type)), [dispatch])
+  const onLogsReset = useCallback((logs: DataTable, type: DataType) => dispatch(initializeLogs(logs, type)), [dispatch])
 
-  const showMessage = (message: string) => {
-    dialog.showMessageBox({
+  const showMessage = async (message: string): Promise<void> => {
+    await dialog.showMessageBox({
       type: 'info',
       buttons: ['OK'],
       title: 'Warning',
@@ -80,12 +80,12 @@ const AdvancedModule: React.FC<{}> = () => {
       <PopoverTitle>{t("Need more?")}</PopoverTitle>
       <ul>
         <li>
-          <a onClick={() => openExternal("https://github.com/poooi/plugin-Akashic-records/issues/new")}>
+          <a onClick={() => shell.openExternal("https://github.com/poooi/plugin-Akashic-records/issues/new")}>
             {t("open a new issue on github")}
           </a>
         </li>
         <li>
-          {t("or email")} <a onClick={() => openExternal("mailto:jenningswu@gmail.com")}>jenningswu@gmail.com</a>
+          {t("or email")} <a onClick={() => shell.openExternal("mailto:jenningswu@gmail.com")}>jenningswu@gmail.com</a>
         </li>
       </ul>
     </PopoverContent>
@@ -126,7 +126,7 @@ const AdvancedModule: React.FC<{}> = () => {
       </Content>
       <Title />
       <Content>
-        <Button onClick={() => openExternal('https://github.com/yudachi/plugin-Akashic-records')}>
+        <Button onClick={() => shell.openExternal('https://github.com/yudachi/plugin-Akashic-records')}>
           {t('Bug Report & Suggestion')}
         </Button>
       </Content>

@@ -9,6 +9,15 @@ declare namespace NodeJS {
   }
 }
 
+
+interface IPC extends EventEmitter {
+  register: (scope: string, opt: Record<string, unknown>) => void;
+  unregister: (scope: string, keys: string | string[] | Record<string, unknown>) => void;
+  access: (scope: string) => any;
+  list: () => Record<string, unknown>;
+  foreachCall: (key: string, ...arg: string[]) => void;
+}
+
 interface Window {
   ROOT: string;
   APPDATA_PATH: string;
@@ -17,7 +26,7 @@ interface Window {
   getStore: (path?: string) => any;
   isMain: boolean;
   _nickNameId: string;
-  ipc: any;
+  ipc: IPC;
   toggleModal: (t: string, c: string) => void
 }
 

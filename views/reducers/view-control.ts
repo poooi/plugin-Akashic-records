@@ -15,10 +15,10 @@ export interface ConfigListAction {
   dataType: DataType
 }
 
-export function configListChecked(state: ConfigListState, action: ConfigListAction): ConfigListState {
+export const configListChecked: Reducer<ConfigListState, ConfigListAction> = (state, action) => {
   state = JSON.parse(config.get(`plugin.Akashic.${action.dataType}.configChecked`,
     JSON.stringify([false, true, false, false])
-  ))
+  )) as ConfigListState
   return state
 }
 

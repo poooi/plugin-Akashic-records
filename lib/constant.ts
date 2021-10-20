@@ -15,5 +15,5 @@ export default {
     rawDataIndex: 0,
     filteredDataIndex: 1,
     indexBase: 1,
-  }
+  },
 }

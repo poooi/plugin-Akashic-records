@@ -2,12 +2,12 @@ import React, { useCallback } from 'react'
 import { Checkbox } from '@blueprintjs/core'
 import styled from 'styled-components'
 
-import { DataType, getTabs, TabVisibilityState } from '../reducers/tab'
+import { DataType, getTabs } from '../reducers/tab'
 import { useTranslation } from 'react-i18next'
 import { Selector, useDispatch, useSelector } from 'react-redux'
-import { setTabVisibility } from 'views/actions'
+import { setTabVisibility } from '../actions'
 import { logContentSelectorFactory } from 'views/selectors'
-import { LogContentState } from 'views/reducers/log-content'
+import { LogContentState } from '../reducers/log-content'
 import { createSelector } from 'reselect'
 
 const { config } = window

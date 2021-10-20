@@ -4,20 +4,43 @@ import { LogContentState } from '../reducers/log-content'
 
 import CONST from '../../lib/constant'
 
-import { extensionSelectorFactory } from 'views/utils/selectors'
-import { SearchRule } from 'views/reducers/search-rules'
-import { DataState } from 'views/reducers/data'
-import { DataType } from 'views/reducers/tab'
+import { extensionSelectorFactory, IState } from 'views/utils/selectors'
+import { SearchRule } from '../reducers/search-rules'
+import { DataType } from '../reducers/tab'
+import { DataTable } from '../../lib/data-co-manager'
 
-const empty = {}
+type PluginState = Record<DataType, LogContentState>
 
-export const pluginDataSelector = createSelector(
+const emptyLogContentState: LogContentState = {
+  data: [],
+  tabVisibility: [],
+  activePage: 0,
+  showAmount: 0,
+  configListChecked: [],
+  checkboxVisible: true,
+  statisticsVisible: true,
+  searchRules: [],
+  statisticsRules: [],
+  filterKeys: [],
+  showTimeScale: 0,
+}
+
+const empty: PluginState = {
+  attack: emptyLogContentState,
+  mission: emptyLogContentState,
+  createitem: emptyLogContentState,
+  createship: emptyLogContentState,
+  retirement: emptyLogContentState,
+  resource: emptyLogContentState,
+}
+
+export const pluginDataSelector: Selector<IState, PluginState> = createSelector(
   extensionSelectorFactory('poi-plugin-akashic-records'),
-  (state) => state || empty
+  (state) => state as PluginState || empty
 )
 
-export const logContentSelectorFactory = (contentType: DataType): Selector<any, LogContentState> => {
-  return createSelector(pluginDataSelector, (pluginData) => pluginData[contentType])
+export const logContentSelectorFactory = (contentType: DataType): Selector<IState, LogContentState> => {
+  return createSelector(pluginDataSelector, (pluginData) => pluginData[contentType] || emptyLogContentState)
 }
 
 const dateToDateString = (datetime: number | string): string => {
@@ -25,19 +48,19 @@ const dateToDateString = (datetime: number | string): string => {
   return `${date.getFullYear()}/${date.getMonth()}/${date.getDate()}`
 }
 
-const filterRegWindex = (data: DataState, index: number, reg: RegExp) =>
+const filterRegWindex = (data: DataTable, index: number, reg: RegExp) =>
   data.filter((row) =>
     reg.test(index === 0 ? dateToString(new Date(row[0])) : `${row[index]}`)
   )
 
-const filterStringWIndex = (data: DataState, index: number, keyword: string) =>
+const filterStringWIndex = (data: DataTable, index: number, keyword: string) =>
   data.filter((row)=>
     index === 0
       ? dateToString(new Date(row[0])).toLowerCase().trim().indexOf(keyword) >= 0
       : `${row[index]}`.toLowerCase().trim().indexOf(keyword) >= 0
   )
 
-const filterWithIndex = (logs: DataState, filterKeys: string[]): DataState => {
+const filterWithIndex = (logs: DataTable, filterKeys: string[]): DataTable => {
   let retData = logs
   filterKeys.forEach((key, idx) => {
     if (key === '') return
@@ -55,7 +78,7 @@ const filterWithIndex = (logs: DataState, filterKeys: string[]): DataState => {
   return retData
 }
 
-const filterWNindex = (logs: DataState, keyword: string): DataState => {
+const filterWNindex = (logs: DataTable, keyword: string): DataTable => {
   if (keyword === '') {
     return logs
   } else {
@@ -85,7 +108,7 @@ const filterWNindex = (logs: DataState, keyword: string): DataState => {
   }
 }
 
-const filterAsScale = (data: DataState, showScale: number) => {
+const filterAsScale = (data: DataTable, showScale: number) => {
   if (showScale === 0) {
     return data
   } else {
@@ -102,7 +125,7 @@ const filterAsScale = (data: DataState, showScale: number) => {
   }
 }
 
-const resourceApplyFilter = (logs: DataState, tabVisibility: boolean[], keyWord: string, showScale: number) => {
+const resourceApplyFilter = (logs: DataTable, tabVisibility: boolean[], keyWord: string, showScale: number) => {
   let retLogs = logs
   if (keyWord != null) {
     retLogs = retLogs.filter((row) => {
@@ -129,29 +152,29 @@ const logSelectorFactory = () => {
   return createSelector([getLogs, getFilterKeys], filterWithIndex)
 }
 
-type LogSearchSelector = OutputParametricSelector<DataState[], SearchRule, DataState, (log: DataState, rule: string) => DataState>
+type LogSearchSelector = OutputParametricSelector<DataTable[], SearchRule, DataTable, (log: DataTable, rule: string) => DataTable>
 
 const logSearchSelectorBaseFactory = (
   old: LogSearchSelector[],
   num: number
 ) => {
-  const getLogs = (logsRes: DataState[], searchRule: SearchRule): DataState => logsRes[searchRule.baseOn]
-  const getSearchKey = (logsRes: DataState[], searchRule: SearchRule): string => searchRule.content
+  const getLogs = (logsRes: DataTable[], searchRule: SearchRule): DataTable => logsRes[searchRule.baseOn]
+  const getSearchKey = (logsRes: DataTable[], searchRule: SearchRule): string => searchRule.content
   return [...Array(num).keys()].map((index) =>
     old[index] || createSelector([getLogs, getSearchKey], filterWNindex)
   )
 }
 
 export interface LogSearchSelectorFactoryParam {
-  logs: DataState,
-  filteredLogs: DataState
+  logs: DataTable,
+  filteredLogs: DataTable
   searchRules: SearchRule[]
 }
 
 const logSearchSelectorFactory = () => {
   return (function() {
     let selector: LogSearchSelector[]
-    let lastLogs: DataState
+    let lastLogs: DataTable
     return createSelector(
       [
         (params: LogSearchSelectorFactoryParam) => params.logs,
@@ -164,7 +187,7 @@ const logSearchSelectorFactory = () => {
         lastLogs = logs
         if (selector.length !== searchRules.length)
           selector = logSearchSelectorBaseFactory(selector, searchRules.length)
-        const logsRes: DataState[] = [logs, filteredLogs]
+        const logsRes: DataTable[] = [logs, filteredLogs]
         searchRules.forEach((searchRule, i) =>
           logsRes[CONST.search.indexBase+i+1] = selector[i](logsRes, searchRule)
         )
@@ -174,7 +197,7 @@ const logSearchSelectorFactory = () => {
   })()
 }
 
-export const filterSelectors: Record<DataType, Selector<LogContentState, DataState>> = {
+export const filterSelectors: Record<DataType, Selector<LogContentState, DataTable>> = {
   attack: logSelectorFactory(),
   mission: logSelectorFactory(),
   createship: logSelectorFactory(),
@@ -200,7 +223,3 @@ export const resourceFilter = createSelector(
     (state: LogContentState) => state.showTimeScale,
   ], resourceApplyFilter
 )
-
-interface TotalState {
-  [key: string]: LogContentState
-}

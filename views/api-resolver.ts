@@ -1,18 +1,18 @@
-const { config } = window
 import CONST from '../lib/constant'
 import { initializeLogs, addLog } from './actions'
 import _ from 'lodash'
 import * as API from 'kcsapi'
 import { APIMstShip, APIMstShipgraph, APIMstStype, APIMstUseitem, APIMstSlotitem, APIMstSlotitemEquiptype } from 'kcsapi/api_start2/getData/response'
 
-import dataCoManager from '../lib/data-co-manager'
+import dataCoManager, { DataRow } from '../lib/data-co-manager'
 
 import { store, Store } from 'views/create-store'
-import { DataRow } from './reducers/data'
 import { APIShip } from 'kcsapi/api_port/port/response'
 import { APIDeck } from 'kcsapi/api_get_member/preset_deck/response'
 import { APIGetItem } from 'kcsapi/api_req_mission/result/response'
 import { DataType } from './reducers/tab'
+
+const { config } = window
 
 interface GameRequestDetail {
   method: string
@@ -172,6 +172,7 @@ class APIResolver {
         dangerInfo = `${dangerInfo}${this.getMstShip(id).api_name}`
       }
     })
+    // eslint-disable-next-line no-console
     if (process.env.DEBUG) console.log("战斗结束后剩余HP：#{JSON.stringify nowHp}")
     return dangerInfo
   }
@@ -180,45 +181,45 @@ class APIResolver {
     const e = event as GameRequestEvent
     const urlpath = e.detail.path
     switch (urlpath) {
-      // 解体
-      case '/kcsapi/api_req_kousyou/destroyship': {
-        const body = e.detail.body as API.APIReqKousyouDestroyshipRequest
-        let dateTime = new Date().getTime()
-        for (const shipId of body.api_ship_id.split(',')) {
-          const ship = this.getShip(shipId)
-          const mstShip = this.getMstShip(shipId)
-          const dataItem: DataRow = [
-            dateTime++,
-            '解体',
-            this.getShipType(mstShip.api_stype).api_name,
-            `${mstShip.api_name}(Lv.${ship.api_lv})`,
-          ]
-          dataCoManager.saveLog('retirement', dataItem)
-          this.store.dispatch(addLog(dataItem, 'retirement'))
-        }
-        break
+    // 解体
+    case '/kcsapi/api_req_kousyou/destroyship': {
+      const body = e.detail.body as API.APIReqKousyouDestroyshipRequest
+      let dateTime = new Date().getTime()
+      for (const shipId of body.api_ship_id.split(',')) {
+        const ship = this.getShip(shipId)
+        const mstShip = this.getMstShip(shipId)
+        const dataItem: DataRow = [
+          dateTime++,
+          '解体',
+          this.getShipType(mstShip.api_stype).api_name,
+          `${mstShip.api_name}(Lv.${ship.api_lv})`,
+        ]
+        dataCoManager.saveLog('retirement', dataItem)
+        this.store.dispatch(addLog(dataItem, 'retirement'))
       }
+      break
+    }
 
-      // 改修
-      case '/kcsapi/api_req_kaisou/powerup': {
-        const body = e.detail.body as API.APIReqKaisouPowerupRequest
-        const { api_id_items: apiIdItems } = body
-        let dateTime = new Date().getTime()
-        // Read the status before modernization
-        for (const shipId of apiIdItems.split(',')) {
-          const ship = this.getShip(shipId)
-          const mstShip = this.getMstShip(shipId)
-          const dataItem: DataRow = [
-            dateTime++,
-            '改修',
-            this.getShipType(mstShip.api_stype).api_name,
-            `${mstShip.api_name}(Lv.${ship.api_lv})`,
-          ]
-          dataCoManager.saveLog('retirement', dataItem)
-          this.store.dispatch(addLog(dataItem, 'retirement'))
-        }
-        break
+    // 改修
+    case '/kcsapi/api_req_kaisou/powerup': {
+      const body = e.detail.body as API.APIReqKaisouPowerupRequest
+      const { api_id_items: apiIdItems } = body
+      let dateTime = new Date().getTime()
+      // Read the status before modernization
+      for (const shipId of apiIdItems.split(',')) {
+        const ship = this.getShip(shipId)
+        const mstShip = this.getMstShip(shipId)
+        const dataItem: DataRow = [
+          dateTime++,
+          '改修',
+          this.getShipType(mstShip.api_stype).api_name,
+          `${mstShip.api_name}(Lv.${ship.api_lv})`,
+        ]
+        dataCoManager.saveLog('retirement', dataItem)
+        this.store.dispatch(addLog(dataItem, 'retirement'))
       }
+      break
+    }
     }
   }
 
@@ -226,214 +227,214 @@ class APIResolver {
     const e = event as GameResponseEvent
     const urlpath = e.detail.path
     switch (urlpath) {
-      case '/kcsapi/api_get_member/basic':
-        this.updateUser()
-        break
+    case '/kcsapi/api_get_member/basic':
+      this.updateUser()
+      break
 
-        // Map selected rank
-      case '/kcsapi/api_get_member/mapinfo':
-        const body = e.detail.body as API.APIGetMemberMapinfoResponse
-        for (const map of body.api_map_info) {
-          this.mapLv[map.api_id] = 0
-          if (map.api_eventmap)
-            this.mapLv[map.api_id] = map.api_eventmap.api_selected_rank
-        }
-        break
-
-        // Eventmap select report
-      case '/kcsapi/api_req_map/select_eventmap_rank':
-        const postBody = e.detail.postBody as API.APIReqMapSelectEventmapRankRequest
-        this.mapLv[parseInt(postBody.api_maparea_id) * 10 + parseInt(postBody.api_map_no)] = parseInt(postBody.api_rank)
-        break
-
-      case '/kcsapi/api_req_map/start':
-      case '/kcsapi/api_req_map/next': {
-        const body = e.detail.body as API.APIReqMapNextResponse
-        if (urlpath === '/kcsapi/api_req_map/start') {
-          this.isStart = true
-        }
-        this.nowDate = new Date().getTime()
-        this.battleStart = false
-        const { api_destruction_battle } = body
-        if (api_destruction_battle != null) {
-          const { api_air_base_attack } = api_destruction_battle
-          const parsed_api_air_base_attack =
+      // Map selected rank
+    case '/kcsapi/api_get_member/mapinfo':{
+      const body = e.detail.body as API.APIGetMemberMapinfoResponse
+      for (const map of body.api_map_info) {
+        this.mapLv[map.api_id] = 0
+        if (map.api_eventmap)
+          this.mapLv[map.api_id] = map.api_eventmap.api_selected_rank
+      }
+      break
+    }
+    // Eventmap select report
+    case '/kcsapi/api_req_map/select_eventmap_rank': {
+      const postBody = e.detail.postBody as API.APIReqMapSelectEventmapRankRequest
+      this.mapLv[parseInt(postBody.api_maparea_id) * 10 + parseInt(postBody.api_map_no)] = parseInt(postBody.api_rank)
+      break
+    }
+    case '/kcsapi/api_req_map/start':
+    case '/kcsapi/api_req_map/next': {
+      const body = e.detail.body as API.APIReqMapNextResponse
+      if (urlpath === '/kcsapi/api_req_map/start') {
+        this.isStart = true
+      }
+      this.nowDate = new Date().getTime()
+      this.battleStart = false
+      const { api_destruction_battle } = body
+      if (api_destruction_battle != null) {
+        const { api_air_base_attack } = api_destruction_battle
+        const parsed_api_air_base_attack =
             typeof api_air_base_attack === 'string'
               ? JSON.parse(api_air_base_attack)
               : api_air_base_attack
 
-          const map = parseInt(window.getStore('sortie.sortieMapId'), 10) || 0
-          const quest = window.getStore('const.$maps')[map]?.api_name || ''
-          const mapText = map <= 410
-            ? `${quest}(${Math.floor(map / 10)}-${map % 10})`
-            : `${quest}(${Math.floor(map / 10)}-${map % 10} %rank) | ${this.mapLv[map] || 0}`
+        const map = parseInt(window.getStore('sortie.sortieMapId'), 10) || 0
+        const quest = window.getStore('const.$maps')[map]?.api_name || ''
+        const mapText = map <= 410
+          ? `${quest}(${Math.floor(map / 10)}-${map % 10})`
+          : `${quest}(${Math.floor(map / 10)}-${map % 10} %rank) | ${this.mapLv[map] || 0}`
 
-          const seiku = seikuText[parsed_api_air_base_attack.api_stage1.api_disp_seiku] || '奇怪的结果'
-          const lostKind = lostKindText[api_destruction_battle.api_lost_kind - 1] || '奇怪的结果'
-          const enemy = ''
+        const seiku = seikuText[parsed_api_air_base_attack.api_stage1.api_disp_seiku] || '奇怪的结果'
+        const lostKind = lostKindText[api_destruction_battle.api_lost_kind - 1] || '奇怪的结果'
+        const enemy = ''
 
-          const dataItem: DataRow = [this.nowDate, mapText,'基地防空戦', seiku, lostKind, enemy,'','','','','','']
-          dataCoManager.saveLog(CONST.typeList.attack, dataItem)
-          this.store.dispatch(addLog(dataItem, CONST.typeList.attack as DataType))
-        }
+        const dataItem: DataRow = [this.nowDate, mapText,'基地防空戦', seiku, lostKind, enemy,'','','','','','']
+        dataCoManager.saveLog(CONST.typeList.attack, dataItem)
+        this.store.dispatch(addLog(dataItem, CONST.typeList.attack as DataType))
+      }
+      break
+    }
+
+    case '/kcsapi/api_req_sortie/battle':
+    case '/kcsapi/api_req_battle_midnight/sp_midnight':
+    case '/kcsapi/api_req_sortie/airbattle':
+    case '/kcsapi/api_req_battle_midnight/battle':
+    case '/kcsapi/api_req_combined_battle/airbattle':
+    case '/kcsapi/api_req_combined_battle/ld_airbattle':
+    case '/kcsapi/api_req_combined_battle/battle':
+    case '/kcsapi/api_req_combined_battle/midnight_battle':
+    case '/kcsapi/api_req_combined_battle/sp_midnight':
+    case '/kcsapi/api_req_combined_battle/battle_water':
+      if (!this.battleStart) {
+        this.nowDate = (new Date()).getTime()
+        this.battleStart = true
+      }
+      break
+
+      // 远征
+    case '/kcsapi/api_req_mission/result': {
+      if (!this.enableRecord)
         break
+      const body = e.detail.body as API.APIReqMissionResultResponse
+      const nowDate = new Date()
+      const dataItem: DataRow = [
+        nowDate.getTime(),
+        body.api_quest_name,
+        ["失敗", "成功", "大成功"][body.api_clear_result] || "奇怪的结果",
+      ]
+
+      if (body.api_clear_result === 0)
+        dataItem.push(0, 0, 0, 0)
+      else {
+        dataItem.push(...(body.api_get_material as number[]).slice(0, 4))
       }
 
-      case '/kcsapi/api_req_sortie/battle':
-      case '/kcsapi/api_req_battle_midnight/sp_midnight':
-      case '/kcsapi/api_req_sortie/airbattle':
-      case '/kcsapi/api_req_battle_midnight/battle':
-      case '/kcsapi/api_req_combined_battle/airbattle':
-      case '/kcsapi/api_req_combined_battle/ld_airbattle':
-      case '/kcsapi/api_req_combined_battle/battle':
-      case '/kcsapi/api_req_combined_battle/midnight_battle':
-      case '/kcsapi/api_req_combined_battle/sp_midnight':
-      case '/kcsapi/api_req_combined_battle/battle_water':
-        if (!this.battleStart) {
-          this.nowDate = (new Date()).getTime()
-          this.battleStart = true
-        }
-        break
-
-        // 远征
-      case '/kcsapi/api_req_mission/result': {
-        if (!this.enableRecord)
-          break
-        const body = e.detail.body as API.APIReqMissionResultResponse
-        const nowDate = new Date()
-        const dataItem: DataRow = [
-          nowDate.getTime(),
-          body.api_quest_name,
-          ["失敗", "成功", "大成功"][body.api_clear_result] || "奇怪的结果",
-        ]
-
-        if (body.api_clear_result === 0)
-          dataItem.push(0, 0, 0, 0)
-        else {
-          dataItem.push(...(body.api_get_material as number[]).slice(0, 4))
-        }
-
-        const useItemFlag = body.api_useitem_flag;
-        [0, 1].forEach((idx) => {
-          if (useItemFlag[idx] > 0) {
-            const itemStr = 'api_get_item' + (idx + 1) as ('api_get_item1' | 'api_get_item2')
-            const useItemId =
+      const useItemFlag = body.api_useitem_flag;
+      [0, 1].forEach((idx) => {
+        if (useItemFlag[idx] > 0) {
+          const itemStr = 'api_get_item' + (idx + 1) as ('api_get_item1' | 'api_get_item2')
+          const useItemId =
                 (body[itemStr]!.api_useitem_id <= 0) ?
                   useItemFlag[idx] :
                   body[itemStr]!.api_useitem_id
-            dataItem.push(
-              this.getMstUseItem(useItemId).api_name,
+          dataItem.push(
+            this.getMstUseItem(useItemId).api_name,
               body[itemStr]!.api_useitem_count
-            )
-          } else {
-            dataItem.push('', '')
-          }
-        })
-        dataCoManager.saveLog(CONST.typeList.mission, dataItem)
-        this.store.dispatch(addLog(dataItem, CONST.typeList.mission as DataType))
-        break
-      }
-
-      // 开发
-      case '/kcsapi/api_req_kousyou/createitem': {
-        if (!this.enableRecord) {
-          break
-        }
-        const body = e.detail.body as API.APIReqKousyouCreateitemResponse
-        const postBody = e.detail.postBody as API.APIReqKousyouCreateitemRequest
-        const timestamp = (new Date()).getTime()
-        _.each(body.api_get_items, (item, index) => {
-          const dataItem: DataRow = [timestamp + index / 10] // apply a dcecimal to avoid key duplicating
-          const deckFlagShipId = this.getDeck(0).api_ship[0]
-          if (item.api_slotitem_id > -1) {
-            const $item = this.getMstEquip(item.api_slotitem_id)
-            dataItem.push(
-              "成功",
-              $item.api_name,
-              this.getEquipType(_.get($item, 'api_type.2')).api_name
-            )
-          }
-          else {
-            dataItem.push(
-              "失敗",
-              'NA',
-              'NA'
-            )
-          }
-          dataItem.push(
-            postBody.api_item1,
-            postBody.api_item2,
-            postBody.api_item3,
-            postBody.api_item4
           )
+        } else {
+          dataItem.push('', '')
+        }
+      })
+      dataCoManager.saveLog(CONST.typeList.mission, dataItem)
+      this.store.dispatch(addLog(dataItem, CONST.typeList.mission as DataType))
+      break
+    }
+
+    // 开发
+    case '/kcsapi/api_req_kousyou/createitem': {
+      if (!this.enableRecord) {
+        break
+      }
+      const body = e.detail.body as API.APIReqKousyouCreateitemResponse
+      const postBody = e.detail.postBody as API.APIReqKousyouCreateitemRequest
+      const timestamp = (new Date()).getTime()
+      _.each(body.api_get_items, (item, index) => {
+        const dataItem: DataRow = [timestamp + index / 10] // apply a dcecimal to avoid key duplicating
+        const deckFlagShipId = this.getDeck(0).api_ship[0]
+        if (item.api_slotitem_id > -1) {
+          const $item = this.getMstEquip(item.api_slotitem_id)
           dataItem.push(
-            `${this.getMstShip(deckFlagShipId).api_name}(Lv.${this.getShip(deckFlagShipId).api_lv})`,
-            this.getTeitokuLv()
+            "成功",
+            $item.api_name,
+            this.getEquipType(_.get($item, 'api_type.2')).api_name
           )
-          dataCoManager.saveLog(CONST.typeList.createItem, dataItem)
-          this.store.dispatch(addLog(dataItem, CONST.typeList.createItem as DataType))
-        })
-        break
-      }
-
-      // 建造
-      case '/kcsapi/api_req_kousyou/createship': {
-        if (!this.enableRecord)
-          break
-        const body = e.detail.body as API.APIReqKousyouCreateshipResponse
-        const postBody = e.detail.postBody as API.APIReqKousyouCreateshipRequest
-        if (body.api_result === 1) {
-          this.largeFlag = (postBody.api_large_flag === "1")
-          this.material = (['api_item1', 'api_item2', 'api_item3', 'api_item4', 'api_item5'] as ('api_item1' | 'api_item2' | 'api_item3' | 'api_item4' | 'api_item5')[])
-            .map((k) => parseInt(postBody[k]))
-          this.kdockId = parseInt(postBody.api_kdock_id)
-          this.createShipFlag = true
         }
-        break
-      }
-
-      case '/kcsapi/api_get_member/kdock': {
-        if (this.createShipFlag && this.enableRecord) {
-          const body = e.detail.body as API.APIGetMemberKdockResponse[]
-          const apiData = body[this.kdockId - 1]
-          const mstShip = this.getMstShipByApiShipId(apiData.api_created_ship_id)
-          const deckFlagShipId = this.getDeck(0).api_ship[0]
-          const dataItem: DataRow = [
-            (new Date()).getTime(),
-            this.largeFlag ? '大型建造' : '普通建造',
-            mstShip.api_name,
-            this.getShipType(mstShip.api_stype).api_name,
-            ...this.material,
-          ]
+        else {
           dataItem.push(
-            body.filter(kdock => kdock.api_state === 0).length,
-            `${this.getMstShip(deckFlagShipId).api_name}(Lv.${this.getShip(deckFlagShipId).api_lv})`,
-            this.getTeitokuLv()
+            "失敗",
+            'NA',
+            'NA'
           )
-          dataCoManager.saveLog(CONST.typeList.createShip, dataItem)
-          this.store.dispatch(addLog(dataItem, CONST.typeList.createShip as DataType))
-          this.createShipFlag = false
         }
-        break
-      }
+        dataItem.push(
+          postBody.api_item1,
+          postBody.api_item2,
+          postBody.api_item3,
+          postBody.api_item4
+        )
+        dataItem.push(
+          `${this.getMstShip(deckFlagShipId).api_name}(Lv.${this.getShip(deckFlagShipId).api_lv})`,
+          this.getTeitokuLv()
+        )
+        dataCoManager.saveLog(CONST.typeList.createItem, dataItem)
+        this.store.dispatch(addLog(dataItem, CONST.typeList.createItem as DataType))
+      })
+      break
+    }
 
-      // 资源
-      case '/kcsapi/api_port/port': {
-        const body = e.detail.body as API.APIPortPortResponse
-        this.updateUser()
-        this.enableRecord = true
-        const nowDate = new Date()
-        if (this.timeString !== 'INIT' && this.timeString !== timeToBString(nowDate.getTime())) {
-          this.timeString = timeToBString(nowDate.getTime())
-          const dataItem: DataRow = [
-            (new Date()).getTime(),
-            ...body.api_material.map(item => item.api_value),
-          ]
-          dataCoManager.saveLog('resource', dataItem)
-          this.store.dispatch(addLog(dataItem, 'resource'))
-        }
+    // 建造
+    case '/kcsapi/api_req_kousyou/createship': {
+      if (!this.enableRecord)
         break
+      const body = e.detail.body as API.APIReqKousyouCreateshipResponse
+      const postBody = e.detail.postBody as API.APIReqKousyouCreateshipRequest
+      if (body.api_result === 1) {
+        this.largeFlag = (postBody.api_large_flag === "1")
+        this.material = (['api_item1', 'api_item2', 'api_item3', 'api_item4', 'api_item5'] as ('api_item1' | 'api_item2' | 'api_item3' | 'api_item4' | 'api_item5')[])
+          .map((k) => parseInt(postBody[k]))
+        this.kdockId = parseInt(postBody.api_kdock_id)
+        this.createShipFlag = true
       }
+      break
+    }
+
+    case '/kcsapi/api_get_member/kdock': {
+      if (this.createShipFlag && this.enableRecord) {
+        const body = e.detail.body as API.APIGetMemberKdockResponse[]
+        const apiData = body[this.kdockId - 1]
+        const mstShip = this.getMstShipByApiShipId(apiData.api_created_ship_id)
+        const deckFlagShipId = this.getDeck(0).api_ship[0]
+        const dataItem: DataRow = [
+          (new Date()).getTime(),
+          this.largeFlag ? '大型建造' : '普通建造',
+          mstShip.api_name,
+          this.getShipType(mstShip.api_stype).api_name,
+          ...this.material,
+        ]
+        dataItem.push(
+          body.filter(kdock => kdock.api_state === 0).length,
+          `${this.getMstShip(deckFlagShipId).api_name}(Lv.${this.getShip(deckFlagShipId).api_lv})`,
+          this.getTeitokuLv()
+        )
+        dataCoManager.saveLog(CONST.typeList.createShip, dataItem)
+        this.store.dispatch(addLog(dataItem, CONST.typeList.createShip as DataType))
+        this.createShipFlag = false
+      }
+      break
+    }
+
+    // 资源
+    case '/kcsapi/api_port/port': {
+      const body = e.detail.body as API.APIPortPortResponse
+      this.updateUser()
+      this.enableRecord = true
+      const nowDate = new Date()
+      if (this.timeString !== 'INIT' && this.timeString !== timeToBString(nowDate.getTime())) {
+        this.timeString = timeToBString(nowDate.getTime())
+        const dataItem: DataRow = [
+          (new Date()).getTime(),
+          ...body.api_material.map(item => item.api_value),
+        ]
+        dataCoManager.saveLog('resource', dataItem)
+        this.store.dispatch(addLog(dataItem, 'resource'))
+      }
+      break
+    }
     }
   }
 
@@ -484,7 +485,7 @@ class APIResolver {
       console.warn("Suggest to use up-to-date POI.")
     }
 
-    let dataItem: DataRow = [time || this.nowDate]
+    const dataItem: DataRow = [time || this.nowDate]
 
     const mapText = map <= 410
       ? `${quest}(${Math.floor(map / 10)}-${map % 10})`

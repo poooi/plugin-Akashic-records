@@ -1,24 +1,37 @@
-import React, { useCallback, useState } from 'react'
+import React, { useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Selector, createSelector } from 'reselect'
 import { useSelector, useDispatch } from 'react-redux'
-import { addSearchRule, addStatisticsRule, deleteSearchRule, deleteStatisticsRule, hiddenStatisticsPanel, setSearchRuleBase, setSearchRuleKey, setStatisticsRuleDenominator, setStatisticsRuleDenominatorType, setStatisticsRuleNumerator, setStatisticsRuleNumeratorType, showStatisticsPanel } from 'views/actions'
+import {
+  addSearchRule,
+  addStatisticsRule,
+  deleteSearchRule,
+  deleteStatisticsRule,
+  hiddenStatisticsPanel,
+  setSearchRuleBase,
+  setSearchRuleKey,
+  setStatisticsRuleDenominator,
+  setStatisticsRuleDenominatorType,
+  setStatisticsRuleNumerator,
+  setStatisticsRuleNumeratorType,
+  showStatisticsPanel,
+} from '../actions'
 import { Collapse, HTMLSelect, HTMLTable, Icon, InputGroup } from '@blueprintjs/core'
-import _, { memoize, range } from 'lodash'
+import { memoize, range } from 'lodash'
 import styled from 'styled-components'
+import { shell } from 'electron'
 
 import { DataType } from '../reducers/tab'
 import CONST from '../../lib/constant'
 import Divider from '../divider'
-import { SearchRule } from 'views/reducers/search-rules'
-import { StatisticsRule } from 'views/reducers/statistics-rules'
+import { SearchRule } from '../reducers/search-rules'
+import { StatisticsRule } from '../reducers/statistics-rules'
 import { Popover } from 'views/components/etc/overlay'
 import { filterSelectors, searchSelectors, logContentSelectorFactory } from '../selectors'
 import { LogContentState } from '../reducers/log-content'
+import { IState } from 'views/utils/selectors'
 
 const { config } = window
-
-const { openExternal } = require('electron').shell
 
 const TipContainer = styled.div`
   padding: 8px 16px;
@@ -83,7 +96,7 @@ function getStatisticsItems(lens: number[], statisticsRules: StatisticsRule[]): 
 
 const getSelector = memoize((dataType: DataType): Selector<LogContentState, SelectorResult> => {
   return createSelector([
-    state => state.statisticsVisible as boolean,
+    state => state.statisticsVisible ,
     state => state.data,
     state => filterSelectors[dataType](state),
     state => state.searchRules as SearchRule[],
@@ -101,7 +114,7 @@ const getSelector = memoize((dataType: DataType): Selector<LogContentState, Sele
 
 const AkashicRecordsStatisticsPanel: React.FC<AkashicRecordsStatisticsPanelT> = ({ contentType }) => {
   const { t } = useTranslation('poi-plugin-akashic-records')
-  const selector: Selector<any, SelectorResult> = createSelector(
+  const selector: Selector<IState, SelectorResult> = createSelector(
     logContentSelectorFactory(contentType),
     getSelector(contentType)
   )
@@ -174,7 +187,7 @@ const AkashicRecordsStatisticsPanel: React.FC<AkashicRecordsStatisticsPanelT> = 
                         <Icon icon="help" size={16} />
                         <TipContainer>
                           {t("Support the Javascript's ")}
-                          <a onClick={openExternal.bind(this, "http://www.w3school.com.cn/jsref/jsref_obj_regexp.asp")}>
+                          <a onClick={() => shell.openExternal("http://www.w3school.com.cn/jsref/jsref_obj_regexp.asp")}>
                             {"RegExp"}
                           </a>
                         </TipContainer>
@@ -276,12 +289,12 @@ const AkashicRecordsStatisticsPanel: React.FC<AkashicRecordsStatisticsPanelT> = 
                             minimal
                             value={statisticsItems[index].numeratorType}
                             onChange={(e) => handleStatisticNumeratorTypeSet(index, parseInt(e.target.value))}>
-                              <option key={CONST.search.rawDataIndex} value={CONST.search.rawDataIndex}>
-                                {t("All Data")}
-                              </option>
-                              <option key={CONST.search.filteredDataIndex} value={CONST.search.filteredDataIndex}>
-                                {t("Filtered")}
-                              </option>
+                            <option key={CONST.search.rawDataIndex} value={CONST.search.rawDataIndex}>
+                              {t("All Data")}
+                            </option>
+                            <option key={CONST.search.filteredDataIndex} value={CONST.search.filteredDataIndex}>
+                              {t("Filtered")}
+                            </option>
                             {
                               range(index).fill(0).map((_, i) => (
                                 <option
@@ -311,12 +324,12 @@ const AkashicRecordsStatisticsPanel: React.FC<AkashicRecordsStatisticsPanelT> = 
                             value={statisticsItems[index].denominatorType}
                             onChange={(e) => handleStatisticDenominatorTypeSet(index, parseInt(e.target.value))}>
 
-                              <option key={CONST.search.rawDataIndex} value={CONST.search.rawDataIndex}>
-                                {t("All Data")}
-                              </option>
-                              <option key={CONST.search.filteredDataIndex} value={CONST.search.filteredDataIndex}>
-                                {t("Filtered")}
-                              </option>
+                            <option key={CONST.search.rawDataIndex} value={CONST.search.rawDataIndex}>
+                              {t("All Data")}
+                            </option>
+                            <option key={CONST.search.filteredDataIndex} value={CONST.search.filteredDataIndex}>
+                              {t("Filtered")}
+                            </option>
                             {
                               range(index).fill(0).map((_, i) => (
                                 <option

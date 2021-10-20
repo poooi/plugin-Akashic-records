@@ -214,7 +214,7 @@ const macarons = {
         },
         label: {
           textStyle: {
-            color: '#333'
+            color: '#333',
           },
         },
       },

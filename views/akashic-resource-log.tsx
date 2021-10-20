@@ -31,7 +31,7 @@ const AkashicResourceLog: React.FC = () => {
   const handleSelectTab = useCallback((newTabId: TabId) => setActiveTab(newTabId), [])
   return (
     <div>
-      <Tabs selectedTabId={activeTab} onChange={handleSelectTab} animate={false} large>
+      <Tabs selectedTabId={activeTab} onChange={handleSelectTab} large>
         <Tab id='table' title={t("Table")} panel={<AkashicResourceTable />} />
         <Tab id='chart' title={t("Chart")} panel={<Container><ResourceChart /></Container>} />
       </Tabs>

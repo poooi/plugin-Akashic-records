@@ -13,7 +13,7 @@ import {
   setShowAmount,
 } from '../actions'
 import { createSelector, Selector } from 'reselect'
-import { LogContentState } from 'views/reducers/log-content'
+import { LogContentState } from '../reducers/log-content'
 
 const { config } = window
 

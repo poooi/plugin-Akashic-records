@@ -1,5 +1,5 @@
 declare module 'views/components/etc/window-env' {
-  import { Context, Component } from 'react'
+  import { Context } from 'react'
 
   export const WindowEnv: Context<{ window: Window }>
 }
@@ -25,7 +25,8 @@ declare module 'views/utils/selectors' {
 
   export interface IState {
     const: IConstState
-    config: any
+    config: any,
+    ext: any
   }
 
   export interface IConstState {
@@ -45,7 +46,7 @@ declare module 'views/utils/selectors' {
 
   export const configSelector: Selector<any, any>
   export const constSelector: Selector<any, IConstState>
-  export const extensionSelectorFactory: (id: string) => Selector<any, any>
+  export const extensionSelectorFactory: (id: string) => Selector<IState, unknown>
   export const fcdSelector: Selector<any, IFCD>
   export const fleetInExpeditionSelectorFactory: (id: number) => Selector<any, any>
   export const fleetShipsIdSelectorFactory: (id: number) => Selector<any, any>
@@ -64,6 +65,7 @@ declare module 'views/components/etc/overlay' {
 
 declare module 'views/components/etc/avatar' {
   import { ComponentType } from 'react'
+
   export const Avatar: ComponentType<any>
 }
 
@@ -73,6 +75,7 @@ declare module 'views/utils/tools' {
 
 declare module 'views/components/etc/icon' {
   import { ComponentType } from 'react'
+
   export const SlotitemIcon: ComponentType<any>
 }
 
