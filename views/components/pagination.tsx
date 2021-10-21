@@ -3,6 +3,8 @@ import _ from 'lodash'
 
 import { ButtonGroup, Button } from '@blueprintjs/core'
 
+const PAGINATION_PADDING = 4
+
 export interface PaginationT {
   max: number;
   curr: number;
@@ -11,25 +13,25 @@ export interface PaginationT {
 
 const Ellipsis = <Button disabled icon="more" />
 
-const Pagination: React.FC<PaginationT> = ({max, curr, handlePaginationSelect}) => {
-  const start = Math.max(1, curr - 2)
+const Pagination: React.FC<PaginationT> = ({ max, curr, handlePaginationSelect }) => {
+  const start = Math.max(1, curr - PAGINATION_PADDING)
   return max > 0 ? (
     <ButtonGroup>
       <Button icon='chevron-left' onClick={() => handlePaginationSelect(1)}/>
       {
-        curr - 2 > 1 ? (
+        curr - PAGINATION_PADDING > 1 ? (
           Ellipsis
         ) : null
       }
       {
-        _.range(start, Math.min(curr + 2, start + 4, max) + 1).map(idx => (
+        _.range(start, Math.min(curr + PAGINATION_PADDING, start + 2 * PAGINATION_PADDING, max) + 1).map(idx => (
           <Button key={idx} active={idx === curr} onClick={() => handlePaginationSelect(idx)}>
             {idx}
           </Button>
         ))
       }
       {
-        curr + 2 < max ? (
+        curr + PAGINATION_PADDING < max ? (
           Ellipsis
         ) : null
       }
