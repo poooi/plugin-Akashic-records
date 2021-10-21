@@ -194,7 +194,7 @@ const AkashicRecordsStatisticsPanel: React.FC<AkashicRecordsStatisticsPanelT> = 
                       </Popover>
                     </th>
                     <th>No.</th>
-                    <th>{t("Base on")}</th>
+                    <th>{t("Base On")}</th>
                     <th>{t("Keywords")}</th>
                     <th>{t("Result")}</th>
                     <th>{t("Sample Size")}</th>
@@ -262,8 +262,8 @@ const AkashicRecordsStatisticsPanel: React.FC<AkashicRecordsStatisticsPanelT> = 
                     <th>No.</th>
                     <th>{t("Numerator")}</th>
                     <th>{t("Denominator")}</th>
-                    <th>{t("Numerator number")}</th>
-                    <th>{t("Denominator number")}</th>
+                    <th>{t("Numerator Number")}</th>
+                    <th>{t("Denominator Number")}</th>
                     <th>{t("Percentage")}</th>
                   </tr>
                 </thead>
