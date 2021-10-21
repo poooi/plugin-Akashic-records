@@ -41,7 +41,7 @@ class DataCoManager {
           const splitedLogItem = logItem.split(',')
           const parsedLogItem: DataRow = [
             this.getParsedTimestamp(splitedLogItem[0]),
-            ...splitedLogItem.slice(1).map(s => s.replaceAll('%2C', ',')),
+            ...splitedLogItem.slice(1).map(s => s.replace(/%2C/g, ',')),
           ]
           return parsedLogItem
         })
@@ -76,7 +76,7 @@ class DataCoManager {
   }
 
   saveLog(type: string, log: DataRow) {
-    log = [log[0], ...log.slice(1).map(item => typeof item == 'string' ? item.trim().replaceAll(',', '%2C') : item)]
+    log = [log[0], ...log.slice(1).map(item => typeof item == 'string' ? item.trim().replace(/%2C/g, ',') : item)]
     fs.ensureDirSync(path.join(DATA_PATH, 'akashic-records', this.nickNameId, type))
     if (type === 'attack') {
       const date = new Date(log[0])
