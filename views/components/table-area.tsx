@@ -246,7 +246,7 @@ const AkashicRecordsTableArea: React.FC<AkashicRecordsTableAreaT> = ({ contentTy
                 return (
                   <AkashicRecordsTableTbodyItem
                     key={item[0]}
-                    index={index+1}
+                    index={index + 1}
                     data={item}
                     tabVisibility={tabVisibility}
                     contentType={contentType}

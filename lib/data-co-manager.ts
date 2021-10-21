@@ -63,6 +63,8 @@ class DataCoManager {
           b[0] = (new Date(b[0])).getTime()
         return (b[0]) - (a[0])
       })
+      .map((log, index, logs) => logs[index - 1] && logs[index - 1][0] === log[0] ? null : log)
+      .filter(logs => logs !== null) as DataTable
     return datalogs
   }
 
