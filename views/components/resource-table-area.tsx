@@ -157,12 +157,12 @@ const AkashicResourceTableArea: React.FC<AkashicResourceTableAreaT> = ({ content
                         <th>
                           <InputGroup
                             type="text"
-                            placeholder={t(getTabs(contentType)[index])}
+                            placeholder={t(tab)}
                             value={filterKeys[0]}
                             onChange={(e) => handleKeywordChange(e.target.value)}
                           />
                         </th>  :
-                        <th key={index}>{tab}</th>
+                        <th key={index}>{t(tab)}</th>
                       : null
                   ))
                 }
