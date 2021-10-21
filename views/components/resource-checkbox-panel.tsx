@@ -6,7 +6,7 @@ import { DataType, getTabs } from '../reducers/tab'
 import { useTranslation } from 'react-i18next'
 import { Selector, useDispatch, useSelector } from 'react-redux'
 import { setTabVisibility } from '../actions'
-import { logContentSelectorFactory } from 'views/selectors'
+import { logContentSelectorFactory } from '../selectors'
 import { LogContentState } from '../reducers/log-content'
 import { createSelector } from 'reselect'
 

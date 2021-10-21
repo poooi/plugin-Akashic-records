@@ -1,11 +1,11 @@
-import { DataAction } from "views/reducers/data"
+import { DataAction } from "../reducers/data"
 import { DataRow } from "lib/data-co-manager"
-import { DataType, TabVisibilityAction } from "views/reducers/tab"
-import { ActivePageAction, ShowAmountAction } from "views/reducers/page"
-import { CheckboxVisibleAction, StatisticsVisibleAction, TimeScaleAction } from "views/reducers/view-control"
-import { SearchRulesAction } from "views/reducers/search-rules"
-import { StatisticsRulesAction } from "views/reducers/statistics-rules"
-import { FilterKeysAction } from "views/reducers/filter-keys"
+import { DataType, TabVisibilityAction } from "../reducers/tab"
+import { ActivePageAction, ShowAmountAction } from "../reducers/page"
+import { CheckboxVisibleAction, StatisticsVisibleAction, TimeScaleAction } from "../reducers/view-control"
+import { SearchRulesAction } from "../reducers/search-rules"
+import { StatisticsRulesAction } from "../reducers/statistics-rules"
+import { FilterKeysAction } from "../reducers/filter-keys"
 
 interface GlobalDataAction extends DataAction {
   dataType: DataType
