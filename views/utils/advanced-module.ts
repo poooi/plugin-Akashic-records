@@ -2,6 +2,7 @@ import fs from 'fs-extra'
 import iconv from 'iconv-lite'
 import { detect } from 'jschardet'
 import path from 'path'
+// @ts-expect-error keeping importing remote for compat
 import { remote } from 'electron'
 import { get } from 'lodash'
 

@@ -1,4 +1,5 @@
 import { Button, ControlGroup, FormGroup, InputGroup } from '@blueprintjs/core'
+// @ts-expect-error keeping importing remote for compat
 import { remote } from 'electron'
 import fs from 'fs-extra'
 import { get } from 'lodash'

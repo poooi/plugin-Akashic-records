@@ -3,6 +3,7 @@ import styled from 'styled-components'
 import { Icon, HTMLSelect, PopoverInteractionKind, ControlGroup, Button } from '@blueprintjs/core'
 import { Popover } from 'views/components/etc/overlay'
 import { IconNames } from '@blueprintjs/icons'
+// @ts-expect-error keeping importing remote for compat
 import { remote, shell } from 'electron'
 import { useTranslation } from 'react-i18next'
 import { useDispatch } from 'react-redux'
