@@ -110,7 +110,7 @@ const AkashicRecordsTableTbodyItem: React.FC<TbodyItemT> = ({ data, contentType,
       </td>
       {
         data.map((item, i) => {
-          if ((tabVisibility[i + 1])) {
+          if (!tabVisibility[i + 1]) {
             return null
           } else if (i === 0) {
             return <td key={i}>{dateToString(new Date(+item))}</td>
