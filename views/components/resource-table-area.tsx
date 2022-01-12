@@ -43,17 +43,17 @@ const AkashicResourceTableTbodyItem: React.FC<TbodyItemT> = ({ data, nextdata, t
   <tr>
     <td>{index}</td>
     {
-      data.map((item, index) => {
-        if (index === 0 && tabVisibility[1]) {
-          return (<td key={index}>{dateToString(new Date(item))}</td>)
-        } else {
-          if (tabVisibility[index + 1]) {
+      data.map((item, i) => {
+        if (tabVisibility[i + 1]) {
+          if (i === 0) {
+            return (<td key={i}>{dateToString(new Date(item))}</td>)
+          } else {
             if (lastFlag) {
-              return (  <td key={index}>{item}</td>)
+              return <td key={i}>{item}</td>
             } else {
-              const diff = Number(item) - Number(nextdata[index])
+              const diff = Number(item) - Number(nextdata[i])
               return (
-                <td key={index}>
+                <td key={i}>
                   {`${item}(${diff > 0 ? '+' : ''}${diff})`}
                 </td>
               )

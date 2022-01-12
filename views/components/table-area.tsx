@@ -109,15 +109,17 @@ const AkashicRecordsTableTbodyItem: React.FC<TbodyItemT> = ({ data, contentType,
         {index}
       </td>
       {
-        data.map((item, index) => {
-          if (index === 0 && tabVisibility[1]) {
-            return (<td key={index}>{dateToString(new Date(+item))}</td>)
-          } else if (contentType === 'attack' && index === 1) {
-            return (tabVisibility[2]) ? (<td key={index}>{parseMapInfo(String(item))}</td>) : null
-          } else if (contentType === 'attack' && (index === 4 || index === 5 || index === 7)) {
-            return (tabVisibility[8]) ? (<td key={index} className="overflow" title={String(item)}>{item}</td>) : null
+        data.map((item, i) => {
+          if ((tabVisibility[i + 1])) {
+            return null
+          } else if (i === 0) {
+            return <td key={i}>{dateToString(new Date(+item))}</td>
+          } else if (contentType === 'attack' && i === 1) {
+            return <td key={i}>{parseMapInfo(String(item))}</td>
+          } else if (contentType === 'attack' && (i === 4 || i === 5 || i === 7)) {
+            return <td key={i} className="overflow" title={String(item)}>{item}</td>
           } else {
-            return (tabVisibility[index+1]) ? (<td key={index}>{item}</td>) : null
+            return <td key={i}>{item}</td>
           }
         })
       }
