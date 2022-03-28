@@ -248,7 +248,8 @@ class APIResolver {
       break
     }
     case '/kcsapi/api_req_map/start':
-    case '/kcsapi/api_req_map/next': {
+    case '/kcsapi/api_req_map/next':
+    case '/kcsapi/api_req_map/air_raid': {
       const body = e.detail.body as API.APIReqMapNextResponse
       if (urlpath === '/kcsapi/api_req_map/start') {
         this.isStart = true
@@ -257,7 +258,10 @@ class APIResolver {
       this.battleStart = false
       const { api_destruction_battle } = body
       if (api_destruction_battle != null) {
-        const { api_air_base_attack } = api_destruction_battle
+        const destructionBattle = Array.isArray(api_destruction_battle) ?
+          api_destruction_battle[api_destruction_battle.length - 1] :
+          api_destruction_battle
+        const { api_air_base_attack } = destructionBattle
         const parsed_api_air_base_attack =
             typeof api_air_base_attack === 'string'
               ? JSON.parse(api_air_base_attack)
@@ -270,7 +274,7 @@ class APIResolver {
           : `${quest}(${Math.floor(map / 10)}-${map % 10} %rank) | ${this.mapLv[map] || 0}`
 
         const seiku = seikuText[parsed_api_air_base_attack.api_stage1.api_disp_seiku] || '奇怪的结果'
-        const lostKind = lostKindText[api_destruction_battle.api_lost_kind - 1] || '奇怪的结果'
+        const lostKind = lostKindText[destructionBattle.api_lost_kind - 1] || '奇怪的结果'
         const enemy = ''
 
         const dataItem: DataRow = [this.nowDate, mapText,'基地防空戦', seiku, lostKind, enemy,'','','','','','']
