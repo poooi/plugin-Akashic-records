@@ -15,7 +15,7 @@ import { DataTable } from '../../lib/data-co-manager'
 const { dialog } = remote
 
 const Container = styled.div`
-  padding: 8px 16px;
+  padding: 8px 0;
 `
 
 const Title = styled.div`

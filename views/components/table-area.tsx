@@ -22,7 +22,7 @@ const { ipc } = window
 const { openExternal } = shell
 
 const TipContainer = styled.div`
-  padding: 8px 16px;
+  padding: 8px 0;
 `
 
 const PaginationContainer = styled.div`

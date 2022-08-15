@@ -34,7 +34,7 @@ import { IState } from 'views/utils/selectors'
 const { config } = window
 
 const TipContainer = styled.div`
-  padding: 8px 16px;
+  padding: 8px 0;
 `
 
 interface SearchRuleWithResult extends SearchRule {

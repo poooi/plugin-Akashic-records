@@ -11,7 +11,7 @@ import { useTranslation } from 'react-i18next'
 type TabId = 'chart' | 'table'
 
 const Container = styled.div`
-  padding: 8px 16px;
+  padding: 8px 0;
 `
 
 const AkashicResourceTable = () => (

@@ -7,7 +7,7 @@ import VisibleTable from './components/table-area'
 import { DataType } from './reducers/tab'
 
 const Container = styled.div`
-  padding: 8px 16px;
+  padding: 8px 0;
 `
 
 const AkashicLog: React.FC<{ contentType: DataType }> = ({contentType}) => {
