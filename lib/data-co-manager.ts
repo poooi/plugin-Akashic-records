@@ -22,10 +22,11 @@ class DataCoManager {
   }
 
   getParsedTimestamp(ts: string): number {
-    const fixedTs = ts.length > 13 ? ts.slice(0, 13) : ts
-    if (/^[1-9]+[0-9]*$/.test(fixedTs)) {
-      return parseInt(fixedTs)
-    } else {
+    if (/^[1-9]+[0-9]*$/.test(ts)) {
+      return parseInt(ts)
+    } else if (/^[1-9]+[0-9]*\.[0-9]$/.test(ts)) {
+      return parseFloat(ts)
+    } {
       return 0
     }
   }
