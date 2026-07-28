@@ -1,8 +1,20 @@
 import fs from 'fs-extra'
-import glob from 'glob'
+import * as globModule from 'glob'
 import path from 'path'
 
 import CONST from './constant'
+
+// glob@7/8 export a callable with `.sync`, glob@9+ export a named `globSync`.
+// Resolve at runtime so the plugin works whichever version poi provides.
+/* eslint-disable @typescript-eslint/no-explicit-any */
+const globAny = globModule as any
+const globSync: (pattern: string) => string[] =
+  globAny.globSync || globAny.sync || globAny.default?.globSync || globAny.default?.sync
+/* eslint-enable @typescript-eslint/no-explicit-any */
+
+// glob@9+ treats `\` as an escape character, so patterns must use `/`
+// on every platform. glob@7 accepts `/` on Windows too.
+const globPath = (...segments: string[]) => path.join(...segments).replace(/\\/g, '/')
 
 const { APPDATA_PATH, config } = window
 
@@ -32,8 +44,8 @@ class DataCoManager {
   }
 
   async getData(type: string): Promise<DataTable> {
-    const datalogsPromise = glob.sync(
-      path.join(DATA_PATH, 'akashic-records', this.nickNameId, type, '*')
+    const datalogsPromise = globSync(
+      globPath(DATA_PATH, 'akashic-records', this.nickNameId, type, '*')
     ).map(async (filePath) => {
       try {
         const fileContent = await fs.readFile(filePath, 'utf8')
