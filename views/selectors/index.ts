@@ -1,13 +1,15 @@
 import { createSelector, OutputParametricSelector, Selector } from 'reselect'
+import { memoize } from 'lodash'
 import { dateToString } from '../../lib/utils'
 import { LogContentState } from '../reducers/log-content'
 
 import CONST from '../../lib/constant'
 
-import { extensionSelectorFactory, IState } from 'views/utils/selectors'
+import { extensionSelectorFactory, fcdSelector, IState } from 'views/utils/selectors'
 import { SearchRule } from '../reducers/search-rules'
 import { DataType } from '../reducers/tab'
 import { DataTable } from '../../lib/data-co-manager'
+import { FcdMapState, resolveMapCells } from '../utils/map-cell'
 
 type PluginState = Record<DataType, LogContentState>
 
@@ -39,9 +41,31 @@ export const pluginDataSelector: Selector<IState, PluginState> = createSelector(
   (state) => state as PluginState || empty
 )
 
-export const logContentSelectorFactory = (contentType: DataType): Selector<IState, LogContentState> => {
-  return createSelector(pluginDataSelector, (pluginData) => pluginData[contentType] || emptyLogContentState)
-}
+const fcdMapSelector: Selector<IState, FcdMapState | undefined> = createSelector(
+  fcdSelector,
+  (fcd) => fcd?.map
+)
+
+// memoized so that components creating their selector on every render still
+// hit reselect's cache
+export const logContentSelectorFactory = memoize((contentType: DataType): Selector<IState, LogContentState> => {
+  const stateSelector = createSelector(
+    pluginDataSelector,
+    (pluginData) => pluginData[contentType] || emptyLogContentState
+  )
+  if (contentType !== 'attack') {
+    return stateSelector
+  }
+  // Sortie records only store the edge id of the cell a battle took place in,
+  // the readable name comes from fcd, which loads asynchronously.
+  return createSelector(
+    [stateSelector, fcdMapSelector],
+    (state, fcdMap) => {
+      const data = resolveMapCells(state.data, fcdMap)
+      return data === state.data ? state : { ...state, data }
+    }
+  )
+})
 
 const dateToDateString = (datetime: number | string): string => {
   const date = new Date(datetime)
