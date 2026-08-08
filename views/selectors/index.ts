@@ -10,6 +10,8 @@ import { SearchRule } from '../reducers/search-rules'
 import { DataType } from '../reducers/tab'
 import { DataTable } from '../../lib/data-co-manager'
 import { FcdMapState, resolveMapCells } from '../utils/map-cell'
+import { ConfigItem } from '../reducers/view-control'
+import { defaultTimeScale, filterByTimeScale, TimeScale } from '../utils/time-scale'
 
 type PluginState = Record<DataType, LogContentState>
 
@@ -24,7 +26,7 @@ const emptyLogContentState: LogContentState = {
   searchRules: [],
   statisticsRules: [],
   filterKeys: [],
-  showTimeScale: 0,
+  showTimeScale: defaultTimeScale,
 }
 
 const empty: PluginState = {
@@ -66,11 +68,6 @@ export const logContentSelectorFactory = memoize((contentType: DataType): Select
     }
   )
 })
-
-const dateToDateString = (datetime: number | string): string => {
-  const date = new Date(datetime)
-  return `${date.getFullYear()}/${date.getMonth()}/${date.getDate()}`
-}
 
 const filterRegWindex = (data: DataTable, index: number, reg: RegExp) =>
   data.filter((row) =>
@@ -132,24 +129,7 @@ const filterWNindex = (logs: DataTable, keyword: string): DataTable => {
   }
 }
 
-const filterAsScale = (data: DataTable, showScale: number) => {
-  if (showScale === 0) {
-    return data
-  } else {
-    let dateString = ""
-    return data.filter((item) => {
-      const tmp =  dateToDateString(item[0])
-      if (tmp !== dateString) {
-        dateString = tmp
-        return true
-      } else {
-        return false
-      }
-    })
-  }
-}
-
-const resourceApplyFilter = (logs: DataTable, tabVisibility: boolean[], keyWord: string, showScale: number) => {
+const resourceApplyFilter = (logs: DataTable, tabVisibility: boolean[], keyWord: string, showScale: TimeScale) => {
   let retLogs = logs
   if (keyWord != null) {
     retLogs = retLogs.filter((row) => {
@@ -163,14 +143,16 @@ const resourceApplyFilter = (logs: DataTable, tabVisibility: boolean[], keyWord:
       })
     })
   }
-  return filterAsScale(retLogs, showScale)
+  return filterByTimeScale(retLogs, showScale)
 }
 
 const emptyArr: string[] = []
 const logSelectorFactory = () => {
   const getLogs = (state: LogContentState) => state.data
   const getFilterKeys = (state: LogContentState) =>
-    (state.configListChecked[1] || state.configListChecked[2] || !state.configListChecked[3])
+    (state.configListChecked[ConfigItem.ShowFilterBox]
+      || state.configListChecked[ConfigItem.AutoSelected]
+      || !state.configListChecked[ConfigItem.DisableFilteringWhileHidingFilterBox])
       ? state.filterKeys
       : emptyArr
   return createSelector([getLogs, getFilterKeys], filterWithIndex)

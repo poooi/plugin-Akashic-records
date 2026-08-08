@@ -1,5 +1,7 @@
 import { Reducer } from 'redux'
 
+import { DataSource } from '../../lib/constant'
+
 export interface SearchRulesAction {
   type: string;
   index?: number;
@@ -7,6 +9,7 @@ export interface SearchRulesAction {
 }
 
 export interface SearchRule {
+  // a DataSource, or the index of a search result beyond DataSource.Filtered
   baseOn: number;
   content: string;
 }
@@ -17,7 +20,7 @@ const searchRule: Reducer<SearchRule, SearchRulesAction> = (state, action) => {
   switch (action.type) {
   case '@@poi-plugin-akashic-records/ADD_SEARCH_RULE':
     return {
-      baseOn: 1,
+      baseOn: DataSource.Filtered,
       content: '',
     }
   case '@@poi-plugin-akashic-records/SET_SEARCH_RULE_BASE':
@@ -28,12 +31,12 @@ const searchRule: Reducer<SearchRule, SearchRulesAction> = (state, action) => {
     }
   case '@@poi-plugin-akashic-records/SET_SEARCH_RULE_KEY':
     return {
-      baseOn: 1,
+      baseOn: DataSource.Filtered,
       ...state,
       content: action.val as string,
     }
   default:
-    return state || { baseOn: 1, content: '' }
+    return state || { baseOn: DataSource.Filtered, content: '' }
   }
 }
 
@@ -65,7 +68,7 @@ const reducer: Reducer<SearchRulesState, SearchRulesAction> = (state, action) =>
       } else if (item.baseOn === (action.index || 0) + 2) {
         return {
           ...item,
-          baseOn: 1,
+          baseOn: DataSource.Filtered,
         }
       } else {
         return item

@@ -10,6 +10,7 @@ import { shell } from 'electron'
 import { DataRow, DataTable } from "lib/data-co-manager"
 import { dateToString } from '../../lib/utils'
 import { DataType, getTabs, TabVisibilityState } from '../reducers/tab'
+import { ConfigItem } from '../reducers/view-control'
 import { Popover } from 'views/components/etc/overlay'
 import Pagination from './pagination'
 import { filterSelectors, logContentSelectorFactory } from '../selectors'
@@ -169,9 +170,9 @@ const AkashicRecordsTableArea: React.FC<AkashicRecordsTableAreaT> = ({ contentTy
     dispatch(setActivePage(idx, contentType))
   }, [contentType])
 
-  let showLabel = configListChecked[0]
-  let showFilter = configListChecked[1]
-  if (configListChecked[2]) {
+  let showLabel = configListChecked[ConfigItem.ShowHeadings]
+  let showFilter = configListChecked[ConfigItem.ShowFilterBox]
+  if (configListChecked[ConfigItem.AutoSelected]) {
     showFilter = true
     showLabel = showLabel || filterKeys.some((filterKey, index) =>
       tabVisibility[index + 1] && filterKey !== ''

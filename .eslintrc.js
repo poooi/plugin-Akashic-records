@@ -25,7 +25,9 @@ module.exports = {
     'linebreak-style': ['error', 'unix'],
     'no-console': ['warn', {'allow': ['warn', 'error']}],
     'no-var': 'error',
-    'no-unused-vars': ['warn', {'args': 'none'}],
+    // the base rule reports enum members as unused, the ts-aware one does not
+    'no-unused-vars': 'off',
+    '@typescript-eslint/no-unused-vars': ['warn', {'args': 'none'}],
     'semi': ['error', 'never'],
     'unicode-bom': 'error',
     'prefer-const': ['error', {'destructuring': 'all'}],
