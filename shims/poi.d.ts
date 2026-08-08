@@ -19,6 +19,7 @@ declare module 'views/utils/selectors' {
     APIMstStype,
   } from 'kcsapi/api_start2/getData/response'
   import { Selector } from 'reselect'
+  import { FcdMapState } from '../views/utils/map-cell'
   interface Dictionary<T> {
     [index: string]: T
   }
@@ -40,6 +41,7 @@ declare module 'views/utils/selectors' {
       marginMagics: Dictionary<any>
     }
     shiptag: any
+    map?: FcdMapState
   }
 
   export type IShipData = [APIShip?, APIMstShip?]
