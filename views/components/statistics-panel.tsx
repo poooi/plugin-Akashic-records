@@ -22,7 +22,7 @@ import styled from 'styled-components'
 import { shell } from 'electron'
 
 import { DataType } from '../reducers/tab'
-import CONST from '../../lib/constant'
+import CONST, { DataSource } from '../../lib/constant'
 import Divider from '../divider'
 import { SearchRule } from '../reducers/search-rules'
 import { StatisticsRule } from '../reducers/statistics-rules'
@@ -75,13 +75,13 @@ const getSearchItems = (lens: number[], searchRules: SearchRule[]): SearchRuleWi
 function getStatisticsItems(lens: number[], statisticsRules: StatisticsRule[]): StatisticsRuleWithResult[] {
   return statisticsRules.map((item) => {
     let ret = item
-    if (item.numeratorType !== -1) {
+    if (item.numeratorType !== DataSource.Custom) {
       ret = {
         ...ret,
         numerator: lens[item.numeratorType],
       }
     }
-    if (item.denominatorType !== -1) {
+    if (item.denominatorType !== DataSource.Custom) {
       ret = {
         ...ret,
         denominator: lens[item.denominatorType],
@@ -315,7 +315,7 @@ const AkashicRecordsStatisticsPanel: React.FC<AkashicRecordsStatisticsPanelT> = 
                                 </option>
                               ), this)
                             }
-                            <option key={-1} value={-1}>{t("Custom")}</option>
+                            <option key={DataSource.Custom} value={DataSource.Custom}>{t("Custom")}</option>
                           </HTMLSelect>
                         </td>
                         <td>
@@ -350,11 +350,11 @@ const AkashicRecordsStatisticsPanel: React.FC<AkashicRecordsStatisticsPanelT> = 
                                 </option>
                               ), this)
                             }
-                            <option key={-1} value={-1}>{t("Custom")}</option>
+                            <option key={DataSource.Custom} value={DataSource.Custom}>{t("Custom")}</option>
                           </HTMLSelect>
                         </td>
                         {
-                          (statisticsItems[index].numeratorType === -1)
+                          (statisticsItems[index].numeratorType === DataSource.Custom)
                             ? (
                               <td>
                                 <InputGroup
@@ -368,7 +368,7 @@ const AkashicRecordsStatisticsPanel: React.FC<AkashicRecordsStatisticsPanelT> = 
                             )
                         }
                         {
-                          (statisticsItems[index].denominatorType === -1)
+                          (statisticsItems[index].denominatorType === DataSource.Custom)
                             ? (
                               <td>
                                 <InputGroup

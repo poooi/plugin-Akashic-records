@@ -28,4 +28,4 @@ resource
     }
   ]
   filterKeys: [string]
-  showTimeScale: int
+  showTimeScale: 'hour' | 'day' | 'week' | 'month'

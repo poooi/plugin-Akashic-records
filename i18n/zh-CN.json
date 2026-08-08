@@ -50,6 +50,8 @@
   "Show by {{scale}}": "按 {{scale}} 显示",
   "Day": "天",
   "Hour": "小时",
+  "Week": "周",
+  "Month": "月",
   "Show node": "显示节点",
   "Hide node": "隐藏节点",
   "Sleep mode": "睡眠模式",

@@ -3,6 +3,7 @@ import { DataRow } from "lib/data-co-manager"
 import { DataType, TabVisibilityAction } from "../reducers/tab"
 import { ActivePageAction, ShowAmountAction } from "../reducers/page"
 import { CheckboxVisibleAction, StatisticsVisibleAction, TimeScaleAction } from "../reducers/view-control"
+import { TimeScale } from "../utils/time-scale"
 import { SearchRulesAction } from "../reducers/search-rules"
 import { StatisticsRulesAction } from "../reducers/statistics-rules"
 import { FilterKeysAction } from "../reducers/filter-keys"
@@ -107,7 +108,7 @@ export function hiddenStatisticsPanel(type: DataType): StatisticsVisibleAction {
   }
 }
 
-export function setTimeScale(val: number, type: DataType): TimeScaleAction {
+export function setTimeScale(val: TimeScale, type: DataType): TimeScaleAction {
   return {
     type: '@@poi-plugin-akashic-records/SET_TIME_SCALE',
     val: val,

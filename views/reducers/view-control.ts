@@ -1,7 +1,16 @@
 import { DataType } from './tab'
 import { Reducer } from 'redux'
+import { defaultTimeScale, TimeScale, toTimeScale } from '../utils/time-scale'
 
 const { config } = window
+
+// the indices configListChecked is read at, in the order of configList below
+export enum ConfigItem {
+  ShowHeadings,
+  ShowFilterBox,
+  AutoSelected,
+  DisableFilteringWhileHidingFilterBox,
+}
 
 export const configList = [
   "Show Headings", "Show Filter-box",
@@ -63,12 +72,12 @@ export const statisticsVisible: Reducer<boolean, StatisticsVisibleAction> = (sta
 export interface TimeScaleAction {
   type: string;
   dataType: DataType;
-  val: number;
+  val: TimeScale;
 }
 
-export const showTimeScale: Reducer<number, TimeScaleAction> = (state = Number.MIN_VALUE, action) => {
-  if (state == Number.MIN_VALUE) {
-    state = config.get(`plugin.Akashic.${action.dataType}.table.showTimeScale`, 0)
+export const showTimeScale: Reducer<TimeScale, TimeScaleAction> = (state, action) => {
+  if (state == null) {
+    state = toTimeScale(config.get(`plugin.Akashic.${action.dataType}.table.showTimeScale`, defaultTimeScale))
   }
   if (action.type === '@@poi-plugin-akashic-records/SET_TIME_SCALE') {
     return action.val

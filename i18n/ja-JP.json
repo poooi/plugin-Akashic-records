@@ -50,6 +50,8 @@
   "Show by {{scale}}": "1{{scale}}ごと",
   "Day": "日",
   "Hour": "時間",
+  "Week": "週間",
+  "Month": "ヶ月",
   "Show node": "節点を表示します",
   "Hide node": "節点を非表示にします",
   "Sleep mode": "夜間モード",

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { createSelector, Selector } from 'reselect'
 import { useSelector } from 'react-redux'
 import ReactEChartsCore from 'echarts-for-react/lib/core'
@@ -12,6 +12,13 @@ import { DataTable } from '../../lib/data-co-manager'
 import images from '../../assets/img'
 import dark from '../../assets/themes/dark'
 import macarons from '../../assets/themes/macarons'
+import {
+  filterByTimeScale,
+  nextTimeScale,
+  TimeScale,
+  timeScaleLabels,
+  toTimeScale,
+} from '../utils/time-scale'
 
 const echartPromise = import('echarts')
 
@@ -30,9 +37,21 @@ const toDateLabel = (datetime: number): string => {
   return `${date.getFullYear()}-${month}-${day} ${hour}:${minute}`
 }
 
-const toDateString = (datetime: number): string => {
-  const date = new Date(datetime)
-  return `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`
+const scaleGlyphs: Record<TimeScale, string> = {
+  [TimeScale.Hour]: 'H',
+  [TimeScale.Day]: 'D',
+  [TimeScale.Week]: 'W',
+  [TimeScale.Month]: 'M',
+}
+
+// the bundled toolbox icons only cover hour and day, so every scale is drawn
+// as a glyph instead, keeping the four states of the cycle consistent
+const toScaleIcon = (scale: TimeScale, color: string): string => {
+  const svg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50">'
+    + '<text x="25" y="39" text-anchor="middle" font-family="sans-serif"'
+    + ` font-size="46" font-weight="bold" fill="${color}">${scaleGlyphs[scale]}</text>`
+    + '</svg>'
+  return `image://data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`
 }
 
 interface SelectorResult {
@@ -50,10 +69,12 @@ const AkashicResourceChart: React.FC = () => {
 
   const { t } = useTranslation('poi-plugin-akashic-records')
 
-  const [showAsDay, setShowAsDay] = useState(config.get("plugin.Akashic.resource.chart.showAsDay", true))
+  const [timeScale, setTimeScale] = useState<TimeScale>(() => toTimeScale(
+    config.get("plugin.Akashic.resource.chart.timeScale",
+      // carried over from the hour/day toggle this cycle replaces
+      config.get("plugin.Akashic.resource.chart.showAsDay", true) ? TimeScale.Day : TimeScale.Hour)
+  ))
   const [showSymbol, setShowSymbol] = useState(config.get("plugin.Akashic.resource.chart.showSymbol", false))
-  const [dataLength, setDataLength] = useState(0)
-  const [showData, setShowData] = useState<DataTable>(data)
   const echartModuleRef = useRef<any>()
 
   useEffect(() => {
@@ -64,22 +85,11 @@ const AkashicResourceChart: React.FC = () => {
     })
   }, [echartModuleRef])
 
-  const dataFilter = useCallback((data: DataTable) => {
-    let dateString = ''
-    return data.filter((item) => {
-      if (showAsDay) {
-        const tmp = toDateString(item[0])
-        if (tmp !== dateString) {
-          dateString = tmp
-          return true
-        } else {
-          return false
-        }
-      } else {
-        return true
-      }
-    })
-  }, [showAsDay])
+  // records come in newest first, the time axis reads left to right
+  const showData: DataTable = useMemo(
+    () => [...filterByTimeScale(data, timeScale)].reverse(),
+    [data, timeScale]
+  )
 
   const textColor = isDarkTheme ? '#ddd' : '#333'
 
@@ -131,27 +141,16 @@ const AkashicResourceChart: React.FC = () => {
             show: true,
             backgroundColor: '#343434',
           },
-          myShowScale: ((showAsDayValue) => {
-            const opt = showAsDayValue
-              ? {
-                title: t("Show by {{scale}}", { scale: t("Day") }),
-                icon: toIcon(images.day),
-              } : {
-                title:  t("Show by {{scale}}", { scale: t("Hour") }),
-                icon: toIcon(images.hour),
-              }
-            return {
-              show: true,
-              ...opt,
-              onclick: () => {
-                const newShowData = dataFilter(data).reverse()
-                setShowAsDay(!showAsDayValue)
-                setShowData(newShowData)
-                setDataLength(newShowData.length)
-                config.set("plugin.Akashic.resource.chart.showAsDay", !showAsDayValue)
-              },
-            }
-          })(showAsDay),
+          myShowScale: {
+            show: true,
+            title: t("Show by {{scale}}", { scale: t(timeScaleLabels[timeScale]) }),
+            icon: toScaleIcon(timeScale, textColor),
+            onclick: () => {
+              const next = nextTimeScale(timeScale)
+              setTimeScale(next)
+              config.set("plugin.Akashic.resource.chart.timeScale", next)
+            },
+          },
           myShowType: ((showSymbolValue) => {
             const opt = showSymbolValue
               ? {
@@ -328,7 +327,7 @@ const AkashicResourceChart: React.FC = () => {
       ],
       animation: false,
     }
-  }, [dataFilter, showAsDay, showData, showSymbol, dataLength, textColor])
+  }, [t, timeScale, showData, showSymbol, textColor])
 
   return (
     echartModuleRef.current ?

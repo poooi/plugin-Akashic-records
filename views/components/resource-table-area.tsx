@@ -14,6 +14,7 @@ import { setActivePage, setFilterKey, setShowAmount, setTimeScale } from '../act
 import { HTMLSelect, HTMLTable, InputGroup } from '@blueprintjs/core'
 import { IState } from 'views/utils/selectors'
 import { DataRow, DataTable } from '../../lib/data-co-manager'
+import { TimeScale, timeScaleLabels } from '../utils/time-scale'
 
 const { config } = window
 
@@ -113,7 +114,7 @@ const AkashicResourceTableArea: React.FC<AkashicResourceTableAreaT> = ({ content
     dispatch(setActivePage(activePage, contentType))
   }, [contentType])
 
-  const handleTimeScaleSelect = useCallback((timeScale: number) => {
+  const handleTimeScaleSelect = useCallback((timeScale: TimeScale) => {
     config.set("plugin.Akashic.resource.table.showTimeScale", timeScale)
     dispatch(setTimeScale(timeScale, contentType))
   }, [contentType])
@@ -125,13 +126,14 @@ const AkashicResourceTableArea: React.FC<AkashicResourceTableAreaT> = ({ content
           <HTMLSelect
             minimal
             value={showTimeScale}
-            onChange={(e) => handleTimeScaleSelect(parseInt(e.target.value))}>
-            <option key={0} value={0}>
-              {t("Show by {{scale}}", { scale: t("Hour") })}
-            </option>
-            <option key={1} value={1}>
-              {t("Show by {{scale}}", { scale: t("Day") })}
-            </option>
+            onChange={(e) => handleTimeScaleSelect(e.target.value as TimeScale)}>
+            {
+              Object.values(TimeScale).map((scale) => (
+                <option key={scale} value={scale}>
+                  {t("Show by {{scale}}", { scale: t(timeScaleLabels[scale]) })}
+                </option>
+              ))
+            }
           </HTMLSelect>
         </div>
         <div>

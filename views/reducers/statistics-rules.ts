@@ -1,6 +1,9 @@
 import { Reducer } from 'redux'
 
+import { DataSource } from '../../lib/constant'
+
 export interface StatisticsRule {
+  // a DataSource, or the index of a search result beyond DataSource.Filtered
   numeratorType: number;
   denominatorType: number;
   numerator: number;
@@ -16,8 +19,8 @@ export interface StatisticsRulesAction {
 export type StatisticsRulesState = StatisticsRule[]
 
 const defaultStatisticsRule = {
-  numeratorType: 1,
-  denominatorType: 1,
+  numeratorType: DataSource.Filtered,
+  denominatorType: DataSource.Filtered,
   numerator: 0,
   denominator: 1,
 }
@@ -55,11 +58,13 @@ const statisticsRule: Reducer<StatisticsRule, StatisticsRulesAction> = (state, a
   }
 }
 
+// shifts a rule's source index after the search rule at `del` is removed,
+// falling back to the filtered set for rules that pointed at it
 function deleteIndex(old: number, del: number) {
   if (old > del + 2) {
     return old - 1
   } else if (old === del + 2) {
-    return 1
+    return DataSource.Filtered
   }
   return old
 }
