@@ -38,15 +38,22 @@ function resolveMapCell(
 
 let cachedFcdMap: FcdMapState | undefined
 let rowCache = new WeakMap<DataRow, DataRow>()
+let lastData: DataTable | undefined
+let lastResult: DataTable | undefined
 
 /**
  * Resolve the cell column of every sortie record. Rows are cached by identity
- * so that appending a single battle does not re-resolve the whole log.
+ * so that appending a single battle does not re-resolve the whole log, and the
+ * last result is kept so that every caller sees the same table identity.
  */
 export function resolveMapCells(data: DataTable, fcdMap: FcdMapState | undefined): DataTable {
   if (fcdMap !== cachedFcdMap) {
     cachedFcdMap = fcdMap
     rowCache = new WeakMap()
+    lastData = undefined
+  }
+  if (data === lastData && lastResult != null) {
+    return lastResult
   }
   let resolvedAny = false
   const resolved = data.map((row) => {
@@ -64,5 +71,7 @@ export function resolveMapCells(data: DataTable, fcdMap: FcdMapState | undefined
     resolvedAny = resolvedAny || next !== row
     return next
   })
-  return resolvedAny ? resolved : data
+  lastData = data
+  lastResult = resolvedAny ? resolved : data
+  return lastResult
 }

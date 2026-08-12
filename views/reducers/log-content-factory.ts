@@ -1,12 +1,12 @@
 import { Reducer } from 'redux'
 import { LogContentAction, LogContentState, logContent } from './log-content'
 import { DataType } from './tab'
-import { filterSelectors, resourceFilter } from '../selectors'
+import { filterSelectors, resolveLogContent, resourceFilter } from '../selectors'
 
 function boundActivePageNum(state: LogContentState, dataType: DataType) {
   const logLength =
     dataType === 'resource' ? resourceFilter(state).length
-      : filterSelectors[dataType](state).length
+      : filterSelectors[dataType](resolveLogContent(state, dataType)).length
   let { activePage } = state
   activePage = Math.min(activePage, Math.ceil(logLength/state.showAmount))
   activePage = Math.max(activePage, 1)

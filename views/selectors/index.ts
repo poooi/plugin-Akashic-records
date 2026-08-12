@@ -48,6 +48,24 @@ const fcdMapSelector: Selector<IState, FcdMapState | undefined> = createSelector
   (fcd) => fcd?.map
 )
 
+const withResolvedMapCells = (
+  state: LogContentState,
+  fcdMap: FcdMapState | undefined
+): LogContentState => {
+  const data = resolveMapCells(state.data, fcdMap)
+  return data === state.data ? state : { ...state, data }
+}
+
+/**
+ * Sortie records only store the edge id of the cell a battle took place in, the
+ * readable name comes from fcd. Anything filtering or counting the logs has to
+ * go through here, or it disagrees with what the table shows.
+ */
+export const resolveLogContent = (state: LogContentState, contentType: DataType): LogContentState =>
+  contentType === 'attack'
+    ? withResolvedMapCells(state, window.getStore('fcd.map'))
+    : state
+
 // memoized so that components creating their selector on every render still
 // hit reselect's cache
 export const logContentSelectorFactory = memoize((contentType: DataType): Selector<IState, LogContentState> => {
@@ -58,15 +76,8 @@ export const logContentSelectorFactory = memoize((contentType: DataType): Select
   if (contentType !== 'attack') {
     return stateSelector
   }
-  // Sortie records only store the edge id of the cell a battle took place in,
-  // the readable name comes from fcd, which loads asynchronously.
-  return createSelector(
-    [stateSelector, fcdMapSelector],
-    (state, fcdMap) => {
-      const data = resolveMapCells(state.data, fcdMap)
-      return data === state.data ? state : { ...state, data }
-    }
-  )
+  // fcd loads asynchronously, so this has to react to it rather than read it once
+  return createSelector([stateSelector, fcdMapSelector], withResolvedMapCells)
 })
 
 const filterRegWindex = (data: DataTable, index: number, reg: RegExp) =>
