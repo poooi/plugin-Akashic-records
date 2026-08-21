@@ -1,7 +1,7 @@
 import React from 'react'
 import _ from 'lodash'
 
-import { ButtonGroup, Button } from '@blueprintjs/core'
+import { ButtonGroup, Button, Intent } from '@blueprintjs/core'
 
 const PAGINATION_PADDING = 4
 
@@ -25,7 +25,12 @@ const Pagination: React.FC<PaginationT> = ({ max, curr, handlePaginationSelect }
       }
       {
         _.range(start, Math.min(curr + PAGINATION_PADDING, start + 2 * PAGINATION_PADDING, max) + 1).map(idx => (
-          <Button key={idx} active={idx === curr} onClick={() => handlePaginationSelect(idx)}>
+          <Button
+            key={idx}
+            active={idx === curr}
+            intent={idx === curr ? Intent.PRIMARY : Intent.NONE}
+            onClick={() => handlePaginationSelect(idx)}
+          >
             {idx}
           </Button>
         ))
