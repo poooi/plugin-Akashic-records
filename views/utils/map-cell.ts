@@ -6,6 +6,11 @@ export type FcdMapState = Record<string, {
   route: Record<string, [string | null, string]>
 }>
 
+/** The part of poi's root state a plugin reducer is handed as its third argument. */
+export interface PoiStoreLike {
+  fcd?: { map?: FcdMapState }
+}
+
 // `鎮守府正面海域(1-1)` or `連合艦隊、西へ(42-1 甲) | 3`
 const MAP_ID_PATTERN = /\((\d+)-(\d+)[^)]*\)/
 // `59(道中)`, where 59 is the api_no of the edge the fleet took to the cell
@@ -40,6 +45,9 @@ let cachedFcdMap: FcdMapState | undefined
 let rowCache = new WeakMap<DataRow, DataRow>()
 let lastData: DataTable | undefined
 let lastResult: DataTable | undefined
+
+/** The map the view last resolved with, for callers that cannot reach the store. */
+export const getCachedFcdMap = (): FcdMapState | undefined => cachedFcdMap
 
 /**
  * Resolve the cell column of every sortie record. Rows are cached by identity

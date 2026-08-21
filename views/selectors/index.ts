@@ -60,11 +60,17 @@ const withResolvedMapCells = (
  * Sortie records only store the edge id of the cell a battle took place in, the
  * readable name comes from fcd. Anything filtering or counting the logs has to
  * go through here, or it disagrees with what the table shows.
+ *
+ * The fcd map is passed in because the caller is the reducer: while reducers
+ * run, poi locks `window.getStore` to the slice being reduced, so it cannot
+ * look the map up for itself.
  */
-export const resolveLogContent = (state: LogContentState, contentType: DataType): LogContentState =>
-  contentType === 'attack'
-    ? withResolvedMapCells(state, window.getStore('fcd.map'))
-    : state
+export const resolveLogContent = (
+  state: LogContentState,
+  contentType: DataType,
+  fcdMap: FcdMapState | undefined
+): LogContentState =>
+  contentType === 'attack' ? withResolvedMapCells(state, fcdMap) : state
 
 // memoized so that components creating their selector on every render still
 // hit reselect's cache
